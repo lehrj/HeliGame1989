@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>2a7e4f7a-f2a3-4194-b32c-e2d02ddeb1df</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="StepTimer.h" />
+    <ClInclude Include="AnimatedTexture.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Environment.h" />
+    <ClInclude Include="Lighting.h" />
+    <ClInclude Include="SpriteSheet.h" />
+    <ClInclude Include="Utility.h" />
+    <ClInclude Include="Vehicle.h" />
+    <ClInclude Include="sounds.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="Lighting.cpp" />
+    <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="Vehicle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\HeightMaps\heightmapCleanTest.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\HeightMaps\heightmapStartScreen.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\HeightMaps\heightmapTrailer2World.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\HeightMaps\TestMap0.bmp">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\NormalMaps\NormalMapTeaser.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\NormalMaps\normalUV.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\NormalMaps\normBMW.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\NormalMaps\normBMW2.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\NormalMaps\normJI.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\NormalMaps\TestOP.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\SpecularMaps\SpecJI.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\SpecularMaps\specularBMW.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\SpecularMaps\specularJI.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\SpecularMaps\specularJI2.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\SpecularMaps\specularTeaser.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\SpecularMaps\specularTeaser1.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\SpecularMaps\specularUV.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\blankTexture.jpg">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\Chacter0SpriteSheet.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\Chacter1SpriteSheet.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\Chacter2SpriteSheet.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\ChacterSpriteSheet.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\CharacterBackground.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\EnvironmentSelectAlien.jpg">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\EnvironmentSelectBreezy.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\EnvironmentSelectCalm.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\logoBMW.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\logoJI.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\logoJI2.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\logoTeaser.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\PacSprite.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\TestOP.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\Textures\textureUV.png">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="AudioBank.xwb" />
+    <None Include="myfile.spritefont" />
+    <None Include="titleFont.spritefont" />
+    <None Include="Art\Audio\AudioBank.xwb">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Art\Fonts\bitwise16.spritefont">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Art\Fonts\bitwise20.spritefont">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Art\Fonts\bitwise24.spritefont">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Art\Fonts\myfile.spritefont">
+      <Filter>Assets</Filter>
+    </None>
+    <None Include="Art\Fonts\titleFont.spritefont">
+      <Filter>Assets</Filter>
+    </None>
+  </ItemGroup>
+</Project>
