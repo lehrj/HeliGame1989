@@ -129,23 +129,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix mainRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix localMainRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix mainRotorBladeTranslationMatrix2;
-
-
-    std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorEdgeShape;
-    DirectX::SimpleMath::Matrix mainRotorEdgeMatrix1;
-    DirectX::SimpleMath::Matrix mainRotorEdgeTranslationMatrix1;
-    DirectX::SimpleMath::Matrix localMainRotorEdgeMatrix1;
-
-
-    DirectX::SimpleMath::Matrix testEdgeMatrix1;
-    DirectX::SimpleMath::Matrix testEdgeTranslationMatrix1;
-    DirectX::SimpleMath::Matrix testLocalEdgeMatrix1;
-    DirectX::SimpleMath::Matrix testRotationEdgeMatrix1;
-
-    DirectX::SimpleMath::Matrix testEdgeMatrix2;
-    DirectX::SimpleMath::Matrix testEdgeTranslationMatrix2;
-    DirectX::SimpleMath::Matrix testLocalEdgeMatrix2;
-    DirectX::SimpleMath::Matrix testRotationEdgeMatrix2;
 };
 
 class Vehicle
