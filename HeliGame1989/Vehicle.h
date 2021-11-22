@@ -109,6 +109,10 @@ struct HeliModel
     DirectX::SimpleMath::Matrix tailBoomMatrix;
     DirectX::SimpleMath::Matrix localTailBoomMatrix;
 
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailFinShape;
+    DirectX::SimpleMath::Matrix tailFinMatrix;
+    DirectX::SimpleMath::Matrix localTailFinMatrix;
+
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorAxelShape;
     DirectX::SimpleMath::Matrix mainRotorAxelMatrix;
     DirectX::SimpleMath::Matrix localMainRotorAxelMatrix;
@@ -116,7 +120,6 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorHubShape;
     DirectX::SimpleMath::Matrix mainRotorHubMatrix;
     DirectX::SimpleMath::Matrix localMainRotorHubMatrix;
-
 
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorArmShape;
     DirectX::SimpleMath::Matrix mainRotorArmMatrix;
@@ -129,6 +132,27 @@ struct HeliModel
     DirectX::SimpleMath::Matrix mainRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix localMainRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix mainRotorBladeTranslationMatrix2;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorAxelShape;
+    DirectX::SimpleMath::Matrix tailRotorAxelMatrix;
+    DirectX::SimpleMath::Matrix localTailRotorAxelMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorHubShape;
+    DirectX::SimpleMath::Matrix tailRotorHubMatrix;
+    DirectX::SimpleMath::Matrix localTailRotorHubMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorArmShape;
+    DirectX::SimpleMath::Matrix tailRotorArmMatrix;
+    DirectX::SimpleMath::Matrix localTailRotorArmMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorBladeShape;
+    DirectX::SimpleMath::Matrix tailRotorBladeMatrix1;
+    DirectX::SimpleMath::Matrix tailRotorBladeTranslationMatrix1;
+    DirectX::SimpleMath::Matrix localTailRotorBladeMatrix1;
+    DirectX::SimpleMath::Matrix tailRotorBladeMatrix2;
+    DirectX::SimpleMath::Matrix localTailRotorBladeMatrix2;
+    DirectX::SimpleMath::Matrix tailRotorBladeTranslationMatrix2;
+
 };
 
 class Vehicle
