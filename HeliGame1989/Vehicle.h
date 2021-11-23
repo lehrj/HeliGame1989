@@ -101,9 +101,32 @@ struct HeliData
 
 struct HeliModel
 {
+    std::unique_ptr<DirectX::GeometricPrimitive>    noseConeShape;
+    DirectX::SimpleMath::Matrix noseConeMatrix;
+    DirectX::SimpleMath::Matrix localNoseConeMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    noseBodyShape;
+    DirectX::SimpleMath::Matrix noseBodyMatrix;
+    DirectX::SimpleMath::Matrix localNoseBodyMatrix;
+
+
     std::unique_ptr<DirectX::GeometricPrimitive>    bodyShape;
     DirectX::SimpleMath::Matrix bodyMatrix;
     DirectX::SimpleMath::Matrix localBodyMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    bodyCapShape;
+    DirectX::SimpleMath::Matrix windShieldMatrix;
+    DirectX::SimpleMath::Matrix localWindShieldMatrix;
+    DirectX::SimpleMath::Matrix bodyRearMatrix;
+    DirectX::SimpleMath::Matrix localBodyRearMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    engineHousingShape;
+    DirectX::SimpleMath::Matrix engineHousingMatrix;
+    DirectX::SimpleMath::Matrix localEngineHousingMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    engineHousingFrontShape;
+    DirectX::SimpleMath::Matrix engineHousingFrontMatrix;
+    DirectX::SimpleMath::Matrix localEngineHousingFrontMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    tailBoomShape;
     DirectX::SimpleMath::Matrix tailBoomMatrix;
