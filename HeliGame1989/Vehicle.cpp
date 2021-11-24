@@ -224,8 +224,9 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
 
     // nose cone
     const float noseConeLength = bodySize.z * cos(Utility::ToRadians(45.0));
+    const float noseConeXoffset = 3.2f;
     const DirectX::SimpleMath::Vector3 noseConeSize(noseConeLength, bodySize.y * 0.5f, noseConeLength);
-    const DirectX::SimpleMath::Vector3 noseConeTranslation(3.2, bodySize.y * 0.25f, 0.0f);
+    const DirectX::SimpleMath::Vector3 noseConeTranslation(noseConeXoffset, bodySize.y * 0.25f, 0.0f);
     m_heliModel.noseConeShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), noseConeSize);
     m_heliModel.noseConeMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.noseConeMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(45.0));
@@ -233,7 +234,8 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localNoseConeMatrix = m_heliModel.noseConeMatrix;
 
     /// nose body
-    DirectX::SimpleMath::Vector3 noseBodySize(0.7, bodySize.y * 0.5f, bodySize.z);
+    float noseBodyXSize = 0.7;
+    DirectX::SimpleMath::Vector3 noseBodySize(noseBodyXSize, bodySize.y * 0.5f, bodySize.z);
     const DirectX::SimpleMath::Vector3 noseBodyTranslation(bodySize.x * 0.5f + (noseBodySize.x * 0.5), bodySize.y * 0.25f, 0.0f);
     m_heliModel.noseBodyShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), noseBodySize);
     m_heliModel.noseBodyMatrix = DirectX::SimpleMath::Matrix::Identity;
@@ -419,13 +421,14 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.q.velocity = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.bodyVelocity = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.brakeForce = DirectX::SimpleMath::Vector3::Zero;
-
     m_heli.q.slopeForce = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.airResistance = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.gravityForce = DirectX::SimpleMath::Vector3::Zero;
-
     m_heli.q.engineForce = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.totalVelocity = DirectX::SimpleMath::Vector3::Zero;
+    // helicopter data
+    m_heli.q.mainRotorForceNormal = DirectX::SimpleMath::Vector3::UnitY;
+    m_heli.q.mainRotorForceMagnitude = 9.0f;
 
     m_heli.inputDeadZone = 0.05;
     m_heli.throttleInput = 0.0;
@@ -465,11 +468,8 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.wheelBase = 2.41;
 
     m_heli.terrainHightAtPos = 0.0;
-    // test values for wheel slip
-    m_heli.testRearCylinderMass = 75.0;
-    m_heli.testTorque = 0.0;
+
     m_heli.testRearAnglularVelocity = 0.0;
-    m_heli.testRearAngularVelocityAngle = 0.0;
 
     m_heli.terrainNormal = DirectX::SimpleMath::Vector3::UnitY;
     m_heli.testModelPos = m_heli.q.position;
@@ -480,8 +480,10 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.testHeading1 = DirectX::SimpleMath::Vector3::UnitX;
     m_heli.testHeading2 = DirectX::SimpleMath::Vector3::UnitZ;
     m_heli.testHeading2 = - DirectX::SimpleMath::Vector3::UnitX;
-    InitializeModel(aContext);
 
+
+
+    InitializeModel(aContext);
 }
 
 void Vehicle::Jump(double aTimer)
@@ -606,6 +608,9 @@ void Vehicle::RightHandSide(struct HeliData* aCar, Motion* aQ, Motion* aDeltaQ, 
     Motion newQ;
     newQ.velocity = aQ->velocity + static_cast<float>(aQScale) * aDeltaQ->velocity;
     newQ.position = aQ->position + static_cast<float>(aQScale) * aDeltaQ->position;
+
+    DirectX::SimpleMath::Vector3 rotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude;
+    newQ.velocity += rotorForce + static_cast<float>(aQScale) * aDeltaQ->velocity;
 
     //  Compute the constants that define the
     //  torque curve line.
@@ -758,6 +763,7 @@ void Vehicle::RightHandSide(struct HeliData* aCar, Motion* aQ, Motion* aDeltaQ, 
     velocityUpdate = engineForce + brakeForce + slopeForce + airResistance;
     velocityUpdate.y += gravDown;
     
+    
     if (m_heli.shiftCooldown > 0.0)
     {
         velocityUpdate =  brakeForce + slopeForce + airResistance + rollingResistance;
@@ -769,6 +775,7 @@ void Vehicle::RightHandSide(struct HeliData* aCar, Motion* aQ, Motion* aDeltaQ, 
         velocityUpdate.x = 0.0;
         velocityUpdate.z = 0.0;
         velocityUpdate.y = gravity * static_cast<float>(aTimeDelta);
+        velocityUpdate += rotorForce * static_cast<float>(aTimeDelta);
         gravForce = m_heli.gravity * static_cast<float>(aTimeDelta);
 
     }
@@ -816,12 +823,7 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
 
     if (m_heli.isCarLanding == true)
     {
-        //q.velocity.y = 0.0;
-        //q.velocity.x = 0.0;
-        //q.velocity *= -1;
-        //q.velocity = DirectX::SimpleMath::Vector3::Zero;
 
-        //aCar->q.velocity = DirectX::SimpleMath::Vector3::Zero;
     }
     if (m_heli.isCarAirborne == false)
     {

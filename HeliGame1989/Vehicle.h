@@ -16,6 +16,10 @@ struct Motion
     DirectX::SimpleMath::Vector3 airResistance;
     DirectX::SimpleMath::Vector3 gravityForce;
     DirectX::SimpleMath::Vector3 totalVelocity;
+
+    // helicopter data
+    DirectX::SimpleMath::Vector3 mainRotorForceNormal;
+    float mainRotorForceMagnitude;
 };
 
 struct HeliData
@@ -93,10 +97,9 @@ struct HeliData
     DirectX::SimpleMath::Vector3 testAcceleration = DirectX::SimpleMath::Vector3::Zero;
     float testAccel = 0.0;
     // test values for wheel slip
-    float testRearCylinderMass;
-    float testTorque;
     float testRearAnglularVelocity;
-    float testRearAngularVelocityAngle;
+
+    
 };
 
 struct HeliModel
@@ -290,18 +293,11 @@ private:
     float                           m_moveLeftRight = 0.0;
     float                           m_moveUpDown = 0.0;
 
-    DirectX::SimpleMath::Matrix     m_testBody;
-    DirectX::SimpleMath::Matrix     m_testBodyTop;
-    DirectX::SimpleMath::Matrix     m_testFrontAxle;
-    DirectX::SimpleMath::Matrix     m_testRearAxle;
-
     DirectX::SimpleMath::Vector3 m_debugPoint = DirectX::SimpleMath::Vector3::Zero;
-
-    float m_testRotation = 0.0;
-    float m_testRotationRear = 0.0;
 
     float m_testMax = 0.0;
     float m_testMin = 1.0;
+    
 
     std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::XMVECTORF32>> m_debugLinesVec;
     std::vector<std::pair<std::string, float>> m_debugUI;
