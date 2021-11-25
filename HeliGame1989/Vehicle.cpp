@@ -387,6 +387,20 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
 
 void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
 {
+    // helicopter data
+    m_heli.collectiveInput = 0.0f;
+    m_heli.cyclicInputPitch = 0.0f;
+    m_heli.cyclicInputPitchIsPressed = false;
+    m_heli.cyclicInputRoll = 0.0f;
+    m_heli.cyclicInputRollIsPressed = false;
+    m_heli.hThrottleInput = 0.0f;
+    m_heli.yawPedalInput = 0.0f;
+    m_heli.yawPedalIsPressed = false;
+    m_heli.mainRotorRPM = 0.0f;
+    // 
+    m_heli.q.mainRotorForceNormal = DirectX::SimpleMath::Vector3::UnitY;
+    m_heli.q.mainRotorForceMagnitude = 15.0f;
+
     // roughly based on porsche boxster
     m_heli.mass = 1393.0f;
     m_heli.area = 1.94f;
@@ -426,9 +440,6 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.q.gravityForce = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.engineForce = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.totalVelocity = DirectX::SimpleMath::Vector3::Zero;
-    // helicopter data
-    m_heli.q.mainRotorForceNormal = DirectX::SimpleMath::Vector3::UnitY;
-    m_heli.q.mainRotorForceMagnitude = 9.0f;
 
     m_heli.inputDeadZone = 0.05;
     m_heli.throttleInput = 0.0;
@@ -477,13 +488,179 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.testTerrainNormal = m_heli.terrainNormal;
     m_heli.testHeadingVec = m_heli.headingVec;
 
-    m_heli.testHeading1 = DirectX::SimpleMath::Vector3::UnitX;
-    m_heli.testHeading2 = DirectX::SimpleMath::Vector3::UnitZ;
-    m_heli.testHeading2 = - DirectX::SimpleMath::Vector3::UnitX;
-
 
 
     InitializeModel(aContext);
+}
+
+void Vehicle::InputCollective(const float aCollectiveInput)
+{
+    const float updatedCollective = (aCollectiveInput * m_heli.collectiveInputRate) + m_heli.collectiveInput;
+    if (updatedCollective > m_heli.collectiveInputMax)
+    {
+        m_heli.collectiveInput = m_heli.collectiveInputMax;
+    }
+    else if (updatedCollective < m_heli.collectiveInputMin)
+    {
+        m_heli.collectiveInput = m_heli.collectiveInputMin;
+    }
+    else
+    {
+        m_heli.collectiveInput = updatedCollective;
+    }
+}
+
+void Vehicle::InputCyclicPitch(const float aPitchInput)
+{
+    m_heli.cyclicInputPitchIsPressed = true;
+    const float updatedPitch = (aPitchInput * m_heli.cyclicInputRate) + m_heli.cyclicInputPitch;
+    if (updatedPitch > m_heli.cyclicInputMax)
+    {
+        m_heli.cyclicInputPitch = m_heli.cyclicInputMax;
+    }
+    else if (updatedPitch < m_heli.cyclicInputMin)
+    {
+        m_heli.cyclicInputPitch = m_heli.cyclicInputMin;
+    }
+    else
+    {
+        m_heli.cyclicInputPitch = updatedPitch;
+    }
+}
+
+void Vehicle::InputCyclicRoll(const float aRollInput)
+{
+    m_heli.cyclicInputRollIsPressed = true;
+    const float updatedRoll = (aRollInput * m_heli.cyclicInputRate) + m_heli.cyclicInputRoll;
+    if (updatedRoll > m_heli.cyclicInputMax)
+    {
+        m_heli.cyclicInputRoll = m_heli.cyclicInputMax;
+    }
+    else if (updatedRoll < m_heli.cyclicInputMin)
+    {
+        m_heli.cyclicInputRoll = m_heli.cyclicInputMin;
+    }
+    else
+    {
+        m_heli.cyclicInputRoll = updatedRoll;
+    }
+}
+
+void Vehicle::InputDecay(const double aTimeDelta)
+{
+    const float timeDelta = static_cast<float>(aTimeDelta);
+
+    if (m_heli.cyclicInputPitchIsPressed == false)
+    {
+        // Cyclic Pitch Decay
+        if (m_heli.cyclicInputPitch > 0.0f)
+        {
+            if (m_heli.cyclicInputPitch - (m_heli.cyclicDecayRate * timeDelta) < 0.0f)
+            {
+                m_heli.cyclicInputPitch = 0.0f;
+            }
+            else
+            {
+                m_heli.cyclicInputPitch -= m_heli.cyclicDecayRate * timeDelta;
+            }
+        }
+        else if (m_heli.cyclicInputPitch < 0.0f)
+        {
+            if (m_heli.cyclicInputPitch + (m_heli.cyclicDecayRate * timeDelta) < 0.0f)
+            {
+                m_heli.cyclicInputPitch = 0.0f;
+            }
+            else
+            {
+                m_heli.cyclicInputPitch += m_heli.cyclicDecayRate * timeDelta;
+            }
+        }
+        else
+        {
+            m_heli.cyclicInputPitch = 0.0f;
+        }
+    }
+    // Cyclic Roll Decay
+    if (m_heli.cyclicInputRollIsPressed == false)
+    {
+        if (m_heli.cyclicInputRoll > 0.0f)
+        {
+            if (m_heli.cyclicInputRoll - (m_heli.cyclicDecayRate * timeDelta) < 0.0f)
+            {
+                m_heli.cyclicInputRoll = 0.0f;
+            }
+            else
+            {
+                m_heli.cyclicInputRoll -= m_heli.cyclicDecayRate * timeDelta;
+            }
+        }
+        else if (m_heli.cyclicInputRoll < 0.0f)
+        {
+            if (m_heli.cyclicInputRoll + (m_heli.cyclicDecayRate * timeDelta) < 0.0f)
+            {
+                m_heli.cyclicInputRoll = 0.0f;
+            }
+            else
+            {
+                m_heli.cyclicInputRoll += m_heli.cyclicDecayRate * timeDelta;
+            }
+        }
+        else
+        {
+            m_heli.cyclicInputRoll = 0.0f;
+        }
+    }
+    // Yaw Pedal Decay
+    if (m_heli.yawPedalIsPressed == false)
+    {
+        if (m_heli.yawPedalInput - (m_heli.yawPedalDecayRate * timeDelta) < 0.0f)
+        {
+            m_heli.yawPedalInput = 0.0f;
+        }
+        else
+        {
+            m_heli.yawPedalInput -= m_heli.yawPedalDecayRate * timeDelta;
+        }
+    }
+
+    m_heli.cyclicInputPitchIsPressed = false;
+    m_heli.cyclicInputRollIsPressed = false;
+    m_heli.yawPedalIsPressed = false;
+}
+
+void Vehicle::InputHThrottle(const float aThrottleInput)
+{
+    const float updatedThrottle = (aThrottleInput * m_heli.hThrottleInputRate) + m_heli.hThrottleInput;
+    if (updatedThrottle > m_heli.hThrottleInputMax)
+    {
+        m_heli.hThrottleInput = m_heli.hThrottleInputMax;
+    }
+    else if (updatedThrottle < m_heli.hThrottleInputMin)
+    {
+        m_heli.hThrottleInput = m_heli.hThrottleInputMin;
+    }
+    else
+    {
+        m_heli.hThrottleInput = updatedThrottle;
+    }
+}
+
+void Vehicle::InputYawPedal(const float aYawInput)
+{
+    m_heli.yawPedalIsPressed = true;
+    const float updatedYaw = (aYawInput * m_heli.yawPedalInputRate) + m_heli.yawPedalInput;
+    if (updatedYaw > m_heli.hThrottleInputMax)
+    {
+        m_heli.yawPedalInput = m_heli.yawPedalInputMax;
+    }
+    else if (updatedYaw < m_heli.yawPedalInputMin)
+    {
+        m_heli.yawPedalInput = m_heli.yawPedalInputMin;
+    }
+    else
+    {
+        m_heli.yawPedalInput = updatedYaw;
+    }
 }
 
 void Vehicle::Jump(double aTimer)
@@ -609,7 +786,9 @@ void Vehicle::RightHandSide(struct HeliData* aCar, Motion* aQ, Motion* aDeltaQ, 
     newQ.velocity = aQ->velocity + static_cast<float>(aQScale) * aDeltaQ->velocity;
     newQ.position = aQ->position + static_cast<float>(aQScale) * aDeltaQ->position;
 
-    DirectX::SimpleMath::Vector3 rotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude;
+    DirectX::SimpleMath::Vector3 rotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
+    DebugPushUILineDecimalNumber("rotorForce ", rotorForce.y, "");
+
     newQ.velocity += rotorForce + static_cast<float>(aQScale) * aDeltaQ->velocity;
 
     //  Compute the constants that define the
@@ -1148,6 +1327,17 @@ void Vehicle::UpdateResistance()
     m_heli.airResistance = drag;
 }
 
+void Vehicle::UpdateRotorForce()
+{
+    DirectX::SimpleMath::Matrix xRot = DirectX::SimpleMath::Matrix::CreateRotationX(m_heli.cyclicInputRoll * 1.0f);
+    DirectX::SimpleMath::Matrix zRot = DirectX::SimpleMath::Matrix::CreateRotationZ(m_heli.cyclicInputPitch * 1.0f);
+    DirectX::SimpleMath::Matrix tRot = xRot + zRot;
+    DirectX::SimpleMath::Vector3 updateForce = m_heli.up;
+    updateForce = DirectX::SimpleMath::Vector3::Transform(updateForce, tRot);
+    updateForce.Normalize();
+    m_heli.q.mainRotorForceNormal = updateForce;
+}
+
 void Vehicle::UpdateTerrainNorm()
 {
     DirectX::SimpleMath::Vector3 newTerrainNorm = m_environment->GetTerrainNormal(m_heli.q.position);
@@ -1265,7 +1455,9 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     m_heli.isTurningPressed = false;
     m_heli.isBrakePressed = false;
     m_testIsBreakLightOn = false;
-
+    InputDecay(aTimeDelta);
+    DebugPushUILineDecimalNumber("test rotor mag : ", m_heli.collectiveInput, "");
+    UpdateRotorForce();
     m_heli.testAccel = (m_heli.q.velocity.Length() - prevVelocity.Length()) / static_cast<float>(aTimeDelta);
     m_heli.testAcceleration = (m_heli.q.velocity - prevVelocity) / static_cast<float>(aTimeDelta);
     m_heli.testAcceleration = m_heli.testAcceleration / m_heli.q.velocity;

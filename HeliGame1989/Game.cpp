@@ -3327,12 +3327,12 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     {
         m_camera->SetCameraState(CameraState::CAMERASTATE_SWINGVIEW);
     }
-    if (kb.NumPad8)
+    if (kb.NumPad1)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_carPos.x += static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
-            m_lightPos1.x += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_lightPos0.y -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputCollective(-aTimer.GetElapsedSeconds());
         }
     }
     if (kb.NumPad2)
@@ -3341,14 +3341,15 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
         {
             m_carPos.x -= static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
             m_lightPos1.x -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputCyclicPitch(aTimer.GetElapsedSeconds());
         }
     }
-    if (kb.NumPad6)
+    if (kb.NumPad3)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_carPos.z += static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
-            m_lightPos1.z += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_lightPos0.y += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputCollective(aTimer.GetElapsedSeconds());
         }
     }
     if (kb.NumPad4)
@@ -3357,6 +3358,23 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
         {
             m_carPos.z -= static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
             m_lightPos1.z -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputCyclicRoll(-aTimer.GetElapsedSeconds());
+        }
+    }
+    if (kb.NumPad5)
+    {
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
+        {
+
+        }
+    }
+    if (kb.NumPad6)
+    {
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
+        {
+            m_carPos.z += static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
+            m_lightPos1.z += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputCyclicRoll(aTimer.GetElapsedSeconds());
         }
     }
     if (kb.NumPad7)
@@ -3365,6 +3383,16 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
         {
             m_carAim += static_cast<float>(aTimer.GetElapsedSeconds()) * 0.11f;
             m_lightPos1.y -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputYawPedal(-aTimer.GetElapsedSeconds());
+        }
+    }
+    if (kb.NumPad8)
+    {
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
+        {
+            m_carPos.x += static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
+            m_lightPos1.x += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputCyclicPitch(-aTimer.GetElapsedSeconds());
         }
     }
     if (kb.NumPad9)
@@ -3373,20 +3401,21 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
         {
             m_carAim -= static_cast<float>(aTimer.GetElapsedSeconds()) * 0.11f;
             m_lightPos1.y += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputYawPedal(aTimer.GetElapsedSeconds());
         }
     }
-    if (kb.NumPad1)
+    if (kb.NumPad0)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_lightPos0.y -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputHThrottle(-aTimer.GetElapsedSeconds());
         }
     }
-    if (kb.NumPad3)
+    if (kb.Decimal)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_lightPos0.y += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
+            m_vehicle->InputHThrottle(aTimer.GetElapsedSeconds());
         }
     }
     if (kb.I)

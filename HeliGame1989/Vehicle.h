@@ -24,6 +24,41 @@ struct Motion
 
 struct HeliData
 {
+    // helicopter data
+    float collectiveInput;
+    const float collectiveInputMax = 1.0f;
+    const float collectiveInputMin = 0.0f;
+    const float collectiveInputRate = 1.0f;
+
+    float cyclicInputPitch;
+    bool cyclicInputPitchIsPressed;
+    float cyclicInputRoll;
+    bool cyclicInputRollIsPressed;
+    const float cyclicDecayRate = 0.1f;
+    const float cyclicInputMax = 1.0f;
+    const float cyclicInputMin = -1.0f;
+    const float cyclicInputRate = 1.0f;
+
+    float hThrottleInput;
+    const float hThrottleInputMin = 0.0f;
+    const float hThrottleInputMax = 1.0f;
+    const float hThrottleInputRate = 1.0f;
+
+    float yawPedalInput;
+    bool yawPedalIsPressed;
+    const float yawPedalInputMax = 1.0f;
+    const float yawPedalInputMin = -1.0f;
+    const float yawPedalInputRate = 1.0f;
+    const float yawPedalDecayRate = 0.1f;
+
+    const float mainRotorForceMagMax = 15.0f;
+    const float mainRotorForceMagMin = 0.0f;
+
+    float mainRotorRPM;
+    const float mainRotorRPMmin = 0.0f;
+    const float mainRotorRPMmax = 500.0f;
+
+
     int numEqns;
     double time;
     Motion q;
@@ -90,14 +125,13 @@ struct HeliData
     float testModelRotation;
     DirectX::SimpleMath::Vector3 testTerrainNormal;
     DirectX::SimpleMath::Vector3 testHeadingVec;
-    DirectX::SimpleMath::Vector3 testHeading1;
-    DirectX::SimpleMath::Vector3 testHeading2;
-    DirectX::SimpleMath::Vector3 testHeading3;
 
     DirectX::SimpleMath::Vector3 testAcceleration = DirectX::SimpleMath::Vector3::Zero;
     float testAccel = 0.0;
     // test values for wheel slip
     float testRearAnglularVelocity;
+
+
 
     
 };
@@ -184,7 +218,16 @@ struct HeliModel
 class Vehicle
 {
 public:
-    //Vehicle();
+    // helicopter functions
+    void InputCollective(const float aCollectiveInput);
+    void InputCyclicPitch(const float aPitchInput);
+    void InputCyclicRoll(const float aRollInput);
+    void InputDecay(const double aTimeDelta);
+    void InputHThrottle(const float aThrottleInput);
+    void InputYawPedal(const float aYawInput);
+    
+
+
 
     void DebugEBrake();
     std::vector<std::pair<std::string, float>> DebugGetUI() { return m_debugUI; };
@@ -273,6 +316,7 @@ private:
     
     void UpdateModel(const double aTimer);
     void UpdateResistance();
+    void UpdateRotorForce();
     void UpdateTerrainNorm();
     void UpdateTransmission(const double aTimeDelta);
     void UpdateVelocity(double aTimeDelta);
