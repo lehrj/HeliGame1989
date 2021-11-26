@@ -655,7 +655,7 @@ void Camera::UpdateChaseCamera()
 	cameraPos = DirectX::SimpleMath::Vector3::Transform(cameraPos, m_chaseCamQuat);
 	cameraPos += m_vehicleFocus->GetPos();
 	
-	float cameraHeightOffset = 0.0;
+	float cameraHeightOffset = 1.0;
 	float terrainHeight = m_environment->GetTerrainHeightAtPos(cameraPos);
 	if (terrainHeight > cameraPos.y)
 	{
@@ -698,7 +698,7 @@ void Camera::UpdateChaseCamera()
 	
 	////////////////////////////////////////
 	DirectX::SimpleMath::Vector3 newCamPosition4 = newCamPosition3;
-	const float camHeightOffset = 3.5;
+	const float camHeightOffset = 6.5;
 	newCamPosition4.y = targetPos.y + camHeightOffset;
 	const float groundOffset = 1.5;
 	float terrainHeight3 = m_environment->GetTerrainHeightAtPos(newCamPosition4);

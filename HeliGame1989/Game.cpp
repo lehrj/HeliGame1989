@@ -2941,7 +2941,7 @@ void Game::Render()
 
     //DrawTerrainNormals();
     //DrawDebugNormalLines(m_vehicle->GetModelTestPos(), DirectX::Colors::Blue);
-    //DrawDebugLinesVector();
+    DrawDebugLinesVector();
 
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {

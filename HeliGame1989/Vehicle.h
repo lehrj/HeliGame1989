@@ -25,6 +25,8 @@ struct Motion
 struct HeliData
 {
     // helicopter data
+    DirectX::SimpleMath::Vector3 mainRotorPos = DirectX::SimpleMath::Vector3::Zero;
+    DirectX::SimpleMath::Vector3 tailRotorPos = DirectX::SimpleMath::Vector3::Zero;
     float collectiveInput;
     const float collectiveInputMax = 1.0f;
     const float collectiveInputMin = 0.0f;
@@ -34,7 +36,7 @@ struct HeliData
     bool cyclicInputPitchIsPressed;
     float cyclicInputRoll;
     bool cyclicInputRollIsPressed;
-    const float cyclicDecayRate = 0.1f;
+    const float cyclicDecayRate = 0.8f;
     const float cyclicInputMax = 1.0f;
     const float cyclicInputMin = -1.0f;
     const float cyclicInputRate = 1.0f;
@@ -49,7 +51,7 @@ struct HeliData
     const float yawPedalInputMax = 1.0f;
     const float yawPedalInputMin = -1.0f;
     const float yawPedalInputRate = 1.0f;
-    const float yawPedalDecayRate = 0.1f;
+    const float yawPedalDecayRate = 0.5f;
 
     const float mainRotorForceMagMax = 15.0f;
     const float mainRotorForceMagMin = 0.0f;
@@ -172,6 +174,10 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    tailFinShape;
     DirectX::SimpleMath::Matrix tailFinMatrix;
     DirectX::SimpleMath::Matrix localTailFinMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailWingShape;
+    DirectX::SimpleMath::Matrix tailWingMatrix;
+    DirectX::SimpleMath::Matrix localTailWingMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorAxelShape;
     DirectX::SimpleMath::Matrix mainRotorAxelMatrix;
@@ -317,6 +323,7 @@ private:
     void UpdateModel(const double aTimer);
     void UpdateResistance();
     void UpdateRotorForce();
+    void UpdateTailYawForce();
     void UpdateTerrainNorm();
     void UpdateTransmission(const double aTimeDelta);
     void UpdateVelocity(double aTimeDelta);
@@ -359,5 +366,7 @@ private:
     float m_testEnginePower = 0.0;
 
     float m_rotorTimer = 0.0f;
+
+
 };
 
