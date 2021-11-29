@@ -131,8 +131,9 @@ private:
     //float                           m_frustumAngle;
     int                             m_clientWidth;
     int                             m_clientHeight;
-    float                           m_nearPlane;
-    float                           m_farPlane;
+
+    const float                     m_nearPlane = 0.3f;
+    const float                     m_farPlane = 5500.0f;
 
     DirectX::SimpleMath::Matrix     m_viewMatrix;
     DirectX::SimpleMath::Matrix     m_projectionMatrix;
@@ -183,7 +184,7 @@ private:
     float                       m_followCamDistance = 1.0;
 
     Environment const* m_environment;
-    Vehicle const * m_vehicleFocus;
+    Vehicle const* m_vehicleFocus;
 
     DirectX::SimpleMath::Quaternion m_testRotQuat = DirectX::SimpleMath::Quaternion::Identity;
     DirectX::SimpleMath::Quaternion m_chaseCamQuat = DirectX::SimpleMath::Quaternion::Identity;

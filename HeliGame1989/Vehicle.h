@@ -233,8 +233,6 @@ public:
     void InputYawPedal(const float aYawInput);
     
 
-
-
     void DebugEBrake();
     std::vector<std::pair<std::string, float>> DebugGetUI() { return m_debugUI; };
     std::vector<std::string> DebugGetUIVector() { return m_debugUIVector; };
@@ -245,7 +243,7 @@ public:
     void GearUp();
 
     float GetAccel() const { return m_heli.testAccel; };
-    float GetDebugValue() { return m_heli.carRotation; };
+
     DirectX::SimpleMath::Vector3 GetDebugPoint() { return  m_debugPoint; };
     int GetGear() { return m_heli.gearNumber; };
     DirectX::SimpleMath::Vector3 GetHeading() const { return m_heli.headingVec; };
@@ -264,7 +262,7 @@ public:
     float GetSteering() const { return m_heli.steeringAngle; };
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
-    DirectX::SimpleMath::Vector3 GetVelocity() { return m_heli.q.velocity; };
+    
     DirectX::SimpleMath::Vector3 GetVelocity() const { return m_heli.q.velocity; };
   
     void InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext);

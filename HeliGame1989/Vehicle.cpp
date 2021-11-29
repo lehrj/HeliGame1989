@@ -144,6 +144,7 @@ float Vehicle::GetYawRate(double aTimeDelta)
     float omegaT = omega * static_cast<float>(aTimeDelta);
 
     // testing tail blade yaw turn
+    DebugPushUILineDecimalNumber("m_heli.yawPedalInput", m_heli.yawPedalInput, "m_heli.yawPedalInput");
     omegaT = m_heli.yawPedalInput * static_cast<float>(aTimeDelta);
     return omegaT;
 }
@@ -694,7 +695,7 @@ void Vehicle::InputYawPedal(const float aYawInput)
 {
     m_heli.yawPedalIsPressed = true;
     const float updatedYaw = (aYawInput * m_heli.yawPedalInputRate) + m_heli.yawPedalInput;
-    if (updatedYaw > m_heli.hThrottleInputMax)
+    if (updatedYaw > m_heli.yawPedalInputMax)
     {
         m_heli.yawPedalInput = m_heli.yawPedalInputMax;
     }
@@ -706,21 +707,6 @@ void Vehicle::InputYawPedal(const float aYawInput)
     {
         m_heli.yawPedalInput = updatedYaw;
     }
-    m_heli.yawPedalInput = updatedYaw;
-    /*
-    if (updatedYaw < m_heli.hThrottleInputMax && updatedYaw > 0.0f)
-    {
-        m_heli.yawPedalInput = m_heli.yawPedalInputMax;
-    }
-    else if (updatedYaw < m_heli.yawPedalInputMin && updatedYaw < 0.0f)
-    {
-        m_heli.yawPedalInput = m_heli.yawPedalInputMin;
-    }
-    else
-    {
-        m_heli.yawPedalInput = updatedYaw;
-    }
-    */
 }
 
 void Vehicle::Jump(double aTimer)
@@ -1214,9 +1200,16 @@ void Vehicle::TurnInput(float aTurnInput)
 
 void Vehicle::TurnVehicle(double aTimeDelta)
 {  
-    if (m_heli.isVelocityBackwards == false)
+    if (m_heli.isCarAirborne == false)
     {
-        m_heli.carRotation -= GetYawRate(aTimeDelta);
+        if (m_heli.isVelocityBackwards == false)
+        {
+            m_heli.carRotation -= GetYawRate(aTimeDelta);
+        }
+        else
+        {
+            m_heli.carRotation += GetYawRate(aTimeDelta);
+        }
     }
     else
     {
@@ -1404,17 +1397,18 @@ void Vehicle::UpdateRotorForce()
 {
     DirectX::SimpleMath::Matrix xRot = DirectX::SimpleMath::Matrix::CreateRotationX(m_heli.cyclicInputRoll * 1.0f);
     DirectX::SimpleMath::Matrix zRot = DirectX::SimpleMath::Matrix::CreateRotationZ(m_heli.cyclicInputPitch * 1.0f);
+    DirectX::SimpleMath::Matrix localizeRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.carRotation);
     DirectX::SimpleMath::Matrix tRot = xRot + zRot;
+    tRot *= localizeRot;
     DirectX::SimpleMath::Vector3 updateForce = m_heli.up;
     updateForce = DirectX::SimpleMath::Vector3::Transform(updateForce, tRot);
     updateForce.Normalize();
     m_heli.q.mainRotorForceNormal = updateForce;
 
     // testing body tilt
-    //DirectX::SimpleMath::Vector3 newCamPosition3 = DirectX::SimpleMath::Vector3::Lerp(preCamPosition, jumpCamPos, 0.1);
     DirectX::SimpleMath::Vector3 testRotorForce = m_heli.q.mainRotorForceNormal * m_heli.q.mainRotorForceMagnitude;
-    DirectX::SimpleMath::Vector3 newUp = DirectX::SimpleMath::Vector3::Lerp(m_heli.up, testRotorForce, 0.15);
-    newUp = DirectX::SimpleMath::Vector3::Lerp(newUp, -m_heli.q.gravityForce * 1.0f, 0.14);
+    DirectX::SimpleMath::Vector3 newUp = DirectX::SimpleMath::Vector3::SmoothStep(m_heli.up, testRotorForce, 0.15);
+    newUp = DirectX::SimpleMath::Vector3::SmoothStep(newUp, -m_heli.q.gravityForce * 1.0f, 0.14);
     newUp.Normalize();
     m_heli.up = newUp;
 }
