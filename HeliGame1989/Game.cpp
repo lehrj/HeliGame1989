@@ -239,10 +239,6 @@ void Game::CreateDevice()
     m_batch3 = std::make_unique<PrimitiveBatch<VertexType3>>(m_d3dContext.Get());
 
     m_shape = GeometricPrimitive::CreateSphere(m_d3dContext.Get());
-    //m_carShapeTest = GeometricPrimitive::CreateBox(m_d3dContext.Get(), DirectX::SimpleMath::Vector3(0.3, 0.1, 0.2));
-    m_carShapeTest = GeometricPrimitive::CreateSphere(m_d3dContext.Get());
-    m_carShapeTest->CreateInputLayout(m_effect.get(), m_inputLayout.ReleaseAndGetAddressOf());
-
 
     CD3D11_RASTERIZER_DESC rastDesc(D3D11_FILL_SOLID, D3D11_CULL_NONE, FALSE,
         D3D11_DEFAULT_DEPTH_BIAS, D3D11_DEFAULT_DEPTH_BIAS_CLAMP,
@@ -640,59 +636,6 @@ void Game::DrawDebugVehicleData()
     DirectX::SimpleMath::Vector2 speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
     textLinePos.x = speedLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
-    textLinePos.y += 30;
-
-    // Draw gear with formatting
-    const int selectedGear = m_vehicle->GetGear();
-    std::string gearLine;
-    if (selectedGear == 0)
-    {
-        gearLine = "Gear     R";
-    }
-    else if (selectedGear == 1)
-    {
-        gearLine = "Gear     N";
-    }
-    else
-    {
-        gearLine = "Gear     " + std::to_string(static_cast<int>(selectedGear - 1));
-    }
-    DirectX::SimpleMath::Vector2 gearLineOrigin = m_bitwiseFont->MeasureString(gearLine.c_str()) / 2.f;
-    textLinePos.x = gearLineOrigin.x + 20;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), gearLine.c_str(), textLinePos, Colors::White, 0.f, gearLineOrigin);
-    textLinePos.y += 30;
-
-    // Draw RPM with color based off redline value
-    float rpm = m_vehicle->GetRPM();
-    float redline = m_vehicle->GetRedLine();
-    std::string textLine = "RPM     " + std::to_string(static_cast<int>(rpm));
-    DirectX::SimpleMath::Vector2 textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
-    textLinePos.x = textLineOrigin.x + 20;
-    if (rpm < redline)
-    {
-        m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
-    }
-    else
-    {
-        m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::Red, 0.f, textLineOrigin);
-    }
-    textLinePos.y += 30;
-
-
-    // Draw Throttle with formatting
-    float throttleInput = m_vehicle->GetInputThrottle();
-    std::string throttleLine = "Throttle% " + std::to_string(static_cast<int>(throttleInput * 100)) + " ";
-    DirectX::SimpleMath::Vector2 throttleLineOrigin = m_bitwiseFont->MeasureString(throttleLine.c_str()) / 2.f;
-    textLinePos.x = throttleLineOrigin.x + 20;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos, Colors::White, 0.f, throttleLineOrigin);
-    textLinePos.y += 30;
-
-    // Draw Brake with formatting
-    float brakeInput = m_vehicle->GetInputBrake();
-    std::string brakeLine = "Brake %  " + std::to_string(static_cast<int>(brakeInput * 100)) + " ";
-    DirectX::SimpleMath::Vector2 brakeLineOrigin = m_bitwiseFont->MeasureString(brakeLine.c_str()) / 2.f;
-    textLinePos.x = brakeLineOrigin.x + 20;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), brakeLine.c_str(), textLinePos, Colors::White, 0.f, brakeLineOrigin);
     textLinePos.y += 30;
 
     // Draw Timer
@@ -1337,7 +1280,7 @@ void Game::DrawMenuMain()
     DirectX::SimpleMath::Vector2 menuObj0Origin = m_font->MeasureString(menuObj0String.c_str()) / 2.f;
 
     lineDrawY += menuObj0Pos.y;
-    std::string menuObj1String = "Car Select";
+    std::string menuObj1String = "Vehicle Select";
     DirectX::SimpleMath::Vector2 menuObj1Pos(menuTitlePosX, lineDrawY);
     DirectX::SimpleMath::Vector2 menuObj1Origin = m_font->MeasureString(menuObj1String.c_str()) / 2.f;
 
@@ -1723,8 +1666,6 @@ void Game::DrawTerrain()
 
 void Game::DrawTerrain2()
 {
-    int testBreak = 0;
-
     m_batch2->Draw(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, m_terrainVertexArrayBase2, m_terrainVertexCount2);
     m_batch2->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, m_terrainVertexArray2, m_terrainVertexCount2);
 }
@@ -2837,8 +2778,7 @@ void Game::Render()
         //DrawIntroScene();
         //DrawStartScreen();
         //DrawShape();
-        //DrawCarTest();
-        m_vehicle->DrawModel(m_world, m_camera->GetViewMatrix(), m_proj);
+        m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
 
         //DrawModel(DirectX::SimpleMath::Matrix aWorld, DirectX::SimpleMath::Matrix aView, DirectX::SimpleMath::Matrix aProj, const double aTimer)
         //DrawWorldCubeTextured();
@@ -3215,28 +3155,28 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->PressThrottle(static_cast<float>(aTimer.GetElapsedSeconds()));
+
         }
     }
     if (kb.Down)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->PressBrake(static_cast<float>(aTimer.GetElapsedSeconds()));
+
         }
     }
     if (kb.Left)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->TurnInput(static_cast<float>(-aTimer.GetElapsedSeconds()));
+
         }
     }
     if (kb.Right)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->TurnInput(static_cast<float>(aTimer.GetElapsedSeconds()));
+
         }
     }
     if (kb.D)
@@ -3332,16 +3272,15 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
             m_lightPos0.y -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputCollective(-aTimer.GetElapsedSeconds());
+            m_vehicle->InputCollective(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad2)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_carPos.x -= static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
             m_lightPos1.x -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputCyclicPitch(aTimer.GetElapsedSeconds());
+            m_vehicle->InputCyclicPitch(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad3)
@@ -3349,16 +3288,15 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
             m_lightPos0.y += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputCollective(aTimer.GetElapsedSeconds());
+            m_vehicle->InputCollective(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad4)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_carPos.z -= static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
             m_lightPos1.z -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputCyclicRoll(-aTimer.GetElapsedSeconds());
+            m_vehicle->InputCyclicRoll(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad5)
@@ -3372,50 +3310,46 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_carPos.z += static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
             m_lightPos1.z += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputCyclicRoll(aTimer.GetElapsedSeconds());
+            m_vehicle->InputCyclicRoll(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad7)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_carAim += static_cast<float>(aTimer.GetElapsedSeconds()) * 0.11f;
             m_lightPos1.y -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputYawPedal(aTimer.GetElapsedSeconds());
+            m_vehicle->InputYawPedal(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad8)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_carPos.x += static_cast<float>(aTimer.GetElapsedSeconds()) * 0.1f;
             m_lightPos1.x += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputCyclicPitch(-aTimer.GetElapsedSeconds());
+            m_vehicle->InputCyclicPitch(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad9)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_carAim -= static_cast<float>(aTimer.GetElapsedSeconds()) * 0.11f;
             m_lightPos1.y += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputYawPedal(-aTimer.GetElapsedSeconds());
+            m_vehicle->InputYawPedal(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad0)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->InputHThrottle(-aTimer.GetElapsedSeconds());
+            m_vehicle->InputHThrottle(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.Decimal)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->InputHThrottle(aTimer.GetElapsedSeconds());
+            m_vehicle->InputHThrottle(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.I)
@@ -3505,42 +3439,28 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->GearDown();
+
         }
     }
     if (m_kbStateTracker.pressed.X)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->GearUp();
-        }
-    }
-    if (m_kbStateTracker.pressed.C)
-    {
-        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
-        {
-            m_vehicle->PressClutch(true);
-        }
-    }
-    if (m_kbStateTracker.released.C)
-    {
-        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
-        {
-            m_vehicle->PressClutch(false);
+
         }
     }
     if (m_kbStateTracker.pressed.OemQuestion)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->DebugEBrake();
+
         }
     }
     if (m_kbStateTracker.pressed.Space)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->Jump(static_cast<double>(aTimer.GetTotalSeconds()));
+            m_vehicle->Jump();
         }
     }
     auto mouse = m_mouse->GetState();

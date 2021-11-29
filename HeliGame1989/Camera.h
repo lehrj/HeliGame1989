@@ -207,15 +207,13 @@ private:
 
 
     // SpinCamera
-    float m_carmeraSpin = 0.0;
-    float m_carmeraSpinPitch = 0.0;
+    float m_cameraSpin = 0.0;
+    float m_cameraSpinPitch = 0.0;
     const float m_camSpinTime = 4.0;
-    //float m_carmeraSpinRotationAmount = Utility::ToRadians(270.0);
-    float m_carmeraSpinRotationAmount = Utility::ToRadians(270.0);
-    float m_carmeraSpinPitchAmount = Utility::ToRadians(10.0);
-    float m_carmeraSpinSpeed = m_carmeraSpinRotationAmount / m_camSpinTime;
-    float m_carmeraSpinPitchSpeed = m_carmeraSpinPitchAmount / m_camSpinTime;
-    //const DirectX::SimpleMath::Vector3 m_spinCamOffset = m_followCamPos - m_followCamTarget;
+    float m_cameraSpinRotationAmount = Utility::ToRadians(270.0);
+    float m_cameraSpinPitchAmount = Utility::ToRadians(10.0);
+    float m_cameraSpinSpeed = m_cameraSpinRotationAmount / m_camSpinTime;
+    float m_cameraSpinPitchSpeed = m_cameraSpinPitchAmount / m_camSpinTime;
     DirectX::SimpleMath::Vector3 m_spinCamOffset = m_followCamPos - m_followCamTarget;
 
 

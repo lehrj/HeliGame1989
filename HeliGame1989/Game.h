@@ -160,7 +160,6 @@ private:
     std::shared_ptr<DirectX::IEffect>               m_lightEffect;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    m_shape;
-    std::unique_ptr<DirectX::GeometricPrimitive>    m_carShapeTest;
 
     DirectX::SimpleMath::Matrix                     m_world;
     DirectX::SimpleMath::Matrix                     m_view;
@@ -267,10 +266,6 @@ private:
     std::unique_ptr<DirectX::SoundStreamInstance> m_audioEffectStream;
 
     const bool                                  m_isInDebugMode = true;
-
-    DirectX::SimpleMath::Vector3                m_carPos = DirectX::SimpleMath::Vector3(0.3, -0.3, -0.45);
-    DirectX::SimpleMath::Vector3                m_carDirection = DirectX::SimpleMath::Vector3::UnitX;
-    float                                       m_carAim = 0.0f;
 
     DirectX::SimpleMath::Vector3                m_cameraFocusPos = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3                m_lightPos0 = DirectX::SimpleMath::Vector3::UnitX;

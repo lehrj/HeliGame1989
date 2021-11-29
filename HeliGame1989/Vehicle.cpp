@@ -2,19 +2,8 @@
 #include "Vehicle.h"
 
 
-/*
-Vehicle::Vehicle()
-{
-    //InitializeVehicle();
-}
-*/
 
-void Vehicle::DebugEBrake()
-{
-    m_heli.q.velocity = DirectX::SimpleMath::Vector3::Zero;
-}
-
-void Vehicle::DrawModel(DirectX::SimpleMath::Matrix aWorld, DirectX::SimpleMath::Matrix aView, DirectX::SimpleMath::Matrix aProj)
+void Vehicle::DrawModel(DirectX::SimpleMath::Matrix aView, DirectX::SimpleMath::Matrix aProj)
 {
 
     DirectX::SimpleMath::Matrix view = aView;
@@ -59,158 +48,20 @@ void Vehicle::DrawModel(DirectX::SimpleMath::Matrix aWorld, DirectX::SimpleMath:
     m_heliModel.tailRotorBladeShape->Draw(m_heliModel.tailRotorBladeMatrix2, view, proj, rotorColor);
 }
 
-void Vehicle::GearDown()
-{
-    if (m_heli.gearNumber > 0 && m_heli.gearNumber <= m_heli.numberOfGears)
-    {
-        m_heli.shiftCooldown = m_heli.shiftDelay;
-        --m_heli.gearNumber;
-    }
-}
-
-void Vehicle::GearUp()
-{
-    if (m_heli.gearNumber >= 0 && m_heli.gearNumber < m_heli.numberOfGears)
-    {
-        m_heli.shiftCooldown = m_heli.shiftDelay;
-        ++m_heli.gearNumber;
-    }
-}
-
-float Vehicle::GetCarRotation()
-{
-    float turnRadius = GetTurnRadius();
-    float steeringAngle = m_heli.steeringAngle;
-
-    DirectX::SimpleMath::Vector3 testRadVec(0.0, 0.0, static_cast<float>(-turnRadius));
-    DirectX::SimpleMath::Matrix testTurnMat = DirectX::SimpleMath::Matrix::CreateRotationY(steeringAngle);
-
-    testRadVec = DirectX::SimpleMath::Vector3::Transform(testRadVec, testTurnMat);
-    DirectX::SimpleMath::Vector3 testRadVecNorm = testRadVec;
-    testRadVecNorm.Normalize();
-
-    DirectX::SimpleMath::Vector3 ballVec = testRadVecNorm;
-    DirectX::SimpleMath::Vector3 zeroDirection = DirectX::SimpleMath::Vector3::UnitZ;
-
-    DirectX::SimpleMath::Vector3 a = - DirectX::SimpleMath::Vector3::UnitZ;
-    DirectX::SimpleMath::Vector3 b = DirectX::SimpleMath::Vector3::UnitX;
-    b = testRadVecNorm;
-
-    float testAngle = acos(a.Dot(b));
-
-    if (testAngle > m_testMax)
-    {
-        m_testMax = testAngle;
-    }
-    if (testAngle < m_testMin)
-    {
-        m_testMin = testAngle;
-    }
-
-    float carRotation = testAngle + 0.1f; 
-
-    return carRotation;
-}
-
-float Vehicle::GetTurnRadius()
-{
-    float wheelBase = m_heli.wheelBase;
-    float sinDelta = sin(m_heli.steeringAngle);
-    float sinDelta2 = sin((10.0f * Utility::GetPi()) / 180.0f);
-    float turnRadius = 1.0f;
-    float turnRadius2 = 1.0f;
-    if (sinDelta == 0.0f)
-    {
-        turnRadius = 0.0f;
-    }
-    else
-    {
-        turnRadius = wheelBase / sinDelta;
-        turnRadius2 = wheelBase / sinDelta2;
-    }
-
-    return turnRadius;
-}
-
 float Vehicle::GetYawRate(double aTimeDelta)
 {
+    /*
     float wheelBase = m_heli.wheelBase;
     float velocity = m_heli.q.velocity.Length();
     float steeringAngle = m_heli.steeringAngle;
-
     float sinDelta = sin(steeringAngle);
-
     float omega = (velocity * sinDelta) / wheelBase;
     float omegaT = omega * static_cast<float>(aTimeDelta);
-
+    */
     // testing tail blade yaw turn
     DebugPushUILineDecimalNumber("m_heli.yawPedalInput", m_heli.yawPedalInput, "m_heli.yawPedalInput");
-    omegaT = m_heli.yawPedalInput * static_cast<float>(aTimeDelta);
+    const float omegaT = m_heli.yawPedalInput * static_cast<float>(aTimeDelta);
     return omegaT;
-}
-
-DirectX::SimpleMath::Vector3 Vehicle::GetVehicleDirection()
-{
-    /*
-    DirectX::SimpleMath::Vector3 frontAxelPos;
-    DirectX::SimpleMath::Vector3 tempScale;
-    DirectX::SimpleMath::Quaternion tempQuat;
-    m_heliModel.frontAxelMatrix.Decompose(tempScale, tempQuat, frontAxelPos);
-    DirectX::SimpleMath::Vector3 rearAxelPos;
-    m_heliModel.rearAxelMatrix.Decompose(tempScale, tempQuat, rearAxelPos);
-    DirectX::SimpleMath::Vector3 direction = rearAxelPos - frontAxelPos;
-    direction.Normalize();
-   
-    DirectX::SimpleMath::Vector3 testPos;
-    m_heliModel.bodyTopMatrix.Decompose(tempScale, tempQuat, testPos);
-    m_debugPoint = testPos;
-    */
-    DirectX::SimpleMath::Vector3 direction = m_heli.forward;
-    return direction;
-}
-
-float Vehicle::GetWheelRotationRadians(const double aTimeDelta)
-{
-    DirectX::SimpleMath::Vector3 velocity = m_heli.q.velocity;
-    float distance = DirectX::SimpleMath::Vector3::Distance(velocity, DirectX::SimpleMath::Vector3::Zero);
-    float stepDistance;
-    if (aTimeDelta != 0.0)
-    {
-        stepDistance = distance * static_cast<float>(aTimeDelta);
-    }
-    else
-    {
-        stepDistance = 0.0;
-    }
-
-    float circumference = 2.0f * Utility::GetPi() * m_heli.wheelRadius;
-    float turnRatio = stepDistance / circumference;
-    float rotations = turnRatio * (2.0f * Utility::GetPi());
-    float wheelMove = rotations * circumference;
-    m_debugWheelDistance += wheelMove;
-
-    // flip wheel spin direction if velocity is backwards
-    if (m_heli.isVelocityBackwards == true)
-    {
-        rotations *= -1;
-    }
-
-    return rotations;
-}
-
-float Vehicle::GetWheelRotationRadiansRear(const double aTimeDelta)
-{
-    float rotations = 0.0f;
-    if (aTimeDelta != 0.0)
-    {
-        rotations = m_heli.testRearAnglularVelocity * static_cast<float>(aTimeDelta);
-    }
-    else
-    {
-        rotations = 0.0f;
-    }
-
-    return rotations;
 }
 
 void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
@@ -225,7 +76,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localBodyMatrix = m_heliModel.bodyMatrix;
     
     /// windshield
-    const float windshieldSize = (bodySize.z * 0.5) * sqrt(2);
+    const float windshieldSize = (bodySize.z * 0.5f) * sqrt(2.0f);
     const DirectX::SimpleMath::Vector3 windshieldTranslation(bodySize.x * 0.5f, -bodySize.y * 0.0f, 0.0f);
     m_heliModel.bodyCapShape = DirectX::GeometricPrimitive::CreateOctahedron(aContext.Get(), windshieldSize);
     m_heliModel.windShieldMatrix = DirectX::SimpleMath::Matrix::Identity;
@@ -248,7 +99,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     /// nose body
     float noseBodyXSize = 0.7;
     DirectX::SimpleMath::Vector3 noseBodySize(noseBodyXSize, bodySize.y * 0.5f, bodySize.z);
-    const DirectX::SimpleMath::Vector3 noseBodyTranslation(bodySize.x * 0.5f + (noseBodySize.x * 0.5), bodySize.y * 0.25f, 0.0f);
+    const DirectX::SimpleMath::Vector3 noseBodyTranslation(bodySize.x * 0.5f + (noseBodySize.x * 0.5f), bodySize.y * 0.25f, 0.0f);
     m_heliModel.noseBodyShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), noseBodySize);
     m_heliModel.noseBodyMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.noseBodyMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(noseBodyTranslation);
@@ -271,7 +122,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localEngineHousingMatrix = m_heliModel.engineHousingMatrix;
 
     // upper front engine housing body
-    const float engineHousingFrontSize = (engineHousingSize.z * 0.5) * sqrt(2);
+    const float engineHousingFrontSize = (engineHousingSize.z * 0.5f) * sqrt(2.0f);
     const DirectX::SimpleMath::Vector3 engineHousingFrontTranslation(engineHousingSize.x * 0.5f, -engineHousingSize.y * 0.0f, 0.0f);
     m_heliModel.engineHousingFrontShape = DirectX::GeometricPrimitive::CreateOctahedron(aContext.Get(), engineHousingFrontSize);
     m_heliModel.engineHousingFrontMatrix = DirectX::SimpleMath::Matrix::Identity;
@@ -399,7 +250,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     // tail rotor blade 1
     const float tailBladeWidth = 0.3f;
     DirectX::SimpleMath::Vector3 tailBladeSize(tailBladeWidth, tailArmLength * 0.42f, tailArmDiameter);
-    const DirectX::SimpleMath::Vector3 tailBladeTranslation1(tailBladeWidth * 0.5, (tailArmLength * 0.5) - (tailBladeSize.y * 0.5), 0.0);
+    const DirectX::SimpleMath::Vector3 tailBladeTranslation1(tailBladeWidth * 0.5f, (tailArmLength * 0.5f) - (tailBladeSize.y * 0.5f), 0.0f);
     m_heliModel.tailRotorBladeShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), tailBladeSize);
     m_heliModel.tailRotorBladeMatrix1 = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailRotorBladeMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeTranslation1);
@@ -408,7 +259,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailRotorBladeTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
 
     // tail rotor blade 2
-    const DirectX::SimpleMath::Vector3 tailBladeTranslation2(-tailBladeWidth * 0.5, -(tailArmLength * 0.5) + (tailBladeSize.y * 0.5), 0.0);
+    const DirectX::SimpleMath::Vector3 tailBladeTranslation2(-tailBladeWidth * 0.5f, -(tailArmLength * 0.5f) + (tailBladeSize.y * 0.5f), 0.0f);
     m_heliModel.tailRotorBladeMatrix2 = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailRotorBladeMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeTranslation2);
     m_heliModel.localTailRotorBladeMatrix2 = m_heliModel.tailRotorBladeMatrix2;
@@ -425,7 +276,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.cyclicInputPitchIsPressed = false;
     m_heli.cyclicInputRoll = 0.0f;
     m_heli.cyclicInputRollIsPressed = false;
-    m_heli.hThrottleInput = 0.0f;
+    m_heli.throttleInput = 0.0f;
     m_heli.yawPedalInput = 0.0f;
     m_heli.yawPedalIsPressed = false;
     m_heli.mainRotorRPM = 0.0f;
@@ -436,29 +287,10 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     // roughly based on porsche boxster
     m_heli.mass = 1393.0f;
     m_heli.area = 1.94f;
-    m_heli.density = 1.2f;
+    m_heli.airDensity = 1.2f; // ToDo : pull air density from environment data
     m_heli.Cd = 0.31f;
-    m_heli.redline = 7200.f;
-    m_heli.revlimit = 7800.f;
-    m_heli.finalDriveRatio = 3.44f;
-    m_heli.wheelRadius = 0.3186f;
-    m_heli.wheelWidth = 0.235f;
-    m_heli.numberOfGears = 7;
-    m_heli.muR = 0.015f;             //  coefficient of rolling friction
     m_heli.airResistance = 0.0f;
-    //m_heli.airDensity = 1.225; // ToDo : pull air density from environment data
-    m_heli.totalResistance = m_heli.muR + m_heli.airResistance;
-    m_heli.omegaE = 1000.0;         //  engine rpm
-    m_heli.gearNumber = 2;          //  gear the car is in
-    m_heli.gearRatio[0] = -3.82f;
-    m_heli.gearRatio[1] = 0.0f;
-    m_heli.gearRatio[2] = 3.82f;
-    m_heli.gearRatio[3] = 2.20f;
-    m_heli.gearRatio[4] = 1.52f;
-    m_heli.gearRatio[5] = 1.22f;
-    m_heli.gearRatio[6] = 1.02f;
-    m_heli.gearRatio[7] = 0.84f;
-    m_heli.wheelMass = 22.68f;    // Total guess, not confirmed with porsche or volvo stats
+    m_heli.totalResistance = m_heli.airResistance;
 
     m_heli.gravity = DirectX::SimpleMath::Vector3(0.0, -9.81, 0.0);
     m_heli.numEqns = 6;
@@ -466,61 +298,24 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.q.position = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.velocity = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.bodyVelocity = DirectX::SimpleMath::Vector3::Zero;
-    m_heli.q.brakeForce = DirectX::SimpleMath::Vector3::Zero;
-    m_heli.q.slopeForce = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.airResistance = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.gravityForce = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.engineForce = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.totalVelocity = DirectX::SimpleMath::Vector3::Zero;
 
-    m_heli.inputDeadZone = 0.05;
-    m_heli.throttleInput = 0.0;
-    m_heli.brakeInput = 0.0;
-    m_heli.maxThrottleInput = 1.0;
-    m_heli.maxThrottleRate = 1.0;
-    m_heli.maxBrakeInput = 1.0;
-    m_heli.maxBrakeRate = 15.0;
-
-    m_heli.brakeDecayRate = 1.2;
-    m_heli.throttleDecayRate = 1.2;
-    m_heli.steeringAngleDecay = -0.3;
-    m_heli.steeringSpeed = 0.1;
-
-    m_heli.carRotation = 0.0;
-    m_heli.steeringAngle = Utility::ToRadians(0.0);
-    m_heli.steeringAngleMax = Utility::ToRadians(26.0);
-    m_heli.headingVec = -DirectX::SimpleMath::Vector3::UnitZ;
+    m_heli.vehicleRotation = 0.0f;
     m_heli.forward = DirectX::SimpleMath::Vector3::UnitX;
     m_heli.up = DirectX::SimpleMath::Vector3::UnitY;
     m_heli.right = m_heli.forward.Cross(m_heli.up);
-    m_heli.shiftCooldown = 0.0;
-    m_heli.shiftDelay = 0.5;
     m_heli.speed = 0.0;
 
-    m_heli.isClutchPressed = false;
-    m_heli.isThrottlePressed = false;
-    m_heli.isBrakePressed = false;
-    m_heli.isTurningPressed = false;
-    m_heli.isAccelerating = false;
-    m_heli.isBraking = false;
-    m_heli.isRevlimitHit = false;
-    m_heli.isTransmissionManual = false;
-    m_heli.isCarAirborne = false;
-    m_heli.isCarLanding = false;
+    m_heli.isVehicleAirborne = false;
+    m_heli.isVehicleLanding = false;
     m_heli.isVelocityBackwards = false;
-    m_heli.wheelBase = 2.41;
 
     m_heli.terrainHightAtPos = 0.0;
 
-    m_heli.testRearAnglularVelocity = 0.0;
-
     m_heli.terrainNormal = DirectX::SimpleMath::Vector3::UnitY;
-    m_heli.testModelPos = m_heli.q.position;
-    m_heli.testModelRotation = m_heli.carRotation;
-    m_heli.testTerrainNormal = m_heli.terrainNormal;
-    m_heli.testHeadingVec = m_heli.headingVec;
-
-
 
     InitializeModel(aContext);
 }
@@ -645,9 +440,9 @@ void Vehicle::InputDecay(const double aTimeDelta)
     // Yaw Pedal Decay
     if (m_heli.yawPedalIsPressed == false)
     {
-        if (m_heli.yawPedalInput - (m_heli.yawPedalDecayRate * timeDelta) < 0.0f)
+        if (m_heli.yawPedalInput + (m_heli.yawPedalDecayRate * timeDelta) < 0.0f)
         {
-            if (m_heli.yawPedalInput - (m_heli.yawPedalDecayRate * timeDelta) > m_heli.inputDeadZone)
+            if (m_heli.yawPedalInput - (m_heli.yawPedalDecayRate * timeDelta) > -m_heli.inputDeadZone)
             {
                 m_heli.yawPedalInput = 0.0f;
             }
@@ -667,6 +462,10 @@ void Vehicle::InputDecay(const double aTimeDelta)
                 m_heli.yawPedalInput -= m_heli.yawPedalDecayRate * timeDelta;
             }
         }
+        else
+        {
+            m_heli.yawPedalInput = 0.0f;
+        }
     }
 
     m_heli.cyclicInputPitchIsPressed = false;
@@ -676,18 +475,18 @@ void Vehicle::InputDecay(const double aTimeDelta)
 
 void Vehicle::InputHThrottle(const float aThrottleInput)
 {
-    const float updatedThrottle = (aThrottleInput * m_heli.hThrottleInputRate) + m_heli.hThrottleInput;
-    if (updatedThrottle > m_heli.hThrottleInputMax)
+    const float updatedThrottle = (aThrottleInput * m_heli.throttleInputRate) + m_heli.throttleInput;
+    if (updatedThrottle > m_heli.throttleInputMax)
     {
-        m_heli.hThrottleInput = m_heli.hThrottleInputMax;
+        m_heli.throttleInput = m_heli.throttleInputMax;
     }
-    else if (updatedThrottle < m_heli.hThrottleInputMin)
+    else if (updatedThrottle < m_heli.throttleInputMin)
     {
-        m_heli.hThrottleInput = m_heli.hThrottleInputMin;
+        m_heli.throttleInput = m_heli.throttleInputMin;
     }
     else
     {
-        m_heli.hThrottleInput = updatedThrottle;
+        m_heli.throttleInput = updatedThrottle;
     }
 }
 
@@ -703,15 +502,19 @@ void Vehicle::InputYawPedal(const float aYawInput)
     {
         m_heli.yawPedalInput = m_heli.yawPedalInputMin;
     }
+    else if (updatedYaw < m_heli.inputDeadZone && updatedYaw > -m_heli.inputDeadZone)
+    {
+        m_heli.yawPedalInput = 0.0f;
+    }
     else
     {
         m_heli.yawPedalInput = updatedYaw;
     }
 }
 
-void Vehicle::Jump(double aTimer)
+void Vehicle::Jump()
 {
-    float jumpHeight = 10.0;
+    const float jumpHeight = 10.0f;
     m_heli.q.velocity.y += jumpHeight;
 }
 
@@ -749,54 +552,10 @@ void Vehicle::LandVehicle()
     m_heli.q.velocity = testUpdateVel;
 }
 
-void Vehicle::PressBrake(const float aBrakeInput)
-{
-    m_testIsBreakLightOn = true;
-    //if(m_heli.brakeInput > 0.0)
-    if (aBrakeInput > 0.0)
-    {
-        m_heli.isBrakePressed = true;
-    }
-    float updatedBrake = aBrakeInput + m_heli.brakeInput;
-    if (updatedBrake > m_heli.maxBrakeInput)
-    {
-        m_heli.brakeInput = m_heli.maxBrakeInput;
-    }
-    else
-    {
-        m_heli.brakeInput += aBrakeInput;
-    }
-}
-
-void Vehicle::PressClutch(const bool aClutchInput)
-{
-    m_heli.isClutchPressed = aClutchInput;
-}
-
-void Vehicle::PressThrottle(const float aThrottleInput)
-{
-    if (aThrottleInput > 0.0)
-    {
-        m_heli.isThrottlePressed = true;
-    }
-    float updatedThrottle = aThrottleInput + m_heli.throttleInput;
-    if (updatedThrottle > m_heli.maxThrottleInput)
-    {
-        m_heli.throttleInput = m_heli.maxThrottleInput;
-    }
-    else
-    {
-        m_heli.throttleInput += aThrottleInput;
-    }
-}
 
 void Vehicle::ResetVehicle()
 {
-    m_heli.gearNumber = 1;         
-
-    m_heli.steeringAngle = 0.0;
     m_heli.q.position = DirectX::SimpleMath::Vector3::Zero;
-    m_heli.headingVec = DirectX::SimpleMath::Vector3::UnitX;
     m_heli.forward = DirectX::SimpleMath::Vector3::UnitX;
     m_heli.up = DirectX::SimpleMath::Vector3::UnitY;
     m_heli.right = DirectX::SimpleMath::Vector3::UnitZ;
@@ -804,27 +563,8 @@ void Vehicle::ResetVehicle()
     m_heli.q.velocity = DirectX::SimpleMath::Vector3::Zero;
 }
 
-void Vehicle::RevLimiter()
-{
-    if (m_heli.omegaE < m_heli.redline)
-    {
-        m_heli.isRevlimitHit = false;
-    }
-    if (m_heli.omegaE > m_heli.revlimit)
-    {
-        m_heli.isRevlimitHit = true;
-    }
-    if (m_heli.isRevlimitHit == true)
-    {
-        m_heli.isThrottlePressed = false;
-        m_heli.throttleInput = 0.0;
-    }
-}
-
-//*************************************************************
-//  This method loads the right-hand sides for the car ODEs
-//*************************************************************
-void Vehicle::RightHandSide(struct HeliData* aCar, Motion* aQ, Motion* aDeltaQ, double aTimeDelta, float aQScale, Motion* aDQ)
+//  This method loads the right-hand sides for the vehicle ODEs
+void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ, double aTimeDelta, float aQScale, Motion* aDQ)
 {
     //  Compute the intermediate values of the 
     //  dependent variables.
@@ -839,30 +579,7 @@ void Vehicle::RightHandSide(struct HeliData* aCar, Motion* aQ, Motion* aDeltaQ, 
 
     //  Compute the constants that define the
     //  torque curve line.
-    float powerCurve;
-    float torque; // in newton meters
-    float omegaE = aCar->omegaE;
-
-    if (omegaE <= 1000.0)
-    {
-        powerCurve = 0.0;
-        torque = 220.0;
-    }
-    else if (omegaE < 4600.0)
-    {
-        powerCurve = 0.025;
-        torque = 195.0;
-    }
-    else
-    {
-        powerCurve = -0.032;
-        torque = 457.2;
-    }
-
-    if (m_isFuelOn == false)
-    {
-        torque = 0.0;
-    }
+    // ToDo once physics equations are in place after testing model is finished
 
     //  Compute the velocity magnitude. The 1.0e-8 term
     //  ensures there won't be a divide by zero later on
@@ -870,193 +587,85 @@ void Vehicle::RightHandSide(struct HeliData* aCar, Motion* aQ, Motion* aDeltaQ, 
     float v = sqrt(newQ.velocity.Length() * newQ.velocity.Length()) + 1.0e-8f;
 
     //  Compute the total drag force.
-    float airDensity = aCar->density;
-    float dragCoefficient = aCar->Cd;
-    float frontSurfaceArea = aCar->area;
+    float airDensity = aHeli->airDensity;
+    float dragCoefficient = aHeli->Cd;
+    float frontSurfaceArea = aHeli->area;
     float frontDragResistance = 0.5f * airDensity * frontSurfaceArea * dragCoefficient * v * v;
 
     //  Compute the force of rolling friction. Because
     //  the G constant has a negative sign, the value 
     //  computed here will be negative
-    float gravity = aCar->gravity.y;
-    float rollingFrictionCoefficient = aCar->muR;
-    float mass = aCar->mass;
-    float rollingFriction = rollingFrictionCoefficient * mass * gravity;
-    rollingFriction = rollingFrictionCoefficient * mass * (m_heli.terrainNormal * m_heli.gravity).y;
+    float gravity = aHeli->gravity.y;
+    float mass = aHeli->mass;
+
     //  Compute the right-hand sides of the six ODEs
     //  newQ[0] is the intermediate value of velocity.
-    //  The acceleration of the car is determined by 
-    //  whether the car is accelerating, cruising, or
-    //  braking.   
-    // Accelerating
-    int gearNumber = aCar->gearNumber;
-    float gearRatio = aCar->gearRatio[gearNumber];
-    float finalDriveRatio = aCar->finalDriveRatio;
-    float wheelRadius = aCar->wheelRadius;
-    float pi = acos(-1.0f);
-
+    // ToDo once physics equations are in place after testing model is finished
     DirectX::SimpleMath::Vector3 headingVec = m_heli.forward;
-
-    float c1 = -frontDragResistance / mass;
-    float tmp = gearRatio * finalDriveRatio / wheelRadius;
-    float testTmp = ((gearRatio * aCar->throttleInput) * finalDriveRatio) / wheelRadius;
-    tmp = testTmp;
-    float c2 = 60.0f * tmp * tmp * powerCurve * v / (2.0f * pi * mass);
-    float c3 = (tmp * torque + rollingFriction) / mass;
-    float c4 = headingVec.Dot(m_heli.terrainNormal * m_heli.gravity);
-
-    DirectX::SimpleMath::Vector3 velocityUpdate = (static_cast<float>(aTimeDelta) * (c1 + c2 + c3 + c4)) * headingVec;
-
-    DirectX::SimpleMath::Vector3 slopeForce = m_heli.forward * m_heli.forward.Dot(m_heli.terrainNormal * m_heli.gravity);
-    slopeForce = slopeForce * static_cast<float>(aTimeDelta);
 
     DirectX::SimpleMath::Vector3 velocityNorm = m_heli.q.velocity;
     velocityNorm.Normalize();
 
     DirectX::SimpleMath::Vector3 airResistance = velocityNorm * (static_cast<float>(aTimeDelta) * (-frontDragResistance / mass));
-    DirectX::SimpleMath::Vector3 brakeForce = (static_cast<float>(aTimeDelta) * ((-aCar->brakeInput * aCar->maxBrakeRate))) * velocityNorm;
+
     if (m_heli.isVelocityBackwards == true)
     {
-        rollingFriction *= -1.0;
+        airResistance *= -1.0;
     }
 
-    DirectX::SimpleMath::Vector3 engineForce = (static_cast<float>(aTimeDelta) * (c2 + ((tmp * torque + rollingFriction) / mass))) * headingVec;
-    DirectX::SimpleMath::Vector3 rollingResistance = (static_cast<float>(aTimeDelta) * (rollingFriction) / mass) * velocityNorm;
-
-    float testEngineForce = (static_cast<float>(aTimeDelta) * (c2 + ((tmp * torque + rollingFriction) / mass)));
-    testEngineForce = (static_cast<float>(aTimeDelta) * (c2 + ((tmp * torque) / mass)));
-    testEngineForce = (static_cast<float>(aTimeDelta) * (c2 + ((tmp * torque))));
-    testEngineForce = (static_cast<float>(aTimeDelta) * (((tmp * torque))));
-
-    if (testEngineForce > m_testEnginePower)
-    {
-        m_testEnginePower = testEngineForce;
-    }
-
-    if (aCar->isClutchPressed == true)
-    {
-        engineForce = (static_cast<float>(aTimeDelta) * (c2 + ((rollingFriction) / mass))) * headingVec;
-    }
-
-    velocityUpdate = (static_cast<float>(aTimeDelta) * (c1 + c2 + c3 + c4)) * headingVec;
-    if (m_heli.throttleInput > 0.0 || m_isFuelOn == false)
-    {
-        aDQ->velocity = velocityUpdate;
-    }
-    else if (m_heli.brakeInput > 0.0)  // braking 
-    {
-        //  Only brake if the velocity is positive.
-        if (newQ.velocity.Length() > 0.1)
-        {
-            velocityUpdate = ((static_cast<float>(aTimeDelta) * (c1 + c2 + c3 + c4)) * headingVec) + brakeForce;
-            aDQ->velocity = ((static_cast<float>(aTimeDelta) * (c1 + c2 + c3 + c4)) * headingVec) + brakeForce;
-
-        }
-        else
-        {
-            velocityUpdate = DirectX::SimpleMath::Vector3::Zero;
-            aDQ->velocity = DirectX::SimpleMath::Vector3::Zero;
-        }
-    }
-    else  // cruise
-    {     
-        if (newQ.velocity.Length() < 0.000001 && m_heli.throttleInput < 0.01)
-        {
-            velocityUpdate = DirectX::SimpleMath::Vector3::Zero;
-            aDQ->velocity = DirectX::SimpleMath::Vector3::Zero;
-            velocityUpdate = (static_cast<float>(aTimeDelta) * (c1 + c4)) * headingVec;
-        }
-        else
-        {
-            velocityUpdate = (static_cast<float>(aTimeDelta) * (c1 + c2 + c3 + c4)) * headingVec;
-            velocityUpdate = (static_cast<float>(aTimeDelta) * (c1  + c3 + c4)) * headingVec;
-            aDQ->velocity = (static_cast<float>(aTimeDelta) * (c1 + c2 + c3 + c4)) * headingVec;
-            velocityUpdate = (static_cast<float>(aTimeDelta) * (c1 + c4)) * headingVec;
-        }        
-    }
-    
     DirectX::SimpleMath::Vector3 gravForce = m_heli.gravity * static_cast<float>(aTimeDelta);
     DirectX::SimpleMath::Vector3 terrainNormalForce = (m_heli.terrainNormal * -m_heli.gravity.y) * static_cast<float>(aTimeDelta);
 
-    if (m_heli.isCarAirborne == true)
+    DirectX::SimpleMath::Vector3 velocityUpdate;
+    if (m_heli.isVehicleAirborne == true)
     {
         terrainNormalForce = DirectX::SimpleMath::Vector3::Zero;
-    }
-
-    float gravDown = gravForce.y + terrainNormalForce.y;
-    
-    velocityUpdate = engineForce + brakeForce + slopeForce + airResistance;
-    velocityUpdate.y += gravDown;
-    
-    
-    if (m_heli.shiftCooldown > 0.0)
-    {
-        velocityUpdate =  brakeForce + slopeForce + airResistance + rollingResistance;
-    }
-
-    if (m_heli.isCarAirborne == true)
-    {
         velocityUpdate = m_heli.gravity;
         velocityUpdate.x = 0.0;
         velocityUpdate.z = 0.0;
         velocityUpdate.y = gravity * static_cast<float>(aTimeDelta);
         velocityUpdate += rotorForce * static_cast<float>(aTimeDelta);
-        gravForce = m_heli.gravity * static_cast<float>(aTimeDelta);
-
     }
-
-    if (m_heli.isCarLanding == true)
+    else
     {
-        //velocityUpdate.y = -m_heli.q.velocity.y;
-        //velocityUpdate = DirectX::SimpleMath::Vector3::Zero;
+        velocityUpdate = DirectX::SimpleMath::Vector3::Zero;
     }
 
     //  Compute right-hand side values.
-    //aDQ->engineForce = engineForce;
-    aDQ->engineForce = testEngineForce * headingVec;
-   
-    aDQ->brakeForce = brakeForce;
-    aDQ->slopeForce = slopeForce;
     aDQ->airResistance = airResistance;
     aDQ->gravityForce = gravForce;
     aDQ->velocity = velocityUpdate;
-    aDQ->totalVelocity = velocityUpdate;
-  
+    aDQ->totalVelocity = velocityUpdate; 
     aDQ->position = static_cast<float>(aTimeDelta) * newQ.velocity;
 
     return;
 }
 
-//************************************************************
-//  This method solves for the car motion using a
-//  4th-order Runge-Kutta solver
-//************************************************************
+//  This method solves for the vehicle motion using a 4th-order Runge-Kutta solver
 void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
 {
     //  Define a convenience variable to make the
     //  code more readable
-    // int numEqns = aCar->numEqns;
     const float numEqns = static_cast<float>(aHeli->numEqns);
     //  Retrieve the current values of the dependent
     //  and independent variables.
     Motion q = aHeli->q;
-
     Motion dq1;
     Motion dq2;
     Motion dq3;
     Motion dq4;
 
-    if (m_heli.isCarLanding == true)
+    if (m_heli.isVehicleLanding == true)
     {
-
+        m_heli.q.velocity = DirectX::SimpleMath::Vector3::Zero;
     }
-    if (m_heli.isCarAirborne == false)
+    if (m_heli.isVehicleAirborne == false)
     {
         m_heli.q.gravityForce = DirectX::SimpleMath::Vector3::Zero;
     }
 
     // Compute the four Runge-Kutta steps, The return 
-    // value of carRightHandSide method is an array
+    // value of RightHandSide method is an array
     // of delta-q values for each of the four steps.
     RightHandSide(aHeli, &q, &q, aTimeDelta, 0.0, &dq1);
     RightHandSide(aHeli, &q, &dq1, aTimeDelta, 0.5, &dq2);
@@ -1074,29 +683,25 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     DirectX::SimpleMath::Vector3 velocityUpdate = (dq1.velocity + 2.0 * dq2.velocity + 2.0 * dq3.velocity + dq4.velocity) / numEqns;
     DirectX::SimpleMath::Vector3 bodyVelocityyUpdate = (dq1.bodyVelocity + 2.0 * dq2.bodyVelocity + 2.0 * dq3.bodyVelocity + dq4.bodyVelocity) / numEqns;
     DirectX::SimpleMath::Vector3 engineVelocityUpdate = (dq1.engineForce + 2.0 * dq2.engineForce + 2.0 * dq3.engineForce + dq4.engineForce) / numEqns;
-    DirectX::SimpleMath::Vector3 brakeVelocityUpdate = (dq1.brakeForce + 2.0 * dq2.brakeForce + 2.0 * dq3.brakeForce + dq4.brakeForce) / numEqns;
-    DirectX::SimpleMath::Vector3 slopeVelocityUpdate = (dq1.slopeForce + 2.0 * dq2.slopeForce + 2.0 * dq3.slopeForce + dq4.slopeForce) / numEqns;
     DirectX::SimpleMath::Vector3 airResistnaceVelocityUpdate = (dq1.airResistance + 2.0 * dq2.airResistance + 2.0 * dq3.airResistance + dq4.airResistance) / numEqns;
     DirectX::SimpleMath::Vector3 gravityVelocityUpdate = (dq1.gravityForce + 2.0 * dq2.gravityForce + 2.0 * dq3.gravityForce + dq4.gravityForce) / numEqns;
     DirectX::SimpleMath::Vector3 totalVelocityUpdate = (dq1.totalVelocity + 2.0 * dq2.totalVelocity + 2.0 * dq3.totalVelocity + dq4.totalVelocity) / numEqns;
 
     const float stopTolerance = 0.1;
-    // To prevent the car from continuing to roll forward if car velocity is less thatn the tollerance value and update velocity is zero
+    // To prevent the vehicle from continuing to roll forward if vehicle velocity is less than the tolerance value and update velocity is zero
     if (q.velocity.Length() < stopTolerance && velocityUpdate == DirectX::SimpleMath::Vector3::Zero)
     {
-        //q.velocity = DirectX::SimpleMath::Vector3::Zero;
+        q.velocity = DirectX::SimpleMath::Vector3::Zero;
     }
     else
     {
-        //q.velocity += velocityUpdate;
+        q.velocity += velocityUpdate;
     }
-    q.velocity += velocityUpdate;
 
+    q.velocity += velocityUpdate;
     q.engineForce += engineVelocityUpdate;
-    q.brakeForce += brakeVelocityUpdate;
     q.airResistance += airResistnaceVelocityUpdate;
     q.gravityForce += gravityVelocityUpdate;
-    q.slopeForce += slopeVelocityUpdate;
     q.totalVelocity += velocityUpdate;
 
     aHeli->q.engineForce = q.engineForce;
@@ -1113,143 +718,31 @@ void Vehicle::SetEnvironment(Environment* aEnviron)
     m_environment = aEnviron;
 }
 
-void Vehicle::SteeringInputDecay(const double aTimeDelta)
-{
-    if (m_heli.isTurningPressed == false)
-    {
-        const float timeDelta = static_cast<float>(aTimeDelta);
-        if (m_heli.steeringAngle != 0.0)
-        {
-            if (m_heli.steeringAngle > 0.0)
-            {
-                if (m_heli.steeringAngle + (m_heli.steeringAngleDecay * timeDelta) < 0.0)
-                {
-                    m_heli.steeringAngle = 0.0;
-                }
-                else
-                {
-                    m_heli.steeringAngle += m_heli.steeringAngleDecay * timeDelta;
-                }
-            }
-            else
-            {
-                if (m_heli.steeringAngle - (m_heli.steeringAngleDecay * timeDelta) > 0.0)
-                {
-                    m_heli.steeringAngle = 0.0;
-                }
-                else
-                {
-                    m_heli.steeringAngle -= m_heli.steeringAngleDecay * timeDelta;
-                }
-            }
-        }
-    }
-}
-
-void Vehicle::ToggleBrake()
-{
-    if (m_heli.isBraking == true)
-    {
-        m_heli.isBraking = false;
-    }
-    else
-    {
-        m_heli.isBraking = true;
-    }
-}
-
-void Vehicle::ToggleFuel()
-{
-    if (m_isFuelOn == true)
-    {
-        m_isFuelOn = false;
-    }
-    else
-    {
-        m_isFuelOn = true;
-    }
-}
-
-void Vehicle::ToggleGas()
-{
-    if (m_heli.isAccelerating == true)
-    {
-        m_heli.isAccelerating = false;
-    }
-    else
-    {
-        m_heli.isAccelerating = true;
-    }
-}
-
-void Vehicle::TurnInput(float aTurnInput)
-{
-    m_heli.isTurningPressed = true;
-
-    m_heli.steeringAngle += aTurnInput * m_heli.steeringSpeed;
-
-    if (m_heli.steeringAngle > m_heli.steeringAngleMax)
-    {
-        m_heli.steeringAngle = m_heli.steeringAngleMax;
-    }
-    else if (m_heli.steeringAngle < -m_heli.steeringAngleMax)
-    {
-        m_heli.steeringAngle = - m_heli.steeringAngleMax;
-    }
-}
-
 void Vehicle::TurnVehicle(double aTimeDelta)
 {  
-    if (m_heli.isCarAirborne == false)
+    if (m_heli.isVehicleAirborne == false)
     {
         if (m_heli.isVelocityBackwards == false)
         {
-            m_heli.carRotation -= GetYawRate(aTimeDelta);
+            m_heli.vehicleRotation -= GetYawRate(aTimeDelta);
         }
         else
         {
-            m_heli.carRotation += GetYawRate(aTimeDelta);
+            m_heli.vehicleRotation += GetYawRate(aTimeDelta);
         }
     }
     else
     {
-        m_heli.carRotation += GetYawRate(aTimeDelta);
+        m_heli.vehicleRotation += GetYawRate(aTimeDelta);
     }
-    m_heli.carRotation = Utility::WrapAngle(m_heli.carRotation);
+    m_heli.vehicleRotation = Utility::WrapAngle(m_heli.vehicleRotation);
 }
 
-void Vehicle::ThrottleBrakeDecay(const double aTimeDelta)
-{
-    const float timeDelta = static_cast<float>(aTimeDelta);
-    if (m_heli.isThrottlePressed == false)
-    {
-        if (m_heli.throttleInput - (m_heli.throttleDecayRate * timeDelta) < 0.0)
-        {
-            m_heli.throttleInput = 0.0;
-        }
-        else
-        {
-            m_heli.throttleInput -= m_heli.throttleDecayRate * timeDelta;
-        }
-    }
 
-    if (m_heli.isBrakePressed == false)
-    {
-        if (m_heli.brakeInput - (m_heli.brakeDecayRate * timeDelta) < 0.0)
-        {
-            m_heli.brakeInput = 0.0;
-        }
-        else
-        {
-            m_heli.brakeInput -= m_heli.brakeDecayRate * timeDelta;
-        }
-    }
-}
-
-void Vehicle::UpdateCarAlignment()
+void Vehicle::UpdateVehicleAlignment()
 {
-    // Set up to match terrain norm until car jump is implemented
-    if (m_heli.isCarAirborne == false)
+    // Set up to match terrain norm until vehicle jump is implemented
+    if (m_heli.isVehicleAirborne == false)
     {
         DirectX::SimpleMath::Vector3 newUp = m_heli.terrainNormal;
         DirectX::SimpleMath::Vector3 oldUp = m_heli.up;
@@ -1257,16 +750,10 @@ void Vehicle::UpdateCarAlignment()
         updateUp.Normalize();
         m_heli.up = updateUp;
     }
-    m_heli.forward = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitX, DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.carRotation));
-    //m_heli.forward = DirectX::SimpleMath::Vector3::TransformNormal(m_heli.forward, DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.carRotation));
+    m_heli.forward = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitX, DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.vehicleRotation));
     m_heli.right = m_heli.forward.Cross(m_heli.up);
     m_heli.right.Normalize();
     m_heli.forward = m_heli.up.Cross(m_heli.right);
-}
-
-void Vehicle::UpdateHeadingVec()
-{
-    m_heli.headingVec = m_heli.forward;
 }
 
 void Vehicle::UpdateModel(const double aTimer)
@@ -1336,8 +823,7 @@ void Vehicle::UpdateModel(const double aTimer)
     m_heliModel.mainRotorBladeMatrix2 *= m_heliModel.localMainRotorBladeMatrix2;
     m_heliModel.mainRotorBladeMatrix2 *= mainRotorSpin;
     m_heliModel.mainRotorBladeMatrix2 *= updateMat;
-
-    
+   
     m_heliModel.mainRotorArmMatrix = m_heliModel.localMainRotorArmMatrix;   
     m_heliModel.mainRotorArmMatrix *= mainRotorSpin;
     m_heliModel.mainRotorArmMatrix *= updateMat;
@@ -1377,18 +863,17 @@ void Vehicle::UpdateModel(const double aTimer)
     m_heliModel.tailRotorBladeMatrix2 *= tailBladeSpin;
     m_heliModel.tailRotorBladeMatrix2 *= m_heliModel.tailRotorBladeTranslationMatrix2;
     m_heliModel.tailRotorBladeMatrix2 *= updateMat;
-
 }
 
 void Vehicle::UpdateResistance()
 {
     /*
     Rair = (1/2) rho[mass ensity of air] V^2 Sp  Cd
-        Sp = projected frontal area of car normalto the direction V
+        Sp = projected frontal area of vehicle normal to the direction V
         Cd = drag coeffient == 0.4?ish
         */
     float velocity = m_heli.q.velocity.Length();
-    float drag = .5f * m_heli.Cd * m_heli.density * m_heli.area * (velocity * velocity);
+    float drag = .5f * m_heli.Cd * m_heli.airDensity * m_heli.area * (velocity * velocity);
 
     m_heli.airResistance = drag;
 }
@@ -1397,7 +882,7 @@ void Vehicle::UpdateRotorForce()
 {
     DirectX::SimpleMath::Matrix xRot = DirectX::SimpleMath::Matrix::CreateRotationX(m_heli.cyclicInputRoll * 1.0f);
     DirectX::SimpleMath::Matrix zRot = DirectX::SimpleMath::Matrix::CreateRotationZ(m_heli.cyclicInputPitch * 1.0f);
-    DirectX::SimpleMath::Matrix localizeRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.carRotation);
+    DirectX::SimpleMath::Matrix localizeRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.vehicleRotation);
     DirectX::SimpleMath::Matrix tRot = xRot + zRot;
     tRot *= localizeRot;
     DirectX::SimpleMath::Vector3 updateForce = m_heli.up;
@@ -1445,60 +930,11 @@ void Vehicle::UpdateTerrainNorm()
     m_heli.terrainNormal = m_environment->GetTerrainNormal(m_heli.q.position);
 }
 
-void Vehicle::UpdateTransmission(const double aTimeDelta)
-{
-    // update shift delay cooldown
-    m_heli.shiftCooldown -= static_cast<float>(aTimeDelta);
-    if (m_heli.shiftCooldown < 0.0)
-    {
-        m_heli.shiftCooldown = 0.0;
-    }
-
-    float velocity = m_heli.q.velocity.Length();
-    //  Compute the new engine rpm value
-    // test rpm with clutch depressed
-    if (m_heli.isClutchPressed == true)
-    {
-        m_heli.omegaE = velocity * 60.0f * m_heli.gearRatio[m_heli.gearNumber] * m_heli.finalDriveRatio / (2.0f * Utility::GetPi() * (m_heli.wheelRadius * 0.1f));
-    }
-    else
-    {
-        m_heli.omegaE = velocity * 60.0f * m_heli.gearRatio[m_heli.gearNumber] * m_heli.finalDriveRatio / (2.0f * Utility::GetPi() * m_heli.wheelRadius);
-    }
-
-    if (m_heli.omegaE < 800.0)
-    {
-        m_heli.omegaE = 800.0;
-    }
-    //  If the engine is at the redline rpm value,
-    //  shift gears upward.
-    if (m_heli.isTransmissionManual == false)
-    {
-        if (m_heli.omegaE > m_heli.redline)
-        {
-            float oldGearRatio = m_heli.gearRatio[m_heli.gearNumber];
-            GearUp();
-            float newGearRatio = m_heli.gearRatio[m_heli.gearNumber];
-            m_heli.omegaE = m_heli.omegaE * newGearRatio / oldGearRatio;
-        }
-        /*
-        if (m_heli.omegaE < downShiftLimit && m_heli.gearNumber > 1)
-        {
-            float oldGearRatio = m_heli.gearRatio[m_heli.gearNumber];
-            --m_heli.gearNumber;
-            float newGearRatio = m_heli.gearRatio[m_heli.gearNumber];
-            m_heli.omegaE = m_heli.omegaE * newGearRatio / oldGearRatio;
-        }
-        */
-    }
-}
-
 void Vehicle::UpdateVehicle(const double aTimeDelta)
 {
     DebugClearUI();
     DirectX::SimpleMath::Vector3 prevVelocity = m_heli.q.velocity;
     DirectX::SimpleMath::Vector3 prevPos = m_heli.q.position;
-
 
     UpdateRotorForce();
     
@@ -1508,38 +944,31 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     debugLineColor.f[2] = 0.0f;
     debugLineColor.f[3] = 1.0f;
     DebugPushTestLine(m_heli.mainRotorPos, m_heli.q.mainRotorForceNormal, 5.0, 0.0, debugLineColor);
-    //void DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::XMVECTORF32 aColor);
 
-    m_heli.testModelRotation = m_heli.carRotation;
-    m_heli.testTerrainNormal = m_heli.terrainNormal;
-    m_heli.testHeadingVec = m_heli.headingVec;
 
-    m_heli.isCarLanding = false;
+    m_heli.isVehicleLanding = false;
     m_heli.terrainHightAtPos = m_environment->GetTerrainHeightAtPos(m_heli.q.position);
     
     DebugPushUILineDecimalNumber("Altitude : ", m_heli.q.position.y - m_heli.terrainHightAtPos, "");
     if (m_heli.q.position.y - m_heli.terrainHightAtPos > 0.1)
     {
-        m_heli.isCarAirborne = true;
+        m_heli.isVehicleAirborne = true;
     }
     else
     {
-        if (m_heli.isCarAirborne == true)
+        if (m_heli.isVehicleAirborne == true)
         {
             LandVehicle();
-            m_heli.isCarLanding = true;
+            m_heli.isVehicleLanding = true;
         }
-        m_heli.isCarAirborne = false;
+        m_heli.isVehicleAirborne = false;
         m_heli.q.position.y = m_heli.terrainHightAtPos;
     }
     
-    //RevLimiter();
-    ThrottleBrakeDecay(aTimeDelta);
-    SteeringInputDecay(aTimeDelta);
     TurnVehicle(aTimeDelta);
     UpdateTerrainNorm();   
-    m_heli.testModelPos = m_heli.q.position;
-    UpdateCarAlignment();
+
+    UpdateVehicleAlignment();
     RungeKutta4(&m_heli, aTimeDelta);
 
     if (m_heli.forward.Dot(m_heli.q.velocity) < 0.0)
@@ -1552,33 +981,22 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     }
   
     UpdateVelocity(aTimeDelta);
-    UpdateHeadingVec();
-    UpdateTransmission(aTimeDelta);
 
     m_heli.speed = m_heli.q.velocity.Length();
     UpdateModel(aTimeDelta);
 
-    m_heli.isThrottlePressed = false;
-    m_heli.isTurningPressed = false;
-    m_heli.isBrakePressed = false;
-    m_testIsBreakLightOn = false;
     InputDecay(aTimeDelta);
     DebugPushUILineDecimalNumber("test rotor mag : ", m_heli.collectiveInput, "");
 
-
     UpdateTailYawForce();
-
-    
+  
     m_heli.testAccel = (m_heli.q.velocity.Length() - prevVelocity.Length()) / static_cast<float>(aTimeDelta);
-    m_heli.testAcceleration = (m_heli.q.velocity - prevVelocity) / static_cast<float>(aTimeDelta);
-    m_heli.testAcceleration = m_heli.testAcceleration / m_heli.q.velocity;
     
     UpdateResistance();
 
     DirectX::SimpleMath::Vector3 postPos = m_heli.q.position;
     DirectX::SimpleMath::Vector3 deltaPos = prevPos - postPos;
     float deltaLength = deltaPos.Length();
-    m_testVelocity = deltaLength / static_cast<float>(aTimeDelta);
 }
 
 void Vehicle::UpdateVelocity(double aTimeDelta)
@@ -1593,7 +1011,7 @@ void Vehicle::UpdateVelocity(double aTimeDelta)
     testVelocity += (backwardsFriction + lateralFriction) * static_cast<float>(aTimeDelta);
 
     const float lerpSize = 0.5;
-    if (m_heli.isCarAirborne == true)
+    if (m_heli.isVehicleAirborne == true)
     {
 
     }
@@ -1641,37 +1059,3 @@ void Vehicle::DebugPushUILineWholeNumber(std::string aString1, int aVal, std::st
     std::string textLine = aString1 + " " + std::to_string(aVal) + " " + aString2;
     m_debugUIVector.push_back(textLine);
 }
-
-void Vehicle::TestGetForceLateral()
-{
-    float radius = GetTurnRadius();
-    float mass = m_heli.mass;
-    float velocity = m_heli.q.velocity.Length();
-    velocity *= velocity;
-    float muK = 0.7f; // guess at this point
-
-    float forceLat;
-    forceLat = ((mass * velocity) / radius) - (muK * mass * m_heli.gravity.y * cos(0.0f));  
-    DebugPushUILine("Force Lateral", forceLat);
-
-    DirectX::SimpleMath::Vector3 testForceLat;
-    DirectX::SimpleMath::Vector3 gravVec(0.0f, -9.8f, 0.0f);
-
-    testForceLat = ((mass * (m_heli.q.velocity * m_heli.q.velocity)) / radius) - (muK * mass * gravVec * cos(0.0f));
-
-    DebugPushUILine("Force Lateral X ", testForceLat.x);
-    DebugPushUILine("Force Lateral Y ", testForceLat.y);
-    DebugPushUILine("Force Lateral Z ", testForceLat.z);
-
-    DirectX::SimpleMath::Vector3 testHeading = m_heli.q.velocity;
-    DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateRotationY(-m_heli.carRotation);
-    testHeading = DirectX::SimpleMath::Vector3::Transform(testHeading, rotMat);
-
-    float slipAngle;
-    slipAngle = -atan(testHeading.x / abs(testHeading.z));
-    DebugPushUILine("slipAngle", Utility::ToDegrees(slipAngle)  + 90.0f);
-    DebugPushUILine("slipAngle 2", Utility::ToDegrees(slipAngle) - Utility::ToDegrees(m_heli.carRotation));
-    DebugPushUILine("slipAngle 3", Utility::ToDegrees(slipAngle) + 90.0f - Utility::ToDegrees(m_heli.carRotation));
-    DebugPushUILine("m_heli.carRotation ", Utility::ToDegrees(m_heli.carRotation));
-}
-
