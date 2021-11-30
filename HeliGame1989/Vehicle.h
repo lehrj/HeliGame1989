@@ -7,84 +7,85 @@
 
 struct Motion
 {
-    DirectX::SimpleMath::Vector3 position;
-    DirectX::SimpleMath::Vector3 velocity;
+
+    DirectX::SimpleMath::Vector3 airResistance;
     DirectX::SimpleMath::Vector3 bodyVelocity;
     DirectX::SimpleMath::Vector3 engineForce;
-    DirectX::SimpleMath::Vector3 airResistance;
     DirectX::SimpleMath::Vector3 gravityForce;
-    DirectX::SimpleMath::Vector3 totalVelocity;
-
-    // helicopter data
     DirectX::SimpleMath::Vector3 mainRotorForceNormal;
-    float mainRotorForceMagnitude{};
+    float                        mainRotorForceMagnitude;
+    DirectX::SimpleMath::Vector3 position;
+    float                        tailRotorYawForce;
+    DirectX::SimpleMath::Vector3 totalVelocity;
+    DirectX::SimpleMath::Vector3 velocity;
 };
 
 struct HeliData
 {
-    DirectX::SimpleMath::Vector3 mainRotorPos = DirectX::SimpleMath::Vector3::Zero;
-    DirectX::SimpleMath::Vector3 tailRotorPos = DirectX::SimpleMath::Vector3::Zero;
-    float collectiveInput;
+    // input control data
+    const float inputDeadZone = 0.001;  // small deadzone to ignore gas and brake peddle input
+
+    float       collectiveInput;
     const float collectiveInputMax = 1.0f;
     const float collectiveInputMin = 0.0f;
     const float collectiveInputRate = 1.0f;
 
-    float cyclicInputPitch;
-    bool cyclicInputPitchIsPressed;
-    float cyclicInputRoll;
-    bool cyclicInputRollIsPressed;
     const float cyclicDecayRate = 0.8f;
+    float       cyclicInputPitch;
+    bool        cyclicInputPitchIsPressed;
+    float       cyclicInputRoll;
+    bool        cyclicInputRollIsPressed;
     const float cyclicInputMax = 1.0f;
     const float cyclicInputMin = -1.0f;
     const float cyclicInputRate = 1.0f;
 
-    float throttleInput;
+    float       throttleInput;
     const float throttleInputMin = 0.0f;
     const float throttleInputMax = 1.0f;
     const float throttleInputRate = 1.0f;
 
-    float yawPedalInput;
-    bool yawPedalIsPressed;
+    bool        yawPedalIsPressed;
+    float       yawPedalInput;
+    const float yawPedalDecayRate = 0.5f;
     const float yawPedalInputMax = 1.0f;
     const float yawPedalInputMin = -1.0f;
     const float yawPedalInputRate = 1.0f;
-    const float yawPedalDecayRate = 0.5f;
 
+    // rotor data
     const float mainRotorForceMagMax = 15.0f;
     const float mainRotorForceMagMin = 0.0f;
-
-    float mainRotorRPM;
+    DirectX::SimpleMath::Vector3 mainRotorPos;
+    float       mainRotorRPM;
     const float mainRotorRPMmin = 0.0f;
     const float mainRotorRPMmax = 500.0f;
+    DirectX::SimpleMath::Vector3 tailRotorPos;
 
-    int numEqns;
-    double time;
-    Motion q;
-    float mass;
-    float area;   
-    float Cd;
-    float airResistance;
-    float airDensity;
-    float totalResistance;
+    //
+    int     numEqns;
+    double  time;
+    float   area;   
+    float   airResistance;
+    float   airDensity;
+    float   cd;
+    const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
+    float   mass;
+    Motion  q;
+    float   totalResistance;
 
-    DirectX::SimpleMath::Vector3 gravity;
-
-    //////////////////////
-    const float inputDeadZone = 0.001;  // small deadzone to ignore gas and brake peddle input
-
-    float vehicleRotation;
-    float speed;                   // speed vehicle is traveling
-    bool isVehicleAirborne; 
-    bool isVehicleLanding;
-    bool isVelocityBackwards;
+    //
+    float   vehicleRotation;
+    float   speed;                   // speed vehicle is traveling
+    bool    isVehicleAirborne; 
+    bool    isVehicleLanding;
+    bool    isVelocityBackwards;
     DirectX::SimpleMath::Vector3 terrainNormal;
     DirectX::SimpleMath::Vector3 forward;
     DirectX::SimpleMath::Vector3 up;
     DirectX::SimpleMath::Vector3 right;
 
-    float terrainHightAtPos;
+    float   terrainHightAtPos;
 
-    float testAccel = 0.0;
+    float   testAccel = 0.0;
 };
 
 struct HeliModel
@@ -172,15 +173,7 @@ struct HeliModel
 
 class Vehicle
 {
-public:
-    // helicopter functions
-    void InputCollective(const float aCollectiveInput);
-    void InputCyclicPitch(const float aPitchInput);
-    void InputCyclicRoll(const float aRollInput);
-    void InputDecay(const double aTimeDelta);
-    void InputHThrottle(const float aThrottleInput);
-    void InputYawPedal(const float aYawInput);
-    
+public: 
     std::vector<std::pair<std::string, float>> DebugGetUI() { return m_debugUI; };
     std::vector<std::string> DebugGetUIVector() { return m_debugUIVector; };
     std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::XMVECTORF32>> DebugGetTestLines() const { return m_debugLinesVec; };
@@ -188,20 +181,22 @@ public:
     void DrawModel(DirectX::SimpleMath::Matrix aView, DirectX::SimpleMath::Matrix aProj);
 
     float GetAccel() const { return m_heli.testAccel; };
-
-    DirectX::SimpleMath::Vector3 GetDebugPoint() { return  m_debugPoint; };
-    
-    //DirectX::SimpleMath::Vector3 GetModelTestPos() const { return m_heli.testModelPos; };
     DirectX::SimpleMath::Vector3 GetPos() const { return m_heli.q.position; };
-    float GetVehicleRotation() const { return m_heli.vehicleRotation; };
-    
     float GetSpeed() { return m_heli.speed; };
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
-    
+    float GetVehicleRotation() const { return m_heli.vehicleRotation; };
     DirectX::SimpleMath::Vector3 GetVelocity() const { return m_heli.q.velocity; };
   
     void InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext);
+
+    // helicopter functions
+    void InputCollective(const float aCollectiveInput);
+    void InputCyclicPitch(const float aPitchInput);
+    void InputCyclicRoll(const float aRollInput);
+    void InputDecay(const double aTimeDelta);
+    void InputHThrottle(const float aThrottleInput);
+    void InputYawPedal(const float aYawInput);
 
     void Jump();
 
@@ -231,25 +226,20 @@ private:
 
     void RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ, double aTimeDelta, float aQScale, Motion* aDQ);
     void RungeKutta4(struct HeliData* aHeli, double aTimeDelta);
-
-    void TurnVehicle(double aTimeDelta);
-    void UpdateVehicleAlignment();
-
-    //void UpdateHeadingVec();
-    
+   
     void UpdateModel(const double aTimer);
     void UpdateResistance();
     void UpdateRotorForce();
     void UpdateTailYawForce();
     void UpdateTerrainNorm();
+    void UpdateVehicleAlignment();
     void UpdateVelocity(double aTimeDelta);
 
+    void TurnVehicle(double aTimeDelta);
+
+    Environment const* m_environment;
     HeliData                        m_heli;
     HeliModel                       m_heliModel;
-    Environment const*              m_environment;
-    
-    DirectX::SimpleMath::Vector3    m_heading;   // direction the vehicle is facing
-    float                           m_speed;        // speed vehicle is traveling
 
     DirectX::SimpleMath::Vector4    m_defaultForward = DirectX::XMVectorSet(1.0, 0.0, 0.0, 0.0);
     DirectX::SimpleMath::Vector4    m_forward = DirectX::XMVectorSet(1.0, 0.0, 0.0, 0.0);
@@ -260,14 +250,10 @@ private:
     float                           m_moveLeftRight = 0.0;
     float                           m_moveUpDown = 0.0;
 
-    DirectX::SimpleMath::Vector3 m_debugPoint = DirectX::SimpleMath::Vector3::Zero;
-
     std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::XMVECTORF32>> m_debugLinesVec;
     std::vector<std::pair<std::string, float>> m_debugUI;
     std::vector<std::string> m_debugUIVector;
 
     float m_rotorTimer = 0.0f;
-
-
 };
 

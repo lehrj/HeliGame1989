@@ -280,28 +280,26 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.yawPedalInput = 0.0f;
     m_heli.yawPedalIsPressed = false;
     m_heli.mainRotorRPM = 0.0f;
-    // 
-    m_heli.q.mainRotorForceNormal = DirectX::SimpleMath::Vector3::UnitY;
-    m_heli.q.mainRotorForceMagnitude = 15.0f;
 
-    // roughly based on porsche boxster
-    m_heli.mass = 1393.0f;
+    m_heli.numEqns = 6;
+    m_heli.mass = 1760.0f;
     m_heli.area = 1.94f;
     m_heli.airDensity = 1.2f; // ToDo : pull air density from environment data
-    m_heli.Cd = 0.31f;
+    m_heli.cd = 0.31f;
     m_heli.airResistance = 0.0f;
     m_heli.totalResistance = m_heli.airResistance;
-
-    m_heli.gravity = DirectX::SimpleMath::Vector3(0.0, -9.81, 0.0);
-    m_heli.numEqns = 6;
     m_heli.time = 0.0;  
-    m_heli.q.position = DirectX::SimpleMath::Vector3::Zero;
-    m_heli.q.velocity = DirectX::SimpleMath::Vector3::Zero;
-    m_heli.q.bodyVelocity = DirectX::SimpleMath::Vector3::Zero;
+
     m_heli.q.airResistance = DirectX::SimpleMath::Vector3::Zero;
-    m_heli.q.gravityForce = DirectX::SimpleMath::Vector3::Zero;
+    m_heli.q.bodyVelocity = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.engineForce = DirectX::SimpleMath::Vector3::Zero;
+    m_heli.q.gravityForce = DirectX::SimpleMath::Vector3::Zero;
+    m_heli.q.mainRotorForceNormal = DirectX::SimpleMath::Vector3::UnitY;
+    m_heli.q.mainRotorForceMagnitude = 15.0f;
+    m_heli.q.position = DirectX::SimpleMath::Vector3::Zero;
+    m_heli.q.tailRotorYawForce = 0.0f;
     m_heli.q.totalVelocity = DirectX::SimpleMath::Vector3::Zero;
+    m_heli.q.velocity = DirectX::SimpleMath::Vector3::Zero;
 
     m_heli.vehicleRotation = 0.0f;
     m_heli.forward = DirectX::SimpleMath::Vector3::UnitX;
@@ -314,7 +312,6 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.isVelocityBackwards = false;
 
     m_heli.terrainHightAtPos = 0.0;
-
     m_heli.terrainNormal = DirectX::SimpleMath::Vector3::UnitY;
 
     InitializeModel(aContext);
@@ -588,7 +585,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
 
     //  Compute the total drag force.
     float airDensity = aHeli->airDensity;
-    float dragCoefficient = aHeli->Cd;
+    float dragCoefficient = aHeli->cd;
     float frontSurfaceArea = aHeli->area;
     float frontDragResistance = 0.5f * airDensity * frontSurfaceArea * dragCoefficient * v * v;
 
@@ -873,7 +870,7 @@ void Vehicle::UpdateResistance()
         Cd = drag coeffient == 0.4?ish
         */
     float velocity = m_heli.q.velocity.Length();
-    float drag = .5f * m_heli.Cd * m_heli.airDensity * m_heli.area * (velocity * velocity);
+    float drag = .5f * m_heli.cd * m_heli.airDensity * m_heli.area * (velocity * velocity);
 
     m_heli.airResistance = drag;
 }
@@ -994,9 +991,6 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     
     UpdateResistance();
 
-    DirectX::SimpleMath::Vector3 postPos = m_heli.q.position;
-    DirectX::SimpleMath::Vector3 deltaPos = prevPos - postPos;
-    float deltaLength = deltaPos.Length();
 }
 
 void Vehicle::UpdateVelocity(double aTimeDelta)
