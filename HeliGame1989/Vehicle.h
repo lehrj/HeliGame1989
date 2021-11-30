@@ -90,6 +90,15 @@ struct HeliData
 
 struct HeliModel
 {
+    // Colors for model parts
+    DirectX::SimpleMath::Vector4 bodyColor;
+    DirectX::SimpleMath::Vector4 rotorColor;
+    DirectX::SimpleMath::Vector4 axelColor;
+    DirectX::SimpleMath::Vector4 windshieldColor;
+    DirectX::SimpleMath::Vector4 testColor1;
+    DirectX::SimpleMath::Vector4 testColor2;
+
+    // part shape and local positions
     std::unique_ptr<DirectX::GeometricPrimitive>    noseConeShape;
     DirectX::SimpleMath::Matrix noseConeMatrix;
     DirectX::SimpleMath::Matrix localNoseConeMatrix;
@@ -97,7 +106,6 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    noseBodyShape;
     DirectX::SimpleMath::Matrix noseBodyMatrix;
     DirectX::SimpleMath::Matrix localNoseBodyMatrix;
-
 
     std::unique_ptr<DirectX::GeometricPrimitive>    bodyShape;
     DirectX::SimpleMath::Matrix bodyMatrix;
@@ -168,7 +176,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix tailRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix localTailRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix tailRotorBladeTranslationMatrix2;
-
 };
 
 class Vehicle
@@ -178,7 +185,7 @@ public:
     std::vector<std::string> DebugGetUIVector() { return m_debugUIVector; };
     std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::XMVECTORF32>> DebugGetTestLines() const { return m_debugLinesVec; };
 
-    void DrawModel(DirectX::SimpleMath::Matrix aView, DirectX::SimpleMath::Matrix aProj);
+    void DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj);
 
     float GetAccel() const { return m_heli.testAccel; };
     DirectX::SimpleMath::Vector3 GetPos() const { return m_heli.q.position; };
@@ -230,6 +237,7 @@ private:
     void UpdateModel(const double aTimer);
     void UpdateResistance();
     void UpdateRotorForce();
+    void UpdateRotorInputForce();
     void UpdateTailYawForce();
     void UpdateTerrainNorm();
     void UpdateVehicleAlignment();

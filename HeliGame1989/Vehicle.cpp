@@ -3,49 +3,34 @@
 
 
 
-void Vehicle::DrawModel(DirectX::SimpleMath::Matrix aView, DirectX::SimpleMath::Matrix aProj)
+void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj)
 {
+    m_heliModel.bodyShape->Draw(m_heliModel.bodyMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.bodyCapShape->Draw(m_heliModel.windShieldMatrix, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.bodyCapShape->Draw(m_heliModel.bodyRearMatrix, aView, aProj, m_heliModel.bodyColor);
 
-    DirectX::SimpleMath::Matrix view = aView;
-    DirectX::SimpleMath::Matrix proj = aProj;
-    DirectX::SimpleMath::Vector4 bodyColor(0.501960814f, 0.501960814f, 0.501960814f, 1.000000000f);
-    DirectX::SimpleMath::Vector4 rotorColor(0.827451050f, 0.827451050f, 0.827451050f, 1.000000000f);
-    DirectX::SimpleMath::Vector4 axelColor(0.411764741f, 0.411764741f, 0.411764741f, 1.000000000f);
-    DirectX::SimpleMath::Vector4 windshieldColor(0.662745118f, 0.662745118f, 0.662745118f, 1.000000000f);
-    DirectX::SimpleMath::Vector4 testColor(1.0, 0.0f, 0.0f, 1.000000000f);
-    DirectX::SimpleMath::Vector4 testColor2(1.0, 1.0f, 1.0f, 1.000000000f);
-    //DirectX::Colors::DarkGray XMGLOBALCONST XMVECTORF32 DarkGray = { { { 0.662745118f, 0.662745118f, 0.662745118f, 1.000000000f } } };
-    //DirectX::Colors::LightGray XMGLOBALCONST XMVECTORF32 LightGray = { { { 0.827451050f, 0.827451050f, 0.827451050f, 1.000000000f } } };
-    //DirectX::Colors::DimGray XMGLOBALCONST XMVECTORF32 DimGray = { { { 0.411764741f, 0.411764741f, 0.411764741f, 1.000000000f } } };
-    //DirectX::Colors::DarkSlateGray XMGLOBALCONST XMVECTORF32 DarkSlateGray = { { { 0.184313729f, 0.309803933f, 0.309803933f, 1.000000000f } } };
+    m_heliModel.noseConeShape->Draw(m_heliModel.noseConeMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.noseBodyShape->Draw(m_heliModel.noseBodyMatrix, aView, aProj, m_heliModel.bodyColor);
 
-    m_heliModel.bodyShape->Draw(m_heliModel.bodyMatrix, view, proj, bodyColor);
-    m_heliModel.bodyCapShape->Draw(m_heliModel.windShieldMatrix, view, proj, windshieldColor);
-    m_heliModel.bodyCapShape->Draw(m_heliModel.bodyRearMatrix, view, proj, bodyColor);
+    m_heliModel.engineHousingShape->Draw(m_heliModel.engineHousingMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.engineHousingFrontShape->Draw(m_heliModel.engineHousingFrontMatrix, aView, aProj, m_heliModel.bodyColor);
 
-    m_heliModel.noseConeShape->Draw(m_heliModel.noseConeMatrix, view, proj, bodyColor);
-    m_heliModel.noseBodyShape->Draw(m_heliModel.noseBodyMatrix, view, proj, bodyColor);
+    m_heliModel.tailBoomShape->Draw(m_heliModel.tailBoomMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailFinShape->Draw(m_heliModel.tailFinMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailWingShape->Draw(m_heliModel.tailWingMatrix, aView, aProj, m_heliModel.bodyColor);
 
-    m_heliModel.engineHousingShape->Draw(m_heliModel.engineHousingMatrix, view, proj, bodyColor);
-    m_heliModel.engineHousingFrontShape->Draw(m_heliModel.engineHousingFrontMatrix, view, proj, bodyColor);
+    m_heliModel.mainRotorAxelShape->Draw(m_heliModel.mainRotorAxelMatrix, aView, aProj, m_heliModel.axelColor);
+    m_heliModel.mainRotorHubShape->Draw(m_heliModel.mainRotorHubMatrix, aView, aProj, m_heliModel.axelColor);
 
-    m_heliModel.tailBoomShape->Draw(m_heliModel.tailBoomMatrix, view, proj, bodyColor);
-    m_heliModel.tailFinShape->Draw(m_heliModel.tailFinMatrix, view, proj, bodyColor);
+    m_heliModel.mainRotorArmShape->Draw(m_heliModel.mainRotorArmMatrix, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.mainRotorBladeMatrix1, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.mainRotorBladeMatrix2, aView, aProj, m_heliModel.rotorColor);
 
-    m_heliModel.tailWingShape->Draw(m_heliModel.tailWingMatrix, view, proj, bodyColor);
-
-    m_heliModel.mainRotorAxelShape->Draw(m_heliModel.mainRotorAxelMatrix, view, proj, axelColor);
-    m_heliModel.mainRotorHubShape->Draw(m_heliModel.mainRotorHubMatrix, view, proj, axelColor);
-
-    m_heliModel.mainRotorArmShape->Draw(m_heliModel.mainRotorArmMatrix, view, proj, rotorColor);
-    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.mainRotorBladeMatrix1, view, proj, rotorColor);
-    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.mainRotorBladeMatrix2, view, proj, rotorColor);
-
-    m_heliModel.tailRotorAxelShape->Draw(m_heliModel.tailRotorAxelMatrix, view, proj, axelColor);
-    m_heliModel.tailRotorHubShape->Draw(m_heliModel.tailRotorHubMatrix, view, proj, axelColor);
-    m_heliModel.tailRotorArmShape->Draw(m_heliModel.tailRotorArmMatrix, view, proj, rotorColor);
-    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.tailRotorBladeMatrix1, view, proj, rotorColor);
-    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.tailRotorBladeMatrix2, view, proj, rotorColor);
+    m_heliModel.tailRotorAxelShape->Draw(m_heliModel.tailRotorAxelMatrix, aView, aProj, m_heliModel.axelColor);
+    m_heliModel.tailRotorHubShape->Draw(m_heliModel.tailRotorHubMatrix, aView, aProj, m_heliModel.axelColor);
+    m_heliModel.tailRotorArmShape->Draw(m_heliModel.tailRotorArmMatrix, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.tailRotorBladeMatrix1, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.tailRotorBladeMatrix2, aView, aProj, m_heliModel.rotorColor);
 }
 
 float Vehicle::GetYawRate(double aTimeDelta)
@@ -66,8 +51,16 @@ float Vehicle::GetYawRate(double aTimeDelta)
 
 void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
 {
+    // set model part colors
+    m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.501960814f, 0.501960814f, 1.0f);
+    m_heliModel.rotorColor = DirectX::SimpleMath::Vector4(0.827451050f, 0.827451050f, 0.827451050f, 1.0f);
+    m_heliModel.axelColor = DirectX::SimpleMath::Vector4(0.411764741f, 0.411764741f, 0.411764741f, 1.0f);
+    m_heliModel.windshieldColor = DirectX::SimpleMath::Vector4(0.662745118f, 0.662745118f, 0.662745118f, 1.20f);
+    m_heliModel.testColor1 = DirectX::SimpleMath::Vector4(1.0, 0.0f, 0.0f, 1.0f);
+    m_heliModel.testColor2 = DirectX::SimpleMath::Vector4(1.0, 1.0f, 1.0f, 1.0f);
+
+    // set model shapes and local positions   
     // main body
-    //const DirectX::SimpleMath::Vector3 bodySize(7.0f, 3.28f, 4.09f);
     const DirectX::SimpleMath::Vector3 bodySize(5.0f, 3.0f, 3.0f);
     const DirectX::SimpleMath::Vector3 bodyTranslation(0.0f, bodySize.y * 0.5f, 0.0f);
     m_heliModel.bodyShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), bodySize);
@@ -160,7 +153,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailWingMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailWingTranslation);
     m_heliModel.localTailWingMatrix = m_heliModel.tailWingMatrix;
 
-
     // main rotor axel
     const float mainAxelLength = 0.5f;
     const float mainAxelDiameter = 0.2f;
@@ -178,7 +170,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.mainRotorHubMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.mainRotorHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(mainHubTranslation);
     m_heliModel.localMainRotorHubMatrix = m_heliModel.mainRotorHubMatrix;
-    //
+    // update rotor position in local space
     DirectX::SimpleMath::Vector3 mainRotorPos = DirectX::SimpleMath::Vector3::Zero;
     mainRotorPos = mainRotorPos.Transform(mainRotorPos, m_heliModel.mainRotorHubMatrix);
     m_heli.mainRotorPos = mainRotorPos;
@@ -187,7 +179,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const float tailAxelLength = 0.35f;
     const float tailAxelDiameter = 0.1f;
     const float tailAxelOffsetY = 0.25f;
-    //const DirectX::SimpleMath::Vector3 tailAxelTranslation(tailBoomTranslation.x * 1.0 - (tailBoomSize.x * 0.425f), tailBoomTranslation.y + tailAxelOffsetY, -tailBoomSize.z * 0.5f);
     const DirectX::SimpleMath::Vector3 tailAxelTranslation(tailFinTranslation.x * 1.02f, tailFinTranslation.y * 1.15f, (-tailFinSize.z * 0.5f) - (tailAxelLength * 0.5f));
     m_heliModel.tailRotorAxelShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), tailAxelLength, tailAxelDiameter, 16);
     m_heliModel.tailRotorAxelMatrix = DirectX::SimpleMath::Matrix::Identity;
@@ -204,7 +195,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailRotorHubMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-90.0f));
     m_heliModel.tailRotorHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailHubTranslation);
     m_heliModel.localTailRotorHubMatrix = m_heliModel.tailRotorHubMatrix;
-    //
+    // update rotor position in local space
     DirectX::SimpleMath::Vector3 tailRotorPos = DirectX::SimpleMath::Vector3::Zero;
     tailRotorPos = tailRotorPos.Transform(tailRotorPos, m_heliModel.mainRotorHubMatrix);
     m_heli.tailRotorPos = tailRotorPos;
@@ -717,21 +708,15 @@ void Vehicle::SetEnvironment(Environment* aEnviron)
 
 void Vehicle::TurnVehicle(double aTimeDelta)
 {  
-    if (m_heli.isVehicleAirborne == false)
-    {
-        if (m_heli.isVelocityBackwards == false)
-        {
-            m_heli.vehicleRotation -= GetYawRate(aTimeDelta);
-        }
-        else
-        {
-            m_heli.vehicleRotation += GetYawRate(aTimeDelta);
-        }
-    }
-    else
+    if (m_heli.isVehicleAirborne == true)
     {
         m_heli.vehicleRotation += GetYawRate(aTimeDelta);
     }
+    else
+    {
+        // do not turn while vehicle is grounded to, could change if helicopter is switched to wheeled landing gear from tracked base
+    }
+    
     m_heli.vehicleRotation = Utility::WrapAngle(m_heli.vehicleRotation);
 }
 
@@ -977,7 +962,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
         m_heli.isVelocityBackwards = false;
     }
   
-    UpdateVelocity(aTimeDelta);
+    //UpdateVelocity(aTimeDelta);
 
     m_heli.speed = m_heli.q.velocity.Length();
     UpdateModel(aTimeDelta);
@@ -995,17 +980,8 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
 
 void Vehicle::UpdateVelocity(double aTimeDelta)
 {
-    float lateralFrictionFactor = 0.2;
-    float backwardsFrictionFactor = 0.0;
-    DirectX::SimpleMath::Vector3 testVelocity = m_heli.q.velocity;
-    DirectX::SimpleMath::Vector3 lateralVelocity;
-    lateralVelocity = m_heli.right * testVelocity.Dot(m_heli.right);
-    DirectX::SimpleMath::Vector3 lateralFriction = -lateralVelocity * lateralFrictionFactor;
-    DirectX::SimpleMath::Vector3 backwardsFriction = -testVelocity * backwardsFrictionFactor;
-    testVelocity += (backwardsFriction + lateralFriction) * static_cast<float>(aTimeDelta);
-
     const float lerpSize = 0.5;
-    if (m_heli.isVehicleAirborne == true)
+    if (m_heli.isVehicleAirborne == false)
     {
 
     }
