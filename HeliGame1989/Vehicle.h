@@ -55,18 +55,21 @@ struct HeliData
     const float mainRotorForceMagMax = 15.0f;
     const float mainRotorForceMagMin = 0.0f;
     DirectX::SimpleMath::Vector3 mainRotorPos;
+    DirectX::SimpleMath::Vector3 localMainRotorPos;
     float       mainRotorRPM;
     const float mainRotorRPMmin = 0.0f;
     const float mainRotorRPMmax = 500.0f;
     DirectX::SimpleMath::Vector3 tailRotorPos;
-
+    DirectX::SimpleMath::Vector3 localTailRotorPos;
+    DirectX::SimpleMath::Vector3 centerOfMass;
+    DirectX::SimpleMath::Vector3 localCenterOfMass;
     //
     int     numEqns;
     double  time;
     float   area;   
     float   airResistance;
     float   airDensity;
-    float   cd;
+    float   dragCoefficient;
     const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
     float   mass;
     Motion  q;

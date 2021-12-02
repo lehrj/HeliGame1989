@@ -170,10 +170,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.mainRotorHubMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.mainRotorHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(mainHubTranslation);
     m_heliModel.localMainRotorHubMatrix = m_heliModel.mainRotorHubMatrix;
-    // update rotor position in local space
-    DirectX::SimpleMath::Vector3 mainRotorPos = DirectX::SimpleMath::Vector3::Zero;
-    mainRotorPos = mainRotorPos.Transform(mainRotorPos, m_heliModel.mainRotorHubMatrix);
-    m_heli.mainRotorPos = mainRotorPos;
 
     // tail rotor axel
     const float tailAxelLength = 0.35f;
@@ -195,10 +191,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailRotorHubMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-90.0f));
     m_heliModel.tailRotorHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailHubTranslation);
     m_heliModel.localTailRotorHubMatrix = m_heliModel.tailRotorHubMatrix;
-    // update rotor position in local space
-    DirectX::SimpleMath::Vector3 tailRotorPos = DirectX::SimpleMath::Vector3::Zero;
-    tailRotorPos = tailRotorPos.Transform(tailRotorPos, m_heliModel.mainRotorHubMatrix);
-    m_heli.tailRotorPos = tailRotorPos;
 
     // tail rotor arm
     const float tailArmLength = 2.65f;
@@ -256,7 +248,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localTailRotorBladeMatrix2 = m_heliModel.tailRotorBladeMatrix2;
     m_heliModel.tailRotorBladeTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(tailAxelLength, 0.0, 0.0));
     m_heliModel.tailRotorBladeTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
-
 }
 
 void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
@@ -276,7 +267,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.mass = 1760.0f;
     m_heli.area = 1.94f;
     m_heli.airDensity = 1.2f; // ToDo : pull air density from environment data
-    m_heli.cd = 0.31f;
+    m_heli.dragCoefficient = 0.31f;
     m_heli.airResistance = 0.0f;
     m_heli.totalResistance = m_heli.airResistance;
     m_heli.time = 0.0;  
@@ -306,6 +297,16 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.terrainNormal = DirectX::SimpleMath::Vector3::UnitY;
 
     InitializeModel(aContext);
+
+    // Intialize key physics hardpoints based on model 
+    m_heli.localMainRotorPos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Zero, m_heliModel.localMainRotorHubMatrix);
+    m_heli.mainRotorPos = m_heli.localMainRotorPos;
+    m_heli.localCenterOfMass = m_heli.localMainRotorPos;
+    m_heli.localCenterOfMass.y *= 0.5f;
+    m_heli.centerOfMass = m_heli.localCenterOfMass;
+    m_heli.localTailRotorPos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Zero, m_heliModel.localTailRotorHubMatrix);
+    m_heli.tailRotorPos = m_heli.localTailRotorPos;
+
 }
 
 void Vehicle::InputCollective(const float aCollectiveInput)
@@ -565,6 +566,25 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
 
     newQ.velocity += rotorForce + static_cast<float>(aQScale) * aDeltaQ->velocity;
 
+    // tail yaw testing
+    DirectX::SimpleMath::Matrix yawRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.yawPedalInput * 1.0f);
+    newQ.velocity = DirectX::SimpleMath::Vector3::Transform(newQ.velocity,yawRot);
+
+    //DirectX::SimpleMath::Vector3 tailRotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
+    
+    /*
+    DirectX::SimpleMath::Vector3 testTorque;
+    //DirectX::SimpleMath::Matrix testTorque;
+    testTorque = rotorForce.Cross(m_heli.localMainRotorPos - m_heli.centerOfMass);
+    DebugPushUILineDecimalNumber("testTorque.x ", testTorque.x, "");
+    DebugPushUILineDecimalNumber("testTorque.y ", testTorque.y, "");
+    DebugPushUILineDecimalNumber("testTorque.z ", testTorque.z, "");
+
+    DirectX::SimpleMath::Matrix testMat;
+    //testMat = DirectX::SimpleMath::Matrix::
+    */
+
+
     //  Compute the constants that define the
     //  torque curve line.
     // ToDo once physics equations are in place after testing model is finished
@@ -576,7 +596,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
 
     //  Compute the total drag force.
     float airDensity = aHeli->airDensity;
-    float dragCoefficient = aHeli->cd;
+    float dragCoefficient = aHeli->dragCoefficient;
     float frontSurfaceArea = aHeli->area;
     float frontDragResistance = 0.5f * airDensity * frontSurfaceArea * dragCoefficient * v * v;
 
@@ -619,24 +639,22 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
         velocityUpdate = DirectX::SimpleMath::Vector3::Zero;
     }
 
-    //  Compute right-hand side values.
+    //  Assign right-hand side values.
     aDQ->airResistance = airResistance;
     aDQ->gravityForce = gravForce;
     aDQ->velocity = velocityUpdate;
     aDQ->totalVelocity = velocityUpdate; 
     aDQ->position = static_cast<float>(aTimeDelta) * newQ.velocity;
-
+    
     return;
 }
 
 //  This method solves for the vehicle motion using a 4th-order Runge-Kutta solver
 void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
 {
-    //  Define a convenience variable to make the
-    //  code more readable
+    //  Define a convenience variables
     const float numEqns = static_cast<float>(aHeli->numEqns);
-    //  Retrieve the current values of the dependent
-    //  and independent variables.
+    //  Retrieve the current values of the dependent and independent variables.
     Motion q = aHeli->q;
     Motion dq1;
     Motion dq2;
@@ -675,8 +693,9 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     DirectX::SimpleMath::Vector3 gravityVelocityUpdate = (dq1.gravityForce + 2.0 * dq2.gravityForce + 2.0 * dq3.gravityForce + dq4.gravityForce) / numEqns;
     DirectX::SimpleMath::Vector3 totalVelocityUpdate = (dq1.totalVelocity + 2.0 * dq2.totalVelocity + 2.0 * dq3.totalVelocity + dq4.totalVelocity) / numEqns;
 
-    const float stopTolerance = 0.1;
+    
     // To prevent the vehicle from continuing to roll forward if vehicle velocity is less than the tolerance value and update velocity is zero
+    const float stopTolerance = 0.1;
     if (q.velocity.Length() < stopTolerance && velocityUpdate == DirectX::SimpleMath::Vector3::Zero)
     {
         q.velocity = DirectX::SimpleMath::Vector3::Zero;
@@ -692,9 +711,11 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     q.gravityForce += gravityVelocityUpdate;
     q.totalVelocity += velocityUpdate;
 
+    
     aHeli->q.engineForce = q.engineForce;
     aHeli->q.position = q.position;
     aHeli->q.velocity = q.velocity;
+    
 
     aHeli->q = q;
 
@@ -742,6 +763,13 @@ void Vehicle::UpdateModel(const double aTimer)
 {
     DirectX::SimpleMath::Matrix updateMat = DirectX::SimpleMath::Matrix::Identity;
     updateMat *= DirectX::SimpleMath::Matrix::CreateWorld(m_heli.q.position, -m_heli.right, m_heli.up);
+
+    DirectX::SimpleMath::Matrix updateMat2 = DirectX::SimpleMath::Matrix::Identity;
+    updateMat2 *= DirectX::SimpleMath::Matrix::CreateWorld(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
+    m_heli.mainRotorPos = m_heli.localMainRotorPos;
+    m_heli.mainRotorPos = DirectX::SimpleMath::Vector3::Transform(m_heli.mainRotorPos, updateMat);
+    m_heli.centerOfMass = m_heli.localCenterOfMass;
+    m_heli.centerOfMass = DirectX::SimpleMath::Vector3::Transform(m_heli.centerOfMass, updateMat);
 
     m_heliModel.noseConeMatrix = m_heliModel.localNoseConeMatrix;
     m_heliModel.noseConeMatrix *= updateMat;
@@ -855,7 +883,7 @@ void Vehicle::UpdateResistance()
         Cd = drag coeffient == 0.4?ish
         */
     float velocity = m_heli.q.velocity.Length();
-    float drag = .5f * m_heli.cd * m_heli.airDensity * m_heli.area * (velocity * velocity);
+    float drag = .5f * m_heli.dragCoefficient * m_heli.airDensity * m_heli.area * (velocity * velocity);
 
     m_heli.airResistance = drag;
 }
@@ -877,7 +905,135 @@ void Vehicle::UpdateRotorForce()
     DirectX::SimpleMath::Vector3 newUp = DirectX::SimpleMath::Vector3::SmoothStep(m_heli.up, testRotorForce, 0.15);
     newUp = DirectX::SimpleMath::Vector3::SmoothStep(newUp, -m_heli.q.gravityForce * 1.0f, 0.14);
     newUp.Normalize();
-    m_heli.up = newUp;
+    //m_heli.up = newUp;
+
+    /////////
+    DirectX::SimpleMath::Vector3 rotorForce = m_heli.q.mainRotorForceNormal * m_heli.q.mainRotorForceMagnitude * m_heli.collectiveInput;
+    DirectX::SimpleMath::Vector3 testTorque;
+    //DirectX::SimpleMath::Matrix testTorque;
+    testTorque = rotorForce.Cross(m_heli.mainRotorPos - m_heli.centerOfMass);
+    DirectX::SimpleMath::Vector3 testTorque2 = Utility::GetTorqueVec(rotorForce, (m_heli.mainRotorPos - m_heli.centerOfMass));
+    DebugPushUILineDecimalNumber("testTorque.x  ", testTorque.x, "");
+    DebugPushUILineDecimalNumber("testTorque2.x ", testTorque2.x, "");
+    DebugPushUILineDecimalNumber("testTorque.y  ", testTorque.y, "");
+    DebugPushUILineDecimalNumber("testTorque2.y ", testTorque2.y, "");
+    DebugPushUILineDecimalNumber("testTorque.z  ", testTorque.z, "");
+    DebugPushUILineDecimalNumber("testTorque2.z ", testTorque2.z, "");
+
+    DebugPushUILineDecimalNumber("Gravity ", m_heli.gravity.y, "");
+
+    DirectX::XMVECTORF32 debugLineColor;
+    debugLineColor.f[0] = 1.0f;
+    debugLineColor.f[1] = 0.0f;
+    debugLineColor.f[2] = 0.0f;
+    debugLineColor.f[3] = 1.0f;
+    //DebugPushTestLine(m_heli.mainRotorPos, testTorque, 5.0, 0.0, debugLineColor);
+
+    /// Test magnatude
+    DirectX::SimpleMath::Vector3 vec1 = m_heli.q.mainRotorForceNormal;
+    vec1.Normalize();
+    DirectX::SimpleMath::Vector3 vec2 = m_heli.mainRotorPos - m_heli.centerOfMass;
+    vec2.Normalize();
+    float angle = acos(vec1.Dot(vec2));
+    angle = Utility::ToDegrees(angle);
+    DebugPushUILineDecimalNumber("angle  ", angle, "");
+    float angle2 = Utility::GetAngleBetweenVectors(vec1, vec2);
+    DebugPushUILineDecimalNumber("angle2 ", Utility::ToDegrees(angle2), "");
+    //float mag = (6.0f * 10.0f) * sin(Utility::ToRadians(50.0f));
+    DirectX::SimpleMath::Vector3 vec3 = testTorque * sin(Utility::ToRadians(angle));
+    float mag = vec3.Length();
+    DebugPushUILineDecimalNumber("mag  ", mag, "");
+    /// 
+    float mag2 = Utility::GetTorqueVec(rotorForce, (m_heli.mainRotorPos - m_heli.centerOfMass)).Length();
+
+    DebugPushUILineDecimalNumber("mag2 ", mag2, "");
+
+    DirectX::SimpleMath::Vector3 axisLine = m_heli.centerOfMass - m_heli.mainRotorPos ;
+    DebugPushTestLine(m_heli.mainRotorPos, axisLine, 15.0, 0.0, debugLineColor);
+
+    float mod = 0.1f;
+    if (testTorque.Length() > 0.1)
+    {       
+        DirectX::SimpleMath::Matrix testMat3 = Utility::GetTorqueMat(axisLine, m_heli.gravity, mod);
+        //DirectX::SimpleMath::Matrix testMat3 = Utility::GetTorqueMat(m_heli.gravity, ( m_heli.centerOfMass - m_heli.localMainRotorPos), mod);
+        DirectX::SimpleMath::Vector3 testUp3 = axisLine;
+        testUp3 = DirectX::SimpleMath::Vector3::Transform(testUp3, testMat3);
+        debugLineColor.f[1] = 1.0f;
+        DebugPushTestLine(m_heli.mainRotorPos, testUp3, 5.0, 0.0, debugLineColor);
+        //DebugPushTestLine(m_heli.mainRotorPos, m_heli.gravity, 5.0, 0.0, debugLineColor);
+        
+        //DirectX::SimpleMath::Matrix testMat = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(testTorque, - testTorque.Length() * 0.0001);
+        DirectX::SimpleMath::Matrix testMat = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(testTorque, -mag * mod);
+        DirectX::SimpleMath::Vector3 testUp = m_heli.up;
+        DirectX::SimpleMath::Matrix testMat4 = testMat + testMat3;
+        testUp = DirectX::SimpleMath::Vector3::Transform(testUp, testMat4);
+        testUp.Normalize();
+        //DebugPushTestLine(m_heli.mainRotorPos, testUp, 5.0, 0.0, debugLineColor);
+
+
+        //DirectX::SimpleMath::Matrix testMat2 = Utility::GetTorqueMat(rotorForce, (m_heli.localMainRotorPos - m_heli.centerOfMass), mod);
+        DirectX::SimpleMath::Matrix testMat2 = Utility::GetTorqueMat((m_heli.mainRotorPos - m_heli.centerOfMass), rotorForce, mod);
+        DirectX::SimpleMath::Vector3 testUp2 = m_heli.up;
+
+        
+        testUp2 = DirectX::SimpleMath::Vector3::Transform(testUp2, testMat2);
+        debugLineColor.f[2] = 1.0f;
+        //DebugPushTestLine(m_heli.mainRotorPos, testUp2, 5.0, 0.0, debugLineColor);
+  
+        //m_heli.up = testUp;
+    }
+
+    /*
+    DirectX::SimpleMath::Matrix gravTorqueMat = Utility::GetTorqueMat(axisLine, m_heli.gravity, mod);
+    DirectX::SimpleMath::Vector3 gravVec = axisLine;
+    gravVec = DirectX::SimpleMath::Vector3::Transform(gravVec, gravTorqueMat);
+    debugLineColor.f[1] = 1.0f;
+    DebugPushTestLine(m_heli.mainRotorPos, gravVec, 5.0, 0.0, debugLineColor);
+
+    //DirectX::SimpleMath::Matrix rotorTorqueMat = Utility::GetTorqueMat((m_heli.mainRotorPos - m_heli.centerOfMass), rotorForce, mod);
+    DirectX::SimpleMath::Matrix rotorTorqueMat = Utility::GetTorqueMat((-axisLine), rotorForce, mod);
+    DirectX::SimpleMath::Vector3 rotorVec = m_heli.up;
+    rotorVec = DirectX::SimpleMath::Vector3::Transform(rotorVec, rotorTorqueMat);
+    debugLineColor.f[2] = 1.0f;
+    //DebugPushTestLine(m_heli.mainRotorPos, testUp2, 5.0, 0.0, debugLineColor);
+    DirectX::SimpleMath::Vector3 newUp2 = m_heli.up;
+    if (testTorque.Length() > 0.1)
+    {
+        newUp2 = DirectX::SimpleMath::Vector3::Transform(newUp2, gravTorqueMat * rotorTorqueMat);
+    }
+    else
+    {
+        newUp2 = DirectX::SimpleMath::Vector3::Transform(newUp2, gravTorqueMat);
+    }
+    newUp2.Normalize();
+    m_heli.up = newUp2;
+    */
+
+    DirectX::SimpleMath::Quaternion gravTorqueQuat = Utility::GetTorqueQuat(axisLine, m_heli.gravity, mod);
+    DirectX::SimpleMath::Vector3 gravVec = axisLine;
+    gravVec = DirectX::SimpleMath::Vector3::Transform(gravVec, gravTorqueQuat);
+    debugLineColor.f[1] = 1.0f;
+    DebugPushTestLine(m_heli.mainRotorPos, gravVec, 5.0, 0.0, debugLineColor);
+
+    //DirectX::SimpleMath::Matrix rotorTorqueMat = Utility::GetTorqueMat((m_heli.mainRotorPos - m_heli.centerOfMass), rotorForce, mod);
+    DirectX::SimpleMath::Quaternion rotorTorqueQuat = Utility::GetTorqueQuat((-axisLine), rotorForce, mod);
+    DirectX::SimpleMath::Vector3 rotorVec = m_heli.up;
+    rotorVec = DirectX::SimpleMath::Vector3::Transform(rotorVec, rotorTorqueQuat);
+    debugLineColor.f[2] = 1.0f;
+    //DebugPushTestLine(m_heli.mainRotorPos, testUp2, 5.0, 0.0, debugLineColor);
+    DirectX::SimpleMath::Vector3 newUp2 = m_heli.up;
+    if (testTorque.Length() > 0.1)
+    {
+        newUp2 = DirectX::SimpleMath::Vector3::Transform(newUp2, gravTorqueQuat * rotorTorqueQuat);
+    }
+    else
+    {
+        newUp2 = DirectX::SimpleMath::Vector3::Transform(newUp2, gravTorqueQuat);
+    }
+    newUp2.Normalize();
+    m_heli.up = newUp2;
+
+    DebugPushUILineDecimalNumber("AxisLineLength ", axisLine.Length(), "");
 }
 
 void Vehicle::UpdateTailYawForce()
@@ -925,8 +1081,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     debugLineColor.f[1] = 0.0f;
     debugLineColor.f[2] = 0.0f;
     debugLineColor.f[3] = 1.0f;
-    DebugPushTestLine(m_heli.mainRotorPos, m_heli.q.mainRotorForceNormal, 5.0, 0.0, debugLineColor);
-
+    //DebugPushTestLine(m_heli.mainRotorPos, m_heli.q.mainRotorForceNormal, 5.0, 0.0, debugLineColor);
 
     m_heli.isVehicleLanding = false;
     m_heli.terrainHightAtPos = m_environment->GetTerrainHeightAtPos(m_heli.q.position);
@@ -947,7 +1102,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
         m_heli.q.position.y = m_heli.terrainHightAtPos;
     }
     
-    TurnVehicle(aTimeDelta);
+    //TurnVehicle(aTimeDelta);
     UpdateTerrainNorm();   
 
     UpdateVehicleAlignment();
@@ -970,7 +1125,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     InputDecay(aTimeDelta);
     DebugPushUILineDecimalNumber("test rotor mag : ", m_heli.collectiveInput, "");
 
-    UpdateTailYawForce();
+    //UpdateTailYawForce();
   
     m_heli.testAccel = (m_heli.q.velocity.Length() - prevVelocity.Length()) / static_cast<float>(aTimeDelta);
     
