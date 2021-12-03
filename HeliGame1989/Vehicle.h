@@ -10,6 +10,7 @@ struct Motion
 
     DirectX::SimpleMath::Vector3 airResistance;
     DirectX::SimpleMath::Vector3 bodyVelocity;
+    DirectX::SimpleMath::Matrix  bodyTorque;
     DirectX::SimpleMath::Vector3 engineForce;
     DirectX::SimpleMath::Vector3 gravityForce;
     DirectX::SimpleMath::Vector3 mainRotorForceNormal;
@@ -35,8 +36,8 @@ struct HeliData
     bool        cyclicInputPitchIsPressed;
     float       cyclicInputRoll;
     bool        cyclicInputRollIsPressed;
-    const float cyclicInputMax = 1.0f;
-    const float cyclicInputMin = -1.0f;
+    const float cyclicInputMax = Utility::ToRadians(45.0f);
+    const float cyclicInputMin = -Utility::ToRadians(45.0f);
     const float cyclicInputRate = 1.0f;
 
     float       throttleInput;
@@ -76,7 +77,6 @@ struct HeliData
     float   totalResistance;
 
     //
-    float   vehicleRotation;
     float   speed;                   // speed vehicle is traveling
     bool    isVehicleAirborne; 
     bool    isVehicleLanding;
@@ -85,7 +85,7 @@ struct HeliData
     DirectX::SimpleMath::Vector3 forward;
     DirectX::SimpleMath::Vector3 up;
     DirectX::SimpleMath::Vector3 right;
-
+    DirectX::SimpleMath::Matrix alignment;
     float   terrainHightAtPos;
 
     float   testAccel = 0.0;
@@ -186,7 +186,7 @@ class Vehicle
 public: 
     std::vector<std::pair<std::string, float>> DebugGetUI() { return m_debugUI; };
     std::vector<std::string> DebugGetUIVector() { return m_debugUIVector; };
-    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::XMVECTORF32>> DebugGetTestLines() const { return m_debugLinesVec; };
+    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> DebugGetTestLines() const { return m_debugLinesVec; };
 
     void DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj);
 
@@ -195,7 +195,10 @@ public:
     float GetSpeed() { return m_heli.speed; };
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
-    float GetVehicleRotation() const { return m_heli.vehicleRotation; };
+    //DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.alignment; };
+    DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
+    };
+    //float GetVehicleRotation() const { return m_heli.vehicleRotation; };
     DirectX::SimpleMath::Vector3 GetVelocity() const { return m_heli.q.velocity; };
   
     void InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext);
@@ -205,7 +208,7 @@ public:
     void InputCyclicPitch(const float aPitchInput);
     void InputCyclicRoll(const float aRollInput);
     void InputDecay(const double aTimeDelta);
-    void InputHThrottle(const float aThrottleInput);
+    void InputThrottle(const float aThrottleInput);
     void InputYawPedal(const float aYawInput);
 
     void Jump();
@@ -226,7 +229,7 @@ private:
     void DebugPushUILine(std::string aString, float aVal);
     void DebugPushUILineDecimalNumber(std::string aString1, float aVal, std::string aString2);
     void DebugPushUILineWholeNumber(std::string aString1, int aVal, std::string aString2);
-    void DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::XMVECTORF32 aColor);
+    void DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor);
 
     void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext);
 
@@ -237,16 +240,16 @@ private:
     void RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ, double aTimeDelta, float aQScale, Motion* aDQ);
     void RungeKutta4(struct HeliData* aHeli, double aTimeDelta);
    
+    void UpdateAlignment();
+    void UpdateBodyTorque();
     void UpdateModel(const double aTimer);
     void UpdateResistance();
     void UpdateRotorForce();
+    void UpdateRotorForce2();
     void UpdateRotorInputForce();
     void UpdateTailYawForce();
     void UpdateTerrainNorm();
-    void UpdateVehicleAlignment();
     void UpdateVelocity(double aTimeDelta);
-
-    void TurnVehicle(double aTimeDelta);
 
     Environment const* m_environment;
     HeliData                        m_heli;
@@ -261,7 +264,7 @@ private:
     float                           m_moveLeftRight = 0.0;
     float                           m_moveUpDown = 0.0;
 
-    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::XMVECTORF32>> m_debugLinesVec;
+    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> m_debugLinesVec;
     std::vector<std::pair<std::string, float>> m_debugUI;
     std::vector<std::string> m_debugUIVector;
 

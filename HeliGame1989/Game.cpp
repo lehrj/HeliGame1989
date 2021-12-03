@@ -605,10 +605,10 @@ void Game::DrawDebugNormalLines(const  DirectX::SimpleMath::Vector3 aPos, const 
 
 void Game::DrawDebugLinesVector()
 {
-    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::XMVECTORF32>> lineTup = m_vehicle->DebugGetTestLines();
+    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> lineTup = m_vehicle->DebugGetTestLines();
     for (unsigned int i = 0; i < lineTup.size(); ++i)
     {
-        DirectX::XMVECTORF32 lineColor = std::get<2>(lineTup[i]);
+        DirectX::SimpleMath::Vector4 lineColor = std::get<2>(lineTup[i]);
         VertexPositionColor lineStart(std::get<0>(lineTup[i]), lineColor);
         VertexPositionColor lineEnd(std::get<1>(lineTup[i]), lineColor);
         m_batch3->DrawLine(lineStart, lineEnd);
@@ -3342,14 +3342,14 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->InputHThrottle(static_cast<float>(-aTimer.GetElapsedSeconds()));
+            m_vehicle->InputThrottle(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.Decimal)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            m_vehicle->InputHThrottle(static_cast<float>(aTimer.GetElapsedSeconds()));
+            m_vehicle->InputThrottle(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.I)

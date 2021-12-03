@@ -468,8 +468,9 @@ void Camera::UpdateCamera(DX::StepTimer const& aTimer)
 	{
 		m_springTarget.position = m_vehicleFocus->GetPos();
 		DirectX::SimpleMath::Vector3 testHeading = DirectX::SimpleMath::Vector3::UnitX;
-		DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateRotationY(m_vehicleFocus->GetVehicleRotation());
-
+		//DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateRotationY(m_vehicleFocus->GetVehicleRotation());
+		DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(Utility::ToRadians(-90.0f), 0.0f, 0.0f);
+		rotMat *= m_vehicleFocus->GetVehicleOrientation();
 		testHeading = DirectX::SimpleMath::Vector3::Transform(testHeading, rotMat);
 		m_springTarget.forward = testHeading;
 
@@ -645,7 +646,11 @@ void Camera::UpdateChaseCamera()
 	DirectX::SimpleMath::Vector3 targetPos = m_vehicleFocus->GetPos() + m_followCamTargOffset;
 	SetTargetPos(targetPos);
 
-	m_chaseCamQuat = DirectX::SimpleMath::Quaternion::Lerp(m_chaseCamQuat, DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(m_vehicleFocus->GetVehicleRotation(), 0.0, accel), m_chaseCamLerpFactor);
+	//DirectX::SimpleMath::Matrix orientationMat = m_vehicleFocus->GetVehicleOrientation();
+	DirectX::SimpleMath::Quaternion orientationQuat = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(Utility::ToRadians(0.0f), 0.0f, accel);
+	orientationQuat *= DirectX::SimpleMath::Quaternion::CreateFromRotationMatrix(m_vehicleFocus->GetVehicleOrientation());
+	//m_chaseCamQuat = DirectX::SimpleMath::Quaternion::Lerp(m_chaseCamQuat, DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(m_vehicleFocus->GetVehicleRotation(), 0.0, accel), m_chaseCamLerpFactor);
+	m_chaseCamQuat = DirectX::SimpleMath::Quaternion::Lerp(m_chaseCamQuat, orientationQuat, m_chaseCamLerpFactor);
 
 	DirectX::SimpleMath::Vector3 testAccelPos = DirectX::SimpleMath::Vector3::SmoothStep(accelCamPos, m_followCamPos, 0.0001);
 	DirectX::SimpleMath::Vector3 cameraPos = testAccelPos;
