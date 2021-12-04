@@ -36,8 +36,8 @@ struct HeliData
     bool        cyclicInputPitchIsPressed;
     float       cyclicInputRoll;
     bool        cyclicInputRollIsPressed;
-    const float cyclicInputMax = Utility::ToRadians(45.0f);
-    const float cyclicInputMin = -Utility::ToRadians(45.0f);
+    const float cyclicInputMax = Utility::ToRadians(35.0f);
+    const float cyclicInputMin = -Utility::ToRadians(35.0f);
     const float cyclicInputRate = 1.0f;
 
     float       throttleInput;
@@ -86,6 +86,8 @@ struct HeliData
     DirectX::SimpleMath::Vector3 up;
     DirectX::SimpleMath::Vector3 right;
     DirectX::SimpleMath::Matrix alignment;
+    DirectX::SimpleMath::Matrix cameraOrientation;
+    DirectX::SimpleMath::Matrix torqueForce;
     float   terrainHightAtPos;
 
     float   testAccel = 0.0;
@@ -195,10 +197,9 @@ public:
     float GetSpeed() { return m_heli.speed; };
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
-    //DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.alignment; };
-    DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
-    };
-    //float GetVehicleRotation() const { return m_heli.vehicleRotation; };
+    DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.cameraOrientation; };
+    //DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up); };
+
     DirectX::SimpleMath::Vector3 GetVelocity() const { return m_heli.q.velocity; };
   
     void InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext);
