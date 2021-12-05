@@ -3319,7 +3319,7 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
             m_lightPos1.y -= static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputYawPedal(static_cast<float>(aTimer.GetElapsedSeconds()));
+            m_vehicle->InputYawPedal(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad8)
@@ -3335,7 +3335,7 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
             m_lightPos1.y += static_cast<float>(aTimer.GetElapsedSeconds()) * m_lightMovementSpeed;
-            m_vehicle->InputYawPedal(static_cast<float>(-aTimer.GetElapsedSeconds()));
+            m_vehicle->InputYawPedal(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
     }
     if (kb.NumPad0)

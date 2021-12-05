@@ -16,7 +16,11 @@ struct Motion
     DirectX::SimpleMath::Vector3 mainRotorForceNormal;
     float                        mainRotorForceMagnitude;
     DirectX::SimpleMath::Vector3 position;
-    float                        tailRotorYawForce;
+    //float                        tailRotorYawForce;
+    
+    float                        tailRotorForceMagnitude;
+    DirectX::SimpleMath::Vector3 tailRotorForceNormal;
+    DirectX::SimpleMath::Matrix  tailRotorTorqueMat;
     DirectX::SimpleMath::Vector3 totalVelocity;
     DirectX::SimpleMath::Vector3 velocity;
 };
@@ -231,6 +235,7 @@ private:
     void DebugPushUILineDecimalNumber(std::string aString1, float aVal, std::string aString2);
     void DebugPushUILineWholeNumber(std::string aString1, int aVal, std::string aString2);
     void DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor);
+    void DebugPushTestLineBetweenPoints(DirectX::SimpleMath::Vector3 aPoint1, DirectX::SimpleMath::Vector3 aPoint2, DirectX::SimpleMath::Vector4 aColor);
 
     void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext);
 
@@ -246,7 +251,7 @@ private:
     void UpdateModel(const double aTimer);
     void UpdateResistance();
     void UpdateRotorForce();
-    void UpdateRotorForce2();
+
     void UpdateRotorInputForce();
     void UpdateTailYawForce();
     void UpdateTerrainNorm();
