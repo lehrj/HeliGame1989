@@ -76,6 +76,7 @@ struct HeliData
     float   airDensity;
     float   dragCoefficient;
     const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
+    //const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -.80665f, 0.0f);
     float   mass;
     Motion  q;
     float   totalResistance;

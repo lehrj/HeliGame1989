@@ -73,6 +73,7 @@ public:
         {
             torqueMat *= DirectX::SimpleMath::Matrix::CreateFromAxisAngle(torqueVec, torqueVec.Length() * aStepMod);
         }
+
         return torqueMat;
     }
 
