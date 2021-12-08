@@ -33,55 +33,22 @@ public:
         aVec1.Normalize();
         aVec2.Normalize();
         float dot = aVec1.Dot(aVec2);
-        float testCos = acos(dot);
-        float angle = acos(aVec1.Dot(aVec2));
-
-        float step1 = dot / aVec1.Length();
-        float step2 = step1 / aVec2.Length();
-        float deg = Utility::ToDegrees(step2);
-
-        float testCos2 = acos(26.9682884);
-
-        DirectX::SimpleMath::Vector3 testAng = DirectX::XMVector3AngleBetweenNormals(aVec1, aVec2);
-        float testAngLength = testAng.Length();
-
         if (dot > 1.0f)
         {
             dot = 1.0f;
         }
-        angle = acos(dot);
-        if (angle < (Utility::GetPi() * 2.0f) || angle > (Utility::GetPi() * -2.0f))
+        else if (dot < -1.0f)
         {
+            dot = -1.0f;
         }
-        else
-        {
-            int testBreak = 0;
-        }
-
+        const float angle = acos(dot);
         return angle;
     }
 
     static DirectX::SimpleMath::Vector3 GetTorqueVec(const DirectX::SimpleMath::Vector3 aVec1, const DirectX::SimpleMath::Vector3 aVec2)
     {
-        //DirectX::SimpleMath::Vector3 torqueVec = aVec1;
-        DirectX::SimpleMath::Vector3 torqueVec = aVec1.Cross(aVec2);
-        //testTorque = torqueVec.Cross(aVec2);
-
-        float angle = GetAngleBetweenVectors(aVec1, aVec2);
-        DirectX::SimpleMath::Vector3 torqueVec2 = aVec1.Cross(aVec2) * sin(GetAngleBetweenVectors(aVec1, aVec2));
-        
-        DirectX::SimpleMath::Vector3 testVec = torqueVec2;
-        testVec.Normalize();
-        if (testVec.Length() < 1.1f || testVec.Length() > 0.9f)
-        {
-        }
-        else
-        {
-            int testBreak = 0;
-        }
-
-
-        return torqueVec2;
+        const DirectX::SimpleMath::Vector3 torqueVec = aVec1.Cross(aVec2) * sin(GetAngleBetweenVectors(aVec1, aVec2));
+        return torqueVec;
     }
     
     static DirectX::SimpleMath::Vector4 GetTorqueVec4(const DirectX::SimpleMath::Vector3 aVec1, const DirectX::SimpleMath::Vector3 aVec2)
@@ -103,23 +70,12 @@ public:
     static DirectX::SimpleMath::Matrix GetTorqueMat(const DirectX::SimpleMath::Vector3 aVec1, const DirectX::SimpleMath::Vector3 aVec2, const float aStepMod)
     {
         DirectX::SimpleMath::Vector3 torqueVec = GetTorqueVec(aVec1, aVec2);
-        torqueVec.Normalize();
+        torqueVec.Normalize();  // remove once torque force on vehicle is implemented and debuged
         DirectX::SimpleMath::Matrix torqueMat = DirectX::SimpleMath::Matrix::Identity;
         if (torqueVec != DirectX::SimpleMath::Vector3::Zero)
         {
             torqueMat *= DirectX::SimpleMath::Matrix::CreateFromAxisAngle(torqueVec, torqueVec.Length() * aStepMod);
         }
-
-        DirectX::SimpleMath::Vector3 testUp = DirectX::SimpleMath::Vector3::UnitY;
-        testUp = DirectX::SimpleMath::Vector3::Transform(testUp, torqueMat);
-        if (testUp.Length() < 1.1f || testUp.Length() > 0.9f)
-        {
-        }
-        else
-        {
-            int testBreak = 0;
-        }
-
 
         return torqueMat;
     }
