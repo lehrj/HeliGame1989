@@ -70,7 +70,7 @@ public:
     static DirectX::SimpleMath::Matrix GetTorqueMat(const DirectX::SimpleMath::Vector3 aVec1, const DirectX::SimpleMath::Vector3 aVec2, const float aStepMod)
     {
         DirectX::SimpleMath::Vector3 torqueVec = GetTorqueVec(aVec1, aVec2);
-        torqueVec.Normalize();  // remove once torque force on vehicle is implemented and debuged
+
         DirectX::SimpleMath::Matrix torqueMat = DirectX::SimpleMath::Matrix::Identity;
         if (torqueVec != DirectX::SimpleMath::Vector3::Zero)
         {

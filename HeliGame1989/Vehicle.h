@@ -249,6 +249,7 @@ private:
    
     void UpdateAlignment();
     void UpdateBodyTorque();
+    void UpdateBodyTorque2();
     void UpdateModel(const double aTimer);
     void UpdateResistance();
     void UpdateRotorForce();
@@ -257,6 +258,8 @@ private:
     void UpdateTailYawForce();
     void UpdateTerrainNorm();
     void UpdateVelocity(double aTimeDelta);
+
+    void UpdateAlignTest();
 
     Environment const* m_environment;
     HeliData                        m_heli;
@@ -276,5 +279,11 @@ private:
     std::vector<std::string> m_debugUIVector;
 
     float m_rotorTimer = 0.0f;
+
+    float testYawInput = 0.0f;
+    float testPitchInput = 0.0f;
+    float testRollInput = 0.0f;
+    float testTurnSpeed = 1.0f;
+    float testInputMod = 1.0f;
 };
 
