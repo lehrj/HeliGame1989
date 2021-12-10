@@ -203,7 +203,6 @@ public:
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
     DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.cameraOrientation; };
-    //DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up); };
 
     DirectX::SimpleMath::Vector3 GetVelocity() const { return m_heli.q.velocity; };
   
@@ -249,7 +248,6 @@ private:
    
     void UpdateAlignment();
     void UpdateBodyTorque();
-    void UpdateBodyTorque2();
     void UpdateModel(const double aTimer);
     void UpdateResistance();
     void UpdateRotorForce();
@@ -258,8 +256,6 @@ private:
     void UpdateTailYawForce();
     void UpdateTerrainNorm();
     void UpdateVelocity(double aTimeDelta);
-
-    void UpdateAlignTest();
 
     Environment const* m_environment;
     HeliData                        m_heli;

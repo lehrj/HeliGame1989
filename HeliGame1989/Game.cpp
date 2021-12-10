@@ -40,6 +40,7 @@ Game::Game() noexcept :
     }
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
+
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     m_currentUiState = UiState::UISTATE_SWING;
     InitializeWorldGrid();

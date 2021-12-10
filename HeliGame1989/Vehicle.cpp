@@ -594,25 +594,6 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
 
     newQ.velocity += rotorForce + static_cast<float>(aQScale) * aDeltaQ->velocity;
 
-    // tail yaw testing
-    DirectX::SimpleMath::Matrix yawRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.yawPedalInput * 1.0f);
-    newQ.velocity = DirectX::SimpleMath::Vector3::Transform(newQ.velocity,yawRot);
-
-    //DirectX::SimpleMath::Vector3 tailRotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
-    
-    /*
-    DirectX::SimpleMath::Vector3 testTorque;
-    //DirectX::SimpleMath::Matrix testTorque;
-    testTorque = rotorForce.Cross(m_heli.localMainRotorPos - m_heli.centerOfMass);
-    DebugPushUILineDecimalNumber("testTorque.x ", testTorque.x, "");
-    DebugPushUILineDecimalNumber("testTorque.y ", testTorque.y, "");
-    DebugPushUILineDecimalNumber("testTorque.z ", testTorque.z, "");
-
-    DirectX::SimpleMath::Matrix testMat;
-    //testMat = DirectX::SimpleMath::Matrix::
-    */
-
-
     //  Compute the constants that define the
     //  torque curve line.
     // ToDo once physics equations are in place after testing model is finished
@@ -736,15 +717,13 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     q.velocity += velocityUpdate;
     q.engineForce += engineVelocityUpdate;
     q.airResistance += airResistnaceVelocityUpdate;
-    q.gravityForce += gravityVelocityUpdate;
+    //q.gravityForce += gravityVelocityUpdate;
     q.totalVelocity += velocityUpdate;
-
-    
+  
     aHeli->q.engineForce = q.engineForce;
     aHeli->q.position = q.position;
     aHeli->q.velocity = q.velocity;
-    
-
+   
     aHeli->q = q;
 
     return;
@@ -754,8 +733,6 @@ void Vehicle::SetEnvironment(Environment* aEnviron)
 {
     m_environment = aEnviron;
 }
-
-
 
 void Vehicle::UpdateAlignment()
 {
@@ -780,43 +757,6 @@ void Vehicle::UpdateAlignment()
         m_heli.right = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitZ, m_heli.alignment);
         m_heli.forward = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitX, m_heli.alignment);       
     }
-
-    m_heli.cameraOrientation = DirectX::XMMatrixLookAtRH(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
-    m_heli.cameraOrientation = DirectX::SimpleMath::Matrix::CreateWorld(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
-}
-
-void Vehicle::UpdateAlignTest()
-{
-    /*
-    DirectX::SimpleMath::Matrix yawRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, m_heli.yawPedalInput);
-    DirectX::SimpleMath::Matrix pitchRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(-DirectX::SimpleMath::Vector3::UnitZ, m_heli.cyclicInputPitch);
-    DirectX::SimpleMath::Matrix rollRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, m_heli.cyclicInputRoll);
-    */
-    /*
-    DirectX::SimpleMath::Matrix yawRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, testYawInput);
-    DirectX::SimpleMath::Matrix pitchRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(-DirectX::SimpleMath::Vector3::UnitZ, testPitchInput);
-    DirectX::SimpleMath::Matrix rollRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, testRollInput);
-    */
-    /*
-    DirectX::SimpleMath::Matrix yawRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, testYawInput);
-    DirectX::SimpleMath::Matrix pitchRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.right, testPitchInput);
-    DirectX::SimpleMath::Matrix rollRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.forward, testRollInput);
-    */
-    DirectX::SimpleMath::Matrix yawRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.yawPedalInput);
-    DirectX::SimpleMath::Matrix pitchRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.right, m_heli.cyclicInputPitch);
-    DirectX::SimpleMath::Matrix rollRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.forward, m_heli.cyclicInputRoll);
-
-    testYawInput = 0.0f;
-    testPitchInput = 0.0f;
-    testRollInput = 0.0f;
-
-    //DirectX::SimpleMath::Matrix alignUpdateeMat = yawRot * pitchRot * rollRot;
-    DirectX::SimpleMath::Matrix alignUpdateeMat =  pitchRot * rollRot;
-    m_heli.alignment *= alignUpdateeMat;
-
-    m_heli.up = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitY, m_heli.alignment);
-    m_heli.right = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitZ, m_heli.alignment);
-    m_heli.forward = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitX, m_heli.alignment);
 
     m_heli.cameraOrientation = DirectX::XMMatrixLookAtRH(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
     m_heli.cameraOrientation = DirectX::SimpleMath::Matrix::CreateWorld(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
@@ -958,177 +898,38 @@ void Vehicle::UpdateBodyTorque()
     DirectX::SimpleMath::Matrix preTorque = m_heli.torqueForce;
     const float timeStepMod = 0.1f;
     DirectX::SimpleMath::Vector3 mainRotorAxisLine = m_heli.mainRotorPos - m_heli.centerOfMass;
-    /*
-    // gravity
+    DirectX::SimpleMath::Matrix mainRotorTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), m_heli.q.mainRotorForceNormal * (m_heli.q.mainRotorForceMagnitude * m_heli.collectiveInput), timeStepMod);
     DirectX::SimpleMath::Matrix gravityTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), -m_heli.gravity, timeStepMod);
-    DirectX::SimpleMath::Vector3 gravityTorqueLine = DirectX::SimpleMath::Vector3::Transform(-m_heli.up, gravityTorqueMat);
-
-    // main rotor
-    //DebugPushTestLine(m_heli.mainRotorPos, mainRotorAxisLine, 3.0, 0.0, DirectX::SimpleMath::Vector4(1.0, 0.0, 1.0, 1.0));
-    DirectX::SimpleMath::Matrix mainRotorTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), m_heli.q.mainRotorForceNormal, timeStepMod);
-    mainRotorTorqueMat *= m_heli.alignment;
-    DirectX::SimpleMath::Vector3 mainRotorTorqueLine = DirectX::SimpleMath::Vector3::Transform(mainRotorAxisLine, mainRotorTorqueMat);
-    mainRotorTorqueLine = DirectX::SimpleMath::Vector3::Transform(m_heli.up, mainRotorTorqueMat);
-    //DebugPushTestLine(m_heli.mainRotorPos, mainRotorTorqueLine, 3.0, 0.0, DirectX::SimpleMath::Vector4(1.0, 0.0, 0.0, 1.0));
-
-    //DebugPushTestLine(m_heli.mainRotorPos, m_heli.q.mainRotorForceNormal, 10.0, 0.0, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-    DirectX::SimpleMath::Vector3 testRotorForce = DirectX::SimpleMath::Vector3::Transform(m_heli.q.mainRotorForceNormal, m_heli.alignment);
-    //DebugPushTestLine(m_heli.mainRotorPos, testRotorForce, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-
-    DirectX::SimpleMath::Matrix testHeading = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, m_heli.forward, m_heli.up);
-    testHeading = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, -DirectX::SimpleMath::Vector3::UnitZ, DirectX::SimpleMath::Vector3::UnitY);
-    DirectX::SimpleMath::Vector3 heading = DirectX::SimpleMath::Vector3::UnitX;
-    heading = DirectX::SimpleMath::Vector3::Transform(heading, testHeading);
-
-    DebugPushUILineDecimalNumber("m_heli.up.x  : ", m_heli.up.x, "");
-    DebugPushUILineDecimalNumber("m_heli.up.y  : ", m_heli.up.y, "");
-    DebugPushUILineDecimalNumber("m_heli.up.z  : ", m_heli.up.z, "");
-
-    DirectX::SimpleMath::Matrix tailYaw = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(m_heli.yawPedalInput * 0.1f, 0.0, 0.0);
-    DirectX::SimpleMath::Matrix mainRotorTorqueMat2 = Utility::GetTorqueMat((mainRotorAxisLine), m_heli.q.mainRotorForceNormal, timeStepMod);
-    DirectX::SimpleMath::Matrix gravityTorqueMat2 = Utility::GetTorqueMat((-mainRotorAxisLine), m_heli.gravity, timeStepMod);
-    
-    DirectX::SimpleMath::Vector3 testGravLine = DirectX::SimpleMath::Vector3::Transform(m_heli.up, gravityTorqueMat2);
-    DirectX::SimpleMath::Vector3 testRotorLine = DirectX::SimpleMath::Vector3::Transform(m_heli.up, mainRotorTorqueMat2);
-    DebugPushTestLine(m_heli.mainRotorPos, testGravLine, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    DebugPushTestLine(m_heli.mainRotorPos, testRotorLine, 10.0, 0.0, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-    tailYaw = m_heli.q.tailRotorTorqueMat;
-    m_heli.torqueForce = mainRotorTorqueMat2 * gravityTorqueMat2 * tailYaw;
-    //m_heli.torqueForce = mainRotorTorqueMat2 * tailYaw;
-
-    DebugPushTestLine(m_heli.mainRotorPos, DirectX::SimpleMath::Vector3::Transform(m_heli.up, m_heli.torqueForce), 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    */
-
-    //////////////
-    // test new grav force
-    DebugPushUILineDecimalNumber("m_heli.q.mainRotorForceMagnitude : ", m_heli.q.mainRotorForceMagnitude, "");
-    DirectX::SimpleMath::Matrix mainRotorTorqueMat3 = Utility::GetTorqueMat((mainRotorAxisLine), m_heli.q.mainRotorForceNormal * (m_heli.q.mainRotorForceMagnitude * m_heli.collectiveInput), timeStepMod);
-   
-    DirectX::SimpleMath::Vector3 testGravLine2 = m_heli.mainRotorPos - m_heli.centerOfMass;
-    DirectX::SimpleMath::Matrix gravityTorqueMat3 = Utility::GetTorqueMat((mainRotorAxisLine), -m_heli.gravity, timeStepMod);
-    gravityTorqueMat3 = Utility::GetTorqueMat((mainRotorAxisLine), DirectX::SimpleMath::Vector3(0.0f, 9.1, 0.0), timeStepMod);
-    DebugPushUILineDecimalNumber("testGravLine2.x : ", testGravLine2.x, "");
-    DebugPushUILineDecimalNumber("testGravLine2.y : ", testGravLine2.y, "");
-    DebugPushUILineDecimalNumber("testGravLine2.z : ", testGravLine2.z, "");
-    DebugPushTestLine(m_heli.mainRotorPos, m_heli.right, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    DebugPushTestLine(m_heli.centerOfMass, m_heli.right, 10.0, 0.0, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-    //m_heli.torqueForce = mainRotorTorqueMat3 * gravityTorqueMat3 * m_heli.torqueForce;
-
-    m_heli.torqueForce = DirectX::SimpleMath::Matrix::Lerp(preTorque, (mainRotorTorqueMat3 * gravityTorqueMat3 * m_heli.torqueForce), 0.8);
-    m_heli.torqueForce = DirectX::SimpleMath::Matrix::Lerp(preTorque, (mainRotorTorqueMat3 * gravityTorqueMat3 * m_heli.q.tailRotorTorqueMat), 0.8);
-}
-
-void Vehicle::UpdateBodyTorque2()
-{
-    const float timeStepMod = 0.1f;
-    DirectX::SimpleMath::Vector3 mainRotorAxisLine;
-    if (m_heli.mainRotorPos.y > m_heli.centerOfMass.y)
-    {
-        mainRotorAxisLine = m_heli.mainRotorPos - m_heli.centerOfMass;
-    }
-    else
-    {
-        mainRotorAxisLine = m_heli.centerOfMass - m_heli.mainRotorPos;
-    }
-    mainRotorAxisLine = m_heli.mainRotorPos - m_heli.centerOfMass;
-
-    //DebugPushTestLine(m_heli.mainRotorPos, mainRotorAxisLine, 10.0, 0.0, DirectX::SimpleMath::Vector4(0.0, 1.0, 1.0, 1.0));
-    //DebugPushTestLine(m_heli.mainRotorPos, m_heli.gravity, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0, 0.0, 0.0, 1.0));
-
-    // gravity
-    DirectX::SimpleMath::Matrix gravityTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), -m_heli.gravity, timeStepMod);
-    DirectX::SimpleMath::Vector3 gravityTorqueLine = DirectX::SimpleMath::Vector3::Transform(-m_heli.up, gravityTorqueMat);
-    //DebugPushTestLine(m_heli.mainRotorPos, gravityTorqueLine, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0, 1.0, 1.0, 1.0));
-    // main rotor
-    //DebugPushTestLine(m_heli.mainRotorPos, mainRotorAxisLine, 3.0, 0.0, DirectX::SimpleMath::Vector4(1.0, 0.0, 1.0, 1.0));
-    DirectX::SimpleMath::Matrix mainRotorTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), m_heli.q.mainRotorForceNormal, timeStepMod);
-    mainRotorTorqueMat *= m_heli.alignment;
-    DirectX::SimpleMath::Vector3 mainRotorTorqueLine = DirectX::SimpleMath::Vector3::Transform(mainRotorAxisLine, mainRotorTorqueMat);
-    mainRotorTorqueLine = DirectX::SimpleMath::Vector3::Transform(m_heli.up, mainRotorTorqueMat);
-    //DebugPushTestLine(m_heli.mainRotorPos, mainRotorTorqueLine, 3.0, 0.0, DirectX::SimpleMath::Vector4(1.0, 0.0, 0.0, 1.0));
-
-    //DebugPushTestLine(m_heli.mainRotorPos, m_heli.q.mainRotorForceNormal, 10.0, 0.0, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-    DirectX::SimpleMath::Vector3 testRotorForce = DirectX::SimpleMath::Vector3::Transform(m_heli.q.mainRotorForceNormal, m_heli.alignment);
-    //DebugPushTestLine(m_heli.mainRotorPos, testRotorForce, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-
-    DirectX::SimpleMath::Matrix testHeading = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, m_heli.forward, m_heli.up);
-    testHeading = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, - DirectX::SimpleMath::Vector3::UnitZ, DirectX::SimpleMath::Vector3::UnitY);
-    DirectX::SimpleMath::Vector3 heading = DirectX::SimpleMath::Vector3::UnitX; 
-    heading = DirectX::SimpleMath::Vector3::Transform(heading, testHeading);
-
-    DebugPushUILineDecimalNumber("m_heli.up.x  : ", m_heli.up.x, "");
-    DebugPushUILineDecimalNumber("m_heli.up.y  : ", m_heli.up.y, "");
-    DebugPushUILineDecimalNumber("m_heli.up.z  : ", m_heli.up.z, "");
-
-    DirectX::SimpleMath::Matrix tailYaw = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(m_heli.yawPedalInput * 0.1f, 0.0, 0.0);
-    DirectX::SimpleMath::Matrix mainRotorTorqueMat2 = Utility::GetTorqueMat((mainRotorAxisLine), m_heli.q.mainRotorForceNormal, timeStepMod);
-    DirectX::SimpleMath::Matrix gravityTorqueMat2 = Utility::GetTorqueMat((mainRotorAxisLine), -m_heli.gravity, timeStepMod);
-    
-    DirectX::SimpleMath::Vector3 testGravLine = DirectX::SimpleMath::Vector3::Transform(m_heli.up, gravityTorqueMat2);
-    DirectX::SimpleMath::Vector3 testRotorLine = DirectX::SimpleMath::Vector3::Transform(m_heli.up, mainRotorTorqueMat2);
-    DebugPushTestLine(m_heli.mainRotorPos, testGravLine, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    DebugPushTestLine(m_heli.mainRotorPos, testRotorLine, 10.0, 0.0, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-    tailYaw = m_heli.q.tailRotorTorqueMat;
-    m_heli.torqueForce = mainRotorTorqueMat2 * gravityTorqueMat2 * tailYaw;
-    m_heli.torqueForce = mainRotorTorqueMat2 * gravityTorqueMat2;
-    //m_heli.torqueForce = mainRotorTorqueMat2;
-    //m_heli.torqueForce = mainRotorTorqueMat2 * m_heli.q.tailRotorTorqueMat * gravityTorqueMat2;
-    //m_heli.torqueForce = mainRotorTorqueMat2 * m_heli.q.tailRotorTorqueMat;
-    DebugPushTestLine(m_heli.mainRotorPos, DirectX::SimpleMath::Vector3::Transform(m_heli.up, m_heli.torqueForce), 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    m_heli.torqueForce = DirectX::SimpleMath::Matrix::Lerp(preTorque, (mainRotorTorqueMat * gravityTorqueMat * m_heli.q.tailRotorTorqueMat), 0.8); 
 }
 
 void Vehicle::UpdateRotorForce()
 {
-    /*
-    DebugPushUILineDecimalNumber("m_heli.cyclicInputRoll : ", m_heli.cyclicInputRoll, "");
-    DebugPushUILineDecimalNumber("m_heli.cyclicInputPitch : ", m_heli.cyclicInputPitch, "");
-    DebugPushUILineDecimalNumber("m_heli.yawPedalInput : ", m_heli.yawPedalInput, "");
-    DirectX::SimpleMath::Matrix xRot = DirectX::SimpleMath::Matrix::CreateRotationX(m_heli.cyclicInputRoll * 1.0f);
-    DirectX::SimpleMath::Matrix zRot = DirectX::SimpleMath::Matrix::CreateRotationZ(m_heli.cyclicInputPitch * 1.0f);
+    float pitch = m_heli.cyclicInputPitch;
+    float roll = m_heli.cyclicInputRoll;
 
-    DirectX::SimpleMath::Matrix tRot = DirectX::SimpleMath::Matrix::Identity;
-    tRot =  xRot + zRot;
-    //tRot *= m_heli.alignment;
-    //tRot *= localizeRot;
-    DirectX::SimpleMath::Vector3 updateForce = m_heli.up;
-    //DirectX::SimpleMath::Vector3 updateForce = DirectX::SimpleMath::Vector3::UnitY;
-    //updateForce = DirectX::SimpleMath::Vector3::Transform(updateForce, tRot);
-    //updateForce.Normalize();
-    //m_heli.q.mainRotorForceNormal = updateForce;
+    DirectX::SimpleMath::Vector3 swashplate = DirectX::SimpleMath::Vector3::UnitY;
+    swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationZ(pitch));
+    swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationX(roll));
+    float combinedAngle = Utility::GetAngleBetweenVectors(DirectX::SimpleMath::Vector3::UnitY, swashplate);
 
-    DirectX::SimpleMath::Matrix rotorUpdateMat = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.0f, m_heli.cyclicInputRoll, m_heli.cyclicInputPitch);
-    //DirectX::SimpleMath::Matrix rotorUpdateMat = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(m_heli.yawPedalInput, m_heli.cyclicInputRoll, m_heli.cyclicInputPitch);
-    DirectX::SimpleMath::Quaternion rotorUpdateQuat = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, m_heli.cyclicInputRoll, m_heli.cyclicInputPitch);
-    //rotorUpdateMat *= m_heli.alignment;
-    updateForce = m_heli.up;
-    //updateForce = DirectX::SimpleMath::Vector3::Transform(updateForce, m_heli.alignment);
-    //updateForce = DirectX::SimpleMath::Vector3::Transform(updateForce, rotorUpdateQuat);
-    updateForce = DirectX::SimpleMath::Vector3::TransformNormal(updateForce, rotorUpdateMat);
+    if (combinedAngle > m_heli.cyclicInputMax)
+    {
+        float ratio = m_heli.cyclicInputMax / combinedAngle;
+        pitch = m_heli.cyclicInputPitch * ratio;
+        roll = m_heli.cyclicInputRoll * ratio;
+
+        swashplate = DirectX::SimpleMath::Vector3::UnitY;
+        swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationZ(pitch));
+        swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationX(roll));
+    }
+
+    DirectX::SimpleMath::Matrix pitchRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.right, pitch);
+    DirectX::SimpleMath::Matrix rollRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.forward, roll);
+
+    DirectX::SimpleMath::Vector3 updateForce = DirectX::SimpleMath::Vector3::TransformNormal(m_heli.up, pitchRot * rollRot);
     updateForce.Normalize();
     m_heli.q.mainRotorForceNormal = updateForce;
-
-    DebugPushTestLine(m_heli.mainRotorPos, m_heli.up, 10.0, 0.0, DirectX::SimpleMath::Vector4(0.0, 1.0, 0.0, 1.0));
-    DebugPushTestLine(m_heli.mainRotorPos, m_heli.q.mainRotorForceNormal, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0, 0.0, 1.0, 1.0));
-
-    DirectX::SimpleMath::Vector3 testUp = DirectX::SimpleMath::Vector3::UnitY;
-    testUp = DirectX::SimpleMath::Vector3::Transform(testUp, m_heli.alignment);
-    */
-    //DebugPushTestLine(m_heli.mainRotorPos, testUp, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0, 0.0, 0.0, 1.0));
-    // 
-    //////////////////////////////////////////
-
-    DirectX::SimpleMath::Matrix yawRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.up, m_heli.yawPedalInput);
-    DirectX::SimpleMath::Matrix pitchRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.right, m_heli.cyclicInputPitch);
-    DirectX::SimpleMath::Matrix rollRot = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.forward, m_heli.cyclicInputRoll);
-
-    DirectX::SimpleMath::Matrix alignUpdateeMat = pitchRot * rollRot;
-    DirectX::SimpleMath::Vector3 updateForce = m_heli.up;
-    updateForce = DirectX::SimpleMath::Vector3::TransformNormal(updateForce, alignUpdateeMat);
-    updateForce.Normalize();
-    m_heli.q.mainRotorForceNormal = updateForce;
-    DebugPushTestLine(m_heli.mainRotorPos, updateForce, 10.0, 0.0, DirectX::SimpleMath::Vector4(1.0, 1.0, 1.0, 1.0));
 
     UpdateTailYawForce();
     UpdateBodyTorque();
@@ -1186,9 +987,8 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     
     UpdateTerrainNorm();   
 
-    //UpdateAlignTest();
     UpdateAlignment();
-    //RungeKutta4(&m_heli, aTimeDelta);
+    RungeKutta4(&m_heli, aTimeDelta);
 
     if (m_heli.forward.Dot(m_heli.q.velocity) < 0.0)
     {
@@ -1208,10 +1008,9 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     DebugPushUILineDecimalNumber("test rotor mag : ", m_heli.collectiveInput, "");
 
     const float rotorAngle = Utility::ToDegrees(Utility::GetAngleBetweenVectors(m_heli.up, m_heli.q.mainRotorForceNormal));
-    DebugPushUILineDecimalNumber("rotorAngle: ", rotorAngle, "");
+    DebugPushUILineDecimalNumber("rotorAngleX: ", rotorAngle, "");
+    DebugPushUILineDecimalNumber("gravity: ", m_heli.q.gravityForce.Length(), "");
 
-    //UpdateTailYawForce();
-    //UpdateRotorForce();
     m_heli.testAccel = (m_heli.q.velocity.Length() - prevVelocity.Length()) / static_cast<float>(aTimeDelta);
     
     UpdateResistance();
