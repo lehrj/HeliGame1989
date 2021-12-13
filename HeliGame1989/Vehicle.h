@@ -21,6 +21,9 @@ struct Motion
     float                        tailRotorForceMagnitude;
     DirectX::SimpleMath::Vector3 tailRotorForceNormal;
     DirectX::SimpleMath::Matrix  tailRotorTorqueMat;
+
+    DirectX::SimpleMath::Matrix  torqueForceMat;
+
     DirectX::SimpleMath::Vector3 totalVelocity;
     DirectX::SimpleMath::Vector3 velocity;
 };
@@ -91,7 +94,7 @@ struct HeliData
     DirectX::SimpleMath::Vector3 right;
     DirectX::SimpleMath::Matrix alignment;
     DirectX::SimpleMath::Matrix cameraOrientation;
-    DirectX::SimpleMath::Matrix torqueForce;
+    //DirectX::SimpleMath::Matrix torqueForce;
     float   terrainHightAtPos;
 
     float   testAccel = 0.0;
@@ -247,12 +250,16 @@ private:
    
     void UpdateAlignment();
     void UpdateBodyTorque();
+    void UpdateBodyTorqueRunge(Motion* aQ);
     void UpdateModel(const double aTimer);
     void UpdateResistance();
     void UpdateRotorForce();
+    DirectX::SimpleMath::Vector3 UpdateRotorForceRunge();
 
     void UpdateRotorInputForce();
     void UpdateTailYawForce();
+    DirectX::SimpleMath::Matrix UpdateTailYawForceRunge();
+
     void UpdateTerrainNorm();
     void UpdateVelocity(double aTimeDelta);
 
