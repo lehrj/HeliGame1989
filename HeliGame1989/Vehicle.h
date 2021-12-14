@@ -7,7 +7,6 @@
 
 struct Motion
 {
-
     DirectX::SimpleMath::Vector3 airResistance;
     DirectX::SimpleMath::Vector3 bodyVelocity;
     DirectX::SimpleMath::Matrix  bodyTorque;
@@ -16,8 +15,7 @@ struct Motion
     DirectX::SimpleMath::Vector3 mainRotorForceNormal;
     float                        mainRotorForceMagnitude;
     DirectX::SimpleMath::Vector3 position;
-
-    
+  
     float                        tailRotorForceMagnitude;
     DirectX::SimpleMath::Vector3 tailRotorForceNormal;
     DirectX::SimpleMath::Matrix  tailRotorTorqueMat;
