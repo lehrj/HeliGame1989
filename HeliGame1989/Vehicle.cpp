@@ -304,6 +304,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.q.torqueForceMat = DirectX::SimpleMath::Matrix::Identity;
     m_heli.q.totalVelocity = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.velocity = DirectX::SimpleMath::Vector3::Zero;
+    m_heli.q.parabolicMomentum = DirectX::SimpleMath::Vector3::Zero;
 
     m_heli.speed = 0.0;
 
@@ -881,6 +882,11 @@ void Vehicle::UpdateModel(const double aTimer)
     m_heliModel.tailRotorBladeMatrix2 *= tailBladeSpin;
     m_heliModel.tailRotorBladeMatrix2 *= m_heliModel.tailRotorBladeTranslationMatrix2;
     m_heliModel.tailRotorBladeMatrix2 *= updateMat;
+}
+
+void Vehicle::UpdateParabolicMomentum()
+{
+
 }
 
 void Vehicle::UpdateResistance()

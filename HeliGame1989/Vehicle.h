@@ -24,6 +24,8 @@ struct Motion
 
     DirectX::SimpleMath::Vector3 totalVelocity;
     DirectX::SimpleMath::Vector3 velocity;
+
+    DirectX::SimpleMath::Vector3 parabolicMomentum;
 };
 
 struct HeliData
@@ -250,6 +252,7 @@ private:
     void UpdateBodyTorque();
     void UpdateBodyTorqueRunge(Motion* aQ);
     void UpdateModel(const double aTimer);
+    void UpdateParabolicMomentum();
     void UpdateResistance();
     void UpdateRotorForce();
     DirectX::SimpleMath::Vector3 UpdateRotorForceRunge();
