@@ -567,6 +567,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
     newQ.torqueForceMat = aQ->torqueForceMat + static_cast<float>(aQScale) * aDeltaQ->torqueForceMat;
 
     DirectX::SimpleMath::Vector3 rotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
+    rotorForce = UpdateRotorForceRunge();
     newQ.velocity += rotorForce + static_cast<float>(aQScale) * aDeltaQ->velocity;
 
     
