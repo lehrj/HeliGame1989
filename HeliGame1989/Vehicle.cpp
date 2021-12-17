@@ -568,6 +568,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
 
     DirectX::SimpleMath::Vector3 rotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
     rotorForce = UpdateRotorForceRunge();
+    rotorForce *= aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
     newQ.velocity += rotorForce + static_cast<float>(aQScale) * aDeltaQ->velocity;
 
     
@@ -972,7 +973,11 @@ DirectX::SimpleMath::Vector3 Vehicle::UpdateRotorForceRunge()
 {
     float pitch = m_heli.cyclicInputPitch;
     float roll = m_heli.cyclicInputRoll;
+    if (roll > 0.5f)
+    {
+        int testBreak = 0;
 
+    }
     DirectX::SimpleMath::Vector3 swashplate = DirectX::SimpleMath::Vector3::UnitY;
     swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationZ(pitch));
     swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationX(roll));
@@ -1090,6 +1095,10 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     
     UpdateResistance();
 
+
+    DebugPushUILineDecimalNumber("m_heli.q.mainRotorForceNormal.x : ", m_heli.q.mainRotorForceNormal.x, "");
+    DebugPushUILineDecimalNumber("m_heli.q.mainRotorForceNormal.y : ", m_heli.q.mainRotorForceNormal.y, "");
+    DebugPushUILineDecimalNumber("m_heli.q.mainRotorForceNormal.z : ", m_heli.q.mainRotorForceNormal.z, "");
 }
 
 void Vehicle::UpdateVelocity(double aTimeDelta)
