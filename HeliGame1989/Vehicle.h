@@ -251,6 +251,8 @@ private:
     void UpdateAlignment();
     void UpdateBodyTorque();
     void UpdateBodyTorqueRunge(Motion* aQ);
+    DirectX::SimpleMath::Matrix UpdateBodyTorqueRunge2(const Motion* aQ);
+
     void UpdateModel(const double aTimer);
     void UpdateParabolicMomentum();
     void UpdateResistance();
