@@ -55,7 +55,6 @@ public:
     {
         DirectX::SimpleMath::Vector3 torqueVec = aVec1.Cross(aVec2);
 
-        float angle = GetAngleBetweenVectors(aVec1, aVec2);
         DirectX::SimpleMath::Vector3 torqueVec2 = aVec1.Cross(aVec2) * sin(GetAngleBetweenVectors(aVec1, aVec2));
 
         torqueVec.Normalize();

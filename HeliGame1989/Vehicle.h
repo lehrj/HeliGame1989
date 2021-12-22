@@ -25,6 +25,9 @@ struct Motion
     DirectX::SimpleMath::Vector3 totalVelocity;
     DirectX::SimpleMath::Vector3 velocity;
 
+    float                        bodyTorqueMagnitude;
+    DirectX::SimpleMath::Vector3 bodyTorqueVec;
+
     DirectX::SimpleMath::Vector3 parabolicMomentum;
 };
 
