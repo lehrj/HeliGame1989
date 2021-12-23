@@ -252,6 +252,7 @@ private:
     void RungeKutta4(struct HeliData* aHeli, double aTimeDelta);
    
     void UpdateAlignment();
+    DirectX::SimpleMath::Matrix UpdateAlignmentTest(const DirectX::SimpleMath::Vector3 aAxis, const float aMagnitude);
     void UpdateBodyTorque();
     void UpdateBodyTorqueRunge(Motion* aQ);
     DirectX::SimpleMath::Matrix UpdateBodyTorqueRunge2(const Motion* aQ);

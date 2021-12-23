@@ -777,6 +777,15 @@ void Vehicle::UpdateAlignment()
 
 }
 
+DirectX::SimpleMath::Matrix Vehicle::UpdateAlignmentTest(const DirectX::SimpleMath::Vector3 aAxis, const float aMagnitude)
+{
+    DirectX::SimpleMath::Matrix preAlignment = m_heli.alignment;
+    float angleMod = 1.0f; // place holder till math is sorted out for mass, center of mass, and moment of intertia
+    float rotationAngle = aMagnitude * angleMod;
+    DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(aAxis, rotationAngle);
+    return preAlignment * rotMat;
+}
+
 void Vehicle::UpdateModel(const double aTimer)
 {
     DirectX::SimpleMath::Matrix updateMat = DirectX::SimpleMath::Matrix::Identity;
