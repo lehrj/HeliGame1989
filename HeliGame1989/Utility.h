@@ -11,6 +11,11 @@ public:
     static inline float ToDegrees(float r) { return r * 180.0f / GetPi(); };
     static inline float ToRadians(float d) { return d / 180.0f * GetPi(); };
 
+    struct Torque
+    {
+        DirectX::SimpleMath::Vector3 axis;
+        float                        magnitude;
+    };
 
     template<typename T>
     static T WrapAngle(T aTheta) noexcept
@@ -95,6 +100,16 @@ public:
             torqueQuat *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(torqueVec, magnatude * aStepMod);
         }
         return torqueQuat;
+    }
+
+    static Torque GetTorqueForce(const DirectX::SimpleMath::Vector3 aArm, const DirectX::SimpleMath::Vector3 aForce)
+    {
+        Torque torqueForce;
+        torqueForce.axis = aArm.Cross(aForce);
+        torqueForce.axis.Normalize();
+        torqueForce.magnitude = aArm.Length() * aForce.Length() * sin(GetAngleBetweenVectors(aArm, aForce));
+
+        return torqueForce;
     }
 
 private:

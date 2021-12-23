@@ -25,10 +25,12 @@ struct Motion
     DirectX::SimpleMath::Vector3 totalVelocity;
     DirectX::SimpleMath::Vector3 velocity;
 
+    Utility::Torque              bodyTorqueForce;
     float                        bodyTorqueMagnitude;
     DirectX::SimpleMath::Vector3 bodyTorqueVec;
 
     DirectX::SimpleMath::Vector3 parabolicMomentum;
+
 };
 
 struct HeliData
@@ -233,9 +235,7 @@ private:
     void DebugClearUI() { 
         m_debugUI.clear();
         m_debugUIVector.clear();
-        m_debugLinesVec.clear();
-    };
-
+        m_debugLinesVec.clear();};
     void DebugPushUILine(std::string aString, float aVal);
     void DebugPushUILineDecimalNumber(std::string aString1, float aVal, std::string aString2);
     void DebugPushUILineWholeNumber(std::string aString1, int aVal, std::string aString2);
@@ -250,13 +250,13 @@ private:
 
     void RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ, double aTimeDelta, float aQScale, Motion* aDQ);
     void RungeKutta4(struct HeliData* aHeli, double aTimeDelta);
-   
+    
     void UpdateAlignment();
     DirectX::SimpleMath::Matrix UpdateAlignmentTest(const DirectX::SimpleMath::Vector3 aAxis, const float aMagnitude);
     void UpdateBodyTorque();
     void UpdateBodyTorqueRunge(Motion* aQ);
     DirectX::SimpleMath::Matrix UpdateBodyTorqueRunge2(const Motion* aQ);
-
+    Utility::Torque UpdateBodyTorqueTest(const Motion aQ, const float aTimeStep);
     void UpdateModel(const double aTimer);
     void UpdateParabolicMomentum();
     void UpdateResistance();
