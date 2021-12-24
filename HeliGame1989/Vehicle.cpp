@@ -576,6 +576,8 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
     rotorForce *= aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
     newQ.mainRotorForceNormal = rotorForce;
     newQ.mainRotorForceNormal.Normalize();
+    newQ.mainRotorForceMagnitude = aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
+
     newQ.velocity += rotorForce + static_cast<float>(aQScale) * aDeltaQ->velocity;
 
 
@@ -620,6 +622,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
     DirectX::SimpleMath::Vector3 terrainNormalForce = (m_heli.terrainNormal * -m_heli.gravity.y) * static_cast<float>(aTimeDelta);
 
     DirectX::SimpleMath::Vector3 velocityUpdate;
+    Utility::Torque bodyTorqueUpdate;
     if (m_heli.isVehicleAirborne == true)
     {
         terrainNormalForce = DirectX::SimpleMath::Vector3::Zero;
@@ -634,10 +637,16 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
         velocityUpdate += airResistance * static_cast<float>(aTimeDelta);
 
         //velocityUpdate = (rotorForce + m_heli.gravity) * static_cast<float>(aTimeDelta);
+
+  
+
+        bodyTorqueUpdate = UpdateBodyTorqueTest(aQ, aTimeDelta);
     }
     else
     {
         velocityUpdate = DirectX::SimpleMath::Vector3::Zero;
+        bodyTorqueUpdate.axis = DirectX::SimpleMath::Vector3::Zero;
+        bodyTorqueUpdate.magnitude = 0.0f;
     }
 
     //  Assign right-hand side values.
@@ -645,6 +654,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
     aDQ->velocity = velocityUpdate;
     aDQ->totalVelocity = velocityUpdate;
     aDQ->position = static_cast<float>(aTimeDelta) * newQ.velocity;
+    aDQ->bodyTorqueForce = bodyTorqueUpdate;
 }
 
 //  This method solves for the vehicle motion using a 4th-order Runge-Kutta solver
@@ -695,6 +705,10 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     //DirectX::SimpleMath::Matrix torqueMat = (dq1.torqueForceMat * (2.0 * dq2.torqueForceMat) * (2.0 * dq3.torqueForceMat) * dq4.torqueForceMat) / numEqns;
     //torqueMat = UpdateBodyTorqueRunge2(&aHeli->q);
 
+    Utility::Torque bodyTorqueUpdate;
+    bodyTorqueUpdate.axis = (dq1.bodyTorqueForce.axis + 2.0 * dq2.bodyTorqueForce.axis + 2.0 * dq3.bodyTorqueForce.axis + dq4.bodyTorqueForce.axis) / numEqns;
+    bodyTorqueUpdate.magnitude = (dq1.bodyTorqueForce.magnitude + 2.0 * dq2.bodyTorqueForce.magnitude + 2.0 * dq3.bodyTorqueForce.magnitude + dq4.bodyTorqueForce.magnitude) / numEqns;
+
     // To prevent the vehicle from continuing to roll forward if vehicle velocity is less than the tolerance value and update velocity is zero
     const float stopTolerance = 0.1;
     if (q.velocity.Length() < stopTolerance && velocityUpdate == DirectX::SimpleMath::Vector3::Zero)
@@ -712,11 +726,14 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     //q.gravityForce += gravityVelocityUpdate;
     q.totalVelocity += velocityUpdate;
     q.torqueForceMat += torqueMat;
+    q.bodyTorqueForce.axis += bodyTorqueUpdate.axis;
+    q.bodyTorqueForce.magnitude += bodyTorqueUpdate.magnitude;
 
     aHeli->q.engineForce = q.engineForce;
     aHeli->q.position = q.position;
     aHeli->q.velocity = q.velocity;
     //aHeli->q.torqueForceMat = q.torqueForceMat;
+    aHeli->q.bodyTorqueForce = q.bodyTorqueForce;
     //aHeli->q = q;
 
     //DebugPushTestLine(m_heli.q.position, velocityUpdate, 10.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -726,7 +743,7 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     DebugPushUILineDecimalNumber("groundSpeed : ", groundSpeed.Length(), "");
 
 
-    Utility::Torque testTorque = UpdateBodyTorqueTest(q, aTimeDelta);
+    Utility::Torque testTorque = UpdateBodyTorqueTest(&q, aTimeDelta);
     DebugPushTestLine(m_heli.q.position, testTorque.axis, 10.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
     DebugPushUILineDecimalNumber("TorqueMag : ", testTorque.magnitude, "");
 }
@@ -769,6 +786,62 @@ void Vehicle::UpdateAlignment()
     }
 
     
+    DirectX::SimpleMath::Vector3 radiusArm = DirectX::SimpleMath::Vector3::UnitY;
+    DirectX::SimpleMath::Vector3 force = DirectX::SimpleMath::Vector3::UnitX;
+    float theta = Utility::GetAngleBetweenVectors(radiusArm, force);
+    float thetaDeg = Utility::ToDegrees(theta);
+    DirectX::SimpleMath::Vector3 tVec = radiusArm.Cross(force);
+    float tMag = radiusArm.Length() * force.Length() * sin(theta);
+
+
+    m_heli.cameraOrientation = DirectX::XMMatrixLookAtRH(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
+    m_heli.cameraOrientation = DirectX::SimpleMath::Matrix::CreateWorld(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
+
+}
+
+void Vehicle::UpdateAlignmentTorqueTest()
+{
+    if (m_heli.isVehicleAirborne == false)
+    {
+        DirectX::SimpleMath::Vector3 newUp = m_heli.terrainNormal;
+        DirectX::SimpleMath::Vector3 oldUp = m_heli.up;
+        DirectX::SimpleMath::Vector3 updateUp = DirectX::SimpleMath::Vector3::SmoothStep(oldUp, newUp, 0.2);
+        updateUp.Normalize();
+        m_heli.up = updateUp;
+        m_heli.right = m_heli.forward.Cross(m_heli.up);
+        m_heli.right.Normalize();
+        m_heli.forward = m_heli.up.Cross(m_heli.right);
+        m_heli.alignment = DirectX::SimpleMath::Matrix::CreateWorld(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
+    }
+    else
+    {
+        DirectX::SimpleMath::Matrix torqueMat; 
+        const float tol = 0.0001f;
+        if (abs(m_heli.q.bodyTorqueForce.magnitude) < tol || m_heli.q.bodyTorqueForce.axis.Length() < tol)
+        {
+            torqueMat = DirectX::SimpleMath::Matrix::Identity;
+        }
+        else
+        {
+            torqueMat = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(m_heli.q.bodyTorqueForce.axis, m_heli.q.bodyTorqueForce.magnitude);
+        }
+
+        m_heli.alignment = torqueMat;
+
+        m_heli.up = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitY, m_heli.alignment);
+        //m_heli.up.Normalize();
+        m_heli.right = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitZ, m_heli.alignment);
+        //m_heli.right.Normalize();
+        m_heli.forward = DirectX::SimpleMath::Vector3::TransformNormal(DirectX::SimpleMath::Vector3::UnitX, m_heli.alignment);
+        //m_heli.forward.Normalize();
+        if (m_heli.up.Length() > 2.0 || m_heli.up.Length() < -2.0)
+        {
+            float testLength = m_heli.up.Length();
+            int testBreak = 0;
+        }
+    }
+
+
     DirectX::SimpleMath::Vector3 radiusArm = DirectX::SimpleMath::Vector3::UnitY;
     DirectX::SimpleMath::Vector3 force = DirectX::SimpleMath::Vector3::UnitX;
     float theta = Utility::GetAngleBetweenVectors(radiusArm, force);
@@ -992,7 +1065,7 @@ DirectX::SimpleMath::Matrix Vehicle::UpdateBodyTorqueRunge2(const Motion* aQ)
     return mainRotorTorqueMat;
 }
 
-Utility::Torque Vehicle::UpdateBodyTorqueTest(const Motion aQ, const float aTimeStep)
+Utility::Torque Vehicle::UpdateBodyTorqueTest(const Motion* aQ, const float aTimeStep)
 {
     DirectX::SimpleMath::Vector3 centerMassPos = m_heli.localCenterOfMass;
     centerMassPos = DirectX::SimpleMath::Vector3::Transform(centerMassPos, m_heli.alignment);
@@ -1018,8 +1091,10 @@ Utility::Torque Vehicle::UpdateBodyTorqueTest(const Motion aQ, const float aTime
 
 
     DirectX::SimpleMath::Vector3 torqueAxis = (rotorTorque.axis * rotorTorque.magnitude) + (tailTorque.axis * tailTorque.magnitude) + (gravTorque.axis * gravTorque.magnitude);
+    torqueAxis = (tailTorque.axis * tailTorque.magnitude) + (gravTorque.axis * gravTorque.magnitude);
     torqueAxis.Normalize();
-    const float torqueMag = rotorTorque.magnitude + tailTorque.magnitude + gravTorque.magnitude;
+    //const float torqueMag = rotorTorque.magnitude + tailTorque.magnitude + gravTorque.magnitude;
+    const float torqueMag = tailTorque.magnitude + gravTorque.magnitude;
 
     Utility::Torque updatedTorque;
     updatedTorque.axis = torqueAxis;
@@ -1144,9 +1219,9 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     DirectX::SimpleMath::Vector3 prevVelocity = m_heli.q.velocity;
     DirectX::SimpleMath::Vector3 prevPos = m_heli.q.position;
 
-    //UpdateRotorForce();
+    UpdateRotorForce();
     //UpdateTailYawForce();
-    UpdateBodyTorque();
+    //UpdateBodyTorque();
 
     m_heli.isVehicleLanding = false;
     m_heli.terrainHightAtPos = m_environment->GetTerrainHeightAtPos(m_heli.q.position);
@@ -1172,7 +1247,8 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     
     RungeKutta4(&m_heli, aTimeDelta);
 
-    UpdateAlignment();
+    //UpdateAlignment();
+    UpdateAlignmentTorqueTest();
 
     if (m_heli.forward.Dot(m_heli.q.velocity) < 0.0)
     {

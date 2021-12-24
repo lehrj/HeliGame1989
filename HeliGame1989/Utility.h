@@ -46,6 +46,7 @@ public:
         {
             dot = -1.0f;
         }
+
         const float angle = acos(dot);
         return angle;
     }
