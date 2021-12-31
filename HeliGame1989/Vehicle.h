@@ -33,6 +33,22 @@ struct Motion
 
 };
 
+struct rotor
+{
+    float length;
+    float width;
+    float cyclicAngle;
+    float pitchAngle;
+    int bladeID;
+
+    enum class BladeType
+    {
+        BLADETYPE_MAINROTOR,
+        BLADETYPE_TAILROTOR,
+    };
+    BladeType bladeType;
+};
+
 struct HeliData
 {
     // input control data
