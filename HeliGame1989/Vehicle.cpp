@@ -49,6 +49,7 @@ float Vehicle::GetYawRate(double aTimeDelta)
     return omegaT;
 }
 
+
 void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
 {
     // set model part colors
@@ -260,6 +261,73 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailRotorBladeTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
 }
 
+void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
+{
+    // set values for main rotor blade
+    const int bladeCountMainRotor = 2;
+    const float angleBetweetnBladesMainRotor = (1.0f / (static_cast<float>(bladeCountMainRotor))) * (Utility::GetPi());
+    const float radiusMainRotor = 7.0f;
+    const float lengthMainRotor = 6.57999992f;
+    const float widthMainRotor = 0.80f;   
+    const float initialPitchAngleMainRotor = Utility::ToRadians(0.0f);
+    const float maxPitchAngleMainRotor = Utility::ToRadians(45.0f);
+    const float maxInputPitchAngleMainRotor = Utility::ToRadians(45.0f);
+    const float minInputPitchAngleMainRotor = Utility::ToRadians(0.0f);
+    const float minPitchAngleMainRotor = Utility::ToRadians(0.0f);
+    
+    aHeliData.mainRotor.angleBetweenBlades = bladeCountMainRotor;
+    aHeliData.mainRotor.bladeCount = bladeCountMainRotor;
+    aHeliData.mainRotor.inputPitchAngleMax = maxInputPitchAngleMainRotor;
+    aHeliData.mainRotor.inputPitchAngleMin = minInputPitchAngleMainRotor;
+    aHeliData.mainRotor.length = lengthMainRotor;
+    aHeliData.mainRotor.pitchAngleMax = maxPitchAngleMainRotor;
+    aHeliData.mainRotor.pitchAngleMin = minPitchAngleMainRotor;
+    aHeliData.mainRotor.radius = radiusMainRotor;
+    aHeliData.mainRotor.width = widthMainRotor;
+    aHeliData.mainRotor.bladeType = Rotor::BladeType::BLADETYPE_MAINROTOR;
+
+    aHeliData.mainRotor.bladeVec.clear();
+    aHeliData.mainRotor.bladeVec.resize(bladeCountMainRotor);
+    for (int i = 0; i < aHeliData.mainRotor.bladeVec.size(); ++i)
+    {
+        aHeliData.mainRotor.bladeVec[i].pitchAngle = 0.0f;
+        aHeliData.mainRotor.bladeVec[i].cyclicAngle = 0.0f;
+        aHeliData.mainRotor.bladeVec[i].rotationAngle = static_cast<float>(i) * angleBetweetnBladesMainRotor;
+    }
+
+    // set values for tail rotor blade
+    const int bladeCountTailRotor = 2;
+    const float angleBetweetnBladesTailRotor = (1.0f / (static_cast<float>(bladeCountTailRotor))) * (Utility::GetPi());
+    const float radiusTailRotor = 7.0f;
+    const float lengthTailRotor = 6.57999992f;
+    const float widthTailRotor = 0.80f;
+    const float initialPitchAngleTailRotor = Utility::ToRadians(0.0f);
+    const float maxPitchAngleTailRotor = Utility::ToRadians(45.0f);
+    const float maxInputPitchAngleTailRotor = Utility::ToRadians(45.0f);
+    const float minInputPitchAngleTailRotor = Utility::ToRadians(0.0f);
+    const float minPitchAngleTailRotor = Utility::ToRadians(0.0f);
+
+    aHeliData.tailRotor.angleBetweenBlades = bladeCountTailRotor;
+    aHeliData.tailRotor.bladeCount = bladeCountTailRotor;
+    aHeliData.tailRotor.inputPitchAngleMax = maxInputPitchAngleTailRotor;
+    aHeliData.tailRotor.inputPitchAngleMin = minInputPitchAngleTailRotor;
+    aHeliData.tailRotor.length = lengthTailRotor;
+    aHeliData.tailRotor.pitchAngleMax = maxPitchAngleTailRotor;
+    aHeliData.tailRotor.pitchAngleMin = minPitchAngleTailRotor;
+    aHeliData.tailRotor.radius = radiusTailRotor;
+    aHeliData.tailRotor.width = widthTailRotor;
+    aHeliData.tailRotor.bladeType = Rotor::BladeType::BLADETYPE_TAILROTOR;
+
+    aHeliData.tailRotor.bladeVec.clear();
+    aHeliData.tailRotor.bladeVec.resize(bladeCountMainRotor);
+    for (int i = 0; i < aHeliData.tailRotor.bladeVec.size(); ++i)
+    {
+        aHeliData.tailRotor.bladeVec[i].pitchAngle = 0.0f;
+        aHeliData.tailRotor.bladeVec[i].cyclicAngle = 0.0f;
+        aHeliData.tailRotor.bladeVec[i].rotationAngle = static_cast<float>(i) * angleBetweetnBladesTailRotor;
+    }
+}
+
 void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
 {
     // helicopter data
@@ -319,6 +387,10 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
 
     m_heli.terrainHightAtPos = 0.0;
     m_heli.terrainNormal = DirectX::SimpleMath::Vector3::UnitY;
+
+    // set up rotor blades
+    InitializeRotorBlades(m_heli);
+
 
     InitializeModel(aContext);
 

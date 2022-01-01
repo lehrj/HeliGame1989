@@ -33,13 +33,25 @@ struct Motion
 
 };
 
-struct rotor
+struct Rotor
 {
+    int bladeCount;
+    float angleBetweenBlades;
+    float inputPitchAngleMax;
+    float inputPitchAngleMin;
     float length;
+    float pitchAngleMax;
+    float pitchAngleMin;
+    float radius;
     float width;
-    float cyclicAngle;
-    float pitchAngle;
-    int bladeID;
+
+    struct RotorBlade
+    {
+        float pitchAngle;
+        float cyclicAngle;
+        float rotationAngle;
+    };
+    std::vector<RotorBlade> bladeVec;
 
     enum class BladeType
     {
@@ -119,6 +131,11 @@ struct HeliData
     float   terrainHightAtPos;
 
     float   testAccel = 0.0;
+
+
+    Rotor         mainRotor;
+    Rotor         tailRotor;
+
 };
 
 struct HeliModel
@@ -259,6 +276,7 @@ private:
     void DebugPushTestLineBetweenPoints(DirectX::SimpleMath::Vector3 aPoint1, DirectX::SimpleMath::Vector3 aPoint2, DirectX::SimpleMath::Vector4 aColor);
 
     void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext);
+    void InitializeRotorBlades(HeliData& aHeliData);
 
     float GetYawRate(double aTimeDelta);
 
@@ -288,9 +306,10 @@ private:
     void UpdateTerrainNorm();
     void UpdateVelocity(double aTimeDelta);
 
-    Environment const* m_environment;
+    Environment const*              m_environment;
     HeliData                        m_heli;
     HeliModel                       m_heliModel;
+
 
     DirectX::SimpleMath::Vector4    m_defaultForward = DirectX::XMVectorSet(1.0, 0.0, 0.0, 0.0);
     DirectX::SimpleMath::Vector4    m_forward = DirectX::XMVectorSet(1.0, 0.0, 0.0, 0.0);
