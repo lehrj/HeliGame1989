@@ -37,6 +37,7 @@ struct Rotor
 {
     int bladeCount;
     float angleBetweenBlades;
+    float height;
     float inputPitchAngleMax;
     float inputPitchAngleMin;
     float length;
@@ -275,7 +276,7 @@ private:
     void DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor);
     void DebugPushTestLineBetweenPoints(DirectX::SimpleMath::Vector3 aPoint1, DirectX::SimpleMath::Vector3 aPoint2, DirectX::SimpleMath::Vector4 aColor);
 
-    void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext);
+    void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData);
     void InitializeRotorBlades(HeliData& aHeliData);
 
     float GetYawRate(double aTimeDelta);

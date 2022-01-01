@@ -50,7 +50,7 @@ float Vehicle::GetYawRate(double aTimeDelta)
 }
 
 
-void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
+void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData)
 {
     // set model part colors
     m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.501960814f, 0.501960814f, 1.0f);
@@ -178,8 +178,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const float tailAxelLength = 0.35f;
     const float tailAxelDiameter = 0.1f;
     const float tailAxelOffsetY = 0.25f;
-    //const DirectX::SimpleMath::Vector3 tailAxelTranslation(tailFinTranslation.x * 1.02f, tailFinTranslation.y * 1.15f, (-tailFinSize.z * 0.5f) - (tailAxelLength * 0.5f));
-    //const DirectX::SimpleMath::Vector3 tailAxelTranslation(tailFinTranslation.x * 1.0f, tailFinTranslation.y * 0.5f, (-tailFinSize.z * 0.0f) - (tailAxelLength * 0.5f));
     const DirectX::SimpleMath::Vector3 tailAxelTranslation(tailBoomTranslation.x * 1.64f, tailBoomTranslation.y * 1.0f, -tailAxelLength);
     m_heliModel.tailRotorAxelShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), tailAxelLength, tailAxelDiameter, 16);
     m_heliModel.tailRotorAxelMatrix = DirectX::SimpleMath::Matrix::Identity;
@@ -190,8 +188,10 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     // tail position for torque forces
     DirectX::SimpleMath::Vector3 tailAxelPos = tailAxelTranslation;
     tailAxelPos.z = 0.0f;
-    m_heli.localTailRotorPos = tailAxelPos;
-    m_heli.tailRotorPos = m_heli.localTailRotorPos;
+    //m_heli.localTailRotorPos = tailAxelPos;
+    //m_heli.tailRotorPos = m_heli.localTailRotorPos;
+    aHeliData.localTailRotorPos = tailAxelPos;
+    aHeliData.tailRotorPos = m_heli.localTailRotorPos;
 
     // tail rotor hub
     const float tailHubLength = 0.25f;
@@ -204,19 +204,19 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localTailRotorHubMatrix = m_heliModel.tailRotorHubMatrix;
 
     // tail rotor arm
-    const float tailArmLength = 2.65f;
-    const float tailArmDiameter = 0.1f;
+    const float tailArmDiameter = aHeliData.tailRotor.radius * 2.0f;
+    const float tailArmHeight = aHeliData.tailRotor.height;;
     const DirectX::SimpleMath::Vector3 tailArmTranslation(tailHubTranslation.x, tailHubTranslation.y, tailHubTranslation.z);
-    m_heliModel.tailRotorArmShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), tailArmLength, tailArmDiameter);
+    m_heliModel.tailRotorArmShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), tailArmDiameter, tailArmHeight);
     m_heliModel.tailRotorArmMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(0.0f));
     m_heliModel.tailRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
     m_heliModel.localTailRotorArmMatrix = m_heliModel.tailRotorArmMatrix;
 
     // main rotor arm
-    const float mainArmLength = 14.0f;
-    const float mainArmDiameter = 0.15f;    
-    m_heliModel.mainRotorArmShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), mainArmLength, mainArmDiameter);
+    const float mainArmDiameter = aHeliData.mainRotor.radius * 2.0f;
+    const float mainArmHeight = aHeliData.mainRotor.height;
+    m_heliModel.mainRotorArmShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), mainArmDiameter, mainArmHeight);
     const DirectX::SimpleMath::Vector3 rotorArmTranslation(0.0f, mainHubTranslation.y, 0.0f);
     m_heliModel.mainRotorArmMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.mainRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
@@ -224,9 +224,10 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localMainRotorArmMatrix = m_heliModel.mainRotorArmMatrix;
 
     // main rotor blade 1
-    const float mainBladeWidth = 0.8f;
-    DirectX::SimpleMath::Vector3 rotorBladeSize(mainArmLength * 0.47f, mainArmDiameter, mainBladeWidth);
-    const DirectX::SimpleMath::Vector3 rotorBladeTranslation1(((mainArmLength * 0.5f) - (rotorBladeSize.x * 0.5f)), mainHubTranslation.y, 0.0f);
+    const float mainBladeWidth = aHeliData.mainRotor.width;
+    const float mainBladeLength = aHeliData.mainRotor.length;
+    const DirectX::SimpleMath::Vector3 rotorBladeSize(mainBladeLength, mainArmHeight, mainBladeWidth);
+    const DirectX::SimpleMath::Vector3 rotorBladeTranslation1(((mainArmDiameter * 0.5f) - (rotorBladeSize.x * 0.5f)), mainHubTranslation.y, 0.0f);
     m_heliModel.mainRotorBladeShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), rotorBladeSize);
     m_heliModel.mainRotorBladeMatrix1 = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.mainRotorBladeMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorBladeTranslation1);
@@ -234,7 +235,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.mainRotorBladeTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, rotorBladeSize.z * 0.5f));
 
     // main rotor blade 2
-    const DirectX::SimpleMath::Vector3 rotorBladeTranslation2(((-mainArmLength * 0.5f) + (rotorBladeSize.x * 0.5f)), mainHubTranslation.y, 0.0f);
+    const DirectX::SimpleMath::Vector3 rotorBladeTranslation2(((-mainArmDiameter * 0.5f) + (rotorBladeSize.x * 0.5f)), mainHubTranslation.y, 0.0f);
     m_heliModel.mainRotorBladeMatrix2 = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.mainRotorBladeMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(180.0f));
     m_heliModel.mainRotorBladeMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorBladeTranslation2);
@@ -242,9 +243,10 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.mainRotorBladeTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, rotorBladeSize.z * 0.5f));
 
     // tail rotor blade 1
-    const float tailBladeWidth = 0.3f;
-    DirectX::SimpleMath::Vector3 tailBladeSize(tailBladeWidth, tailArmLength * 0.42f, tailArmDiameter);
-    const DirectX::SimpleMath::Vector3 tailBladeTranslation1(tailBladeWidth * 0.5f, (tailArmLength * 0.5f) - (tailBladeSize.y * 0.5f), 0.0f);
+    const float tailBladeWidth = aHeliData.tailRotor.width;
+    const float tailBladeLength = aHeliData.tailRotor.length;
+    const DirectX::SimpleMath::Vector3 tailBladeSize(tailBladeWidth, tailBladeLength, tailArmHeight);
+    const DirectX::SimpleMath::Vector3 tailBladeTranslation1(tailBladeWidth * 0.5f, (tailArmDiameter * 0.5f) - (tailBladeSize.y * 0.5f), 0.0f);
     m_heliModel.tailRotorBladeShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), tailBladeSize);
     m_heliModel.tailRotorBladeMatrix1 = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailRotorBladeMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeTranslation1);
@@ -253,7 +255,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailRotorBladeTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
 
     // tail rotor blade 2
-    const DirectX::SimpleMath::Vector3 tailBladeTranslation2(-tailBladeWidth * 0.5f, -(tailArmLength * 0.5f) + (tailBladeSize.y * 0.5f), 0.0f);
+    const DirectX::SimpleMath::Vector3 tailBladeTranslation2(-tailBladeWidth * 0.5f, -(tailArmDiameter * 0.5f) + (tailBladeSize.y * 0.5f), 0.0f);
     m_heliModel.tailRotorBladeMatrix2 = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailRotorBladeMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeTranslation2);
     m_heliModel.localTailRotorBladeMatrix2 = m_heliModel.tailRotorBladeMatrix2;
@@ -267,6 +269,7 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     const int bladeCountMainRotor = 2;
     const float angleBetweetnBladesMainRotor = (1.0f / (static_cast<float>(bladeCountMainRotor))) * (Utility::GetPi());
     const float radiusMainRotor = 7.0f;
+    const float heightMainRotor = 0.15f;
     const float lengthMainRotor = 6.57999992f;
     const float widthMainRotor = 0.80f;   
     const float initialPitchAngleMainRotor = Utility::ToRadians(0.0f);
@@ -277,6 +280,7 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     
     aHeliData.mainRotor.angleBetweenBlades = bladeCountMainRotor;
     aHeliData.mainRotor.bladeCount = bladeCountMainRotor;
+    aHeliData.mainRotor.height = heightMainRotor;
     aHeliData.mainRotor.inputPitchAngleMax = maxInputPitchAngleMainRotor;
     aHeliData.mainRotor.inputPitchAngleMin = minInputPitchAngleMainRotor;
     aHeliData.mainRotor.length = lengthMainRotor;
@@ -298,9 +302,10 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     // set values for tail rotor blade
     const int bladeCountTailRotor = 2;
     const float angleBetweetnBladesTailRotor = (1.0f / (static_cast<float>(bladeCountTailRotor))) * (Utility::GetPi());
-    const float radiusTailRotor = 7.0f;
-    const float lengthTailRotor = 6.57999992f;
-    const float widthTailRotor = 0.80f;
+    const float radiusTailRotor = 1.325f;
+    const float heightTailRotor = 0.1f;
+    const float lengthTailRotor = 1.11300004f;
+    const float widthTailRotor = 0.300000012f;
     const float initialPitchAngleTailRotor = Utility::ToRadians(0.0f);
     const float maxPitchAngleTailRotor = Utility::ToRadians(45.0f);
     const float maxInputPitchAngleTailRotor = Utility::ToRadians(45.0f);
@@ -309,6 +314,7 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
 
     aHeliData.tailRotor.angleBetweenBlades = bladeCountTailRotor;
     aHeliData.tailRotor.bladeCount = bladeCountTailRotor;
+    aHeliData.tailRotor.height = heightTailRotor;
     aHeliData.tailRotor.inputPitchAngleMax = maxInputPitchAngleTailRotor;
     aHeliData.tailRotor.inputPitchAngleMin = minInputPitchAngleTailRotor;
     aHeliData.tailRotor.length = lengthTailRotor;
@@ -392,7 +398,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     InitializeRotorBlades(m_heli);
 
 
-    InitializeModel(aContext);
+    InitializeModel(aContext, m_heli);
 
     // Intialize key physics hardpoints based on model 
     m_heli.localMainRotorPos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Zero, m_heliModel.localMainRotorHubMatrix);
