@@ -30,7 +30,6 @@ struct Motion
     DirectX::SimpleMath::Vector3 bodyTorqueVec;
 
     DirectX::SimpleMath::Vector3 parabolicMomentum;
-
 };
 
 struct Rotor
@@ -46,7 +45,6 @@ struct Rotor
     float radius;
     float rotorRotation;
     float width;
-
 
     struct RotorBlade
     {
@@ -135,10 +133,8 @@ struct HeliData
 
     float   testAccel = 0.0;
 
-
     Rotor         mainRotor;
     Rotor         tailRotor;
-
 };
 
 struct HeliModel
@@ -302,6 +298,8 @@ private:
     void UpdateRotorForce();
     DirectX::SimpleMath::Vector3 UpdateRotorForceRunge();
 
+    void UpdateRotorData(HeliData& aHeliData, const double aTimer);
+
     void UpdateRotorInputForce();
     void UpdateTailYawForce();
     DirectX::SimpleMath::Matrix UpdateTailYawForceRunge();
@@ -312,7 +310,6 @@ private:
     Environment const*              m_environment;
     HeliData                        m_heli;
     HeliModel                       m_heliModel;
-
 
     DirectX::SimpleMath::Vector4    m_defaultForward = DirectX::XMVectorSet(1.0, 0.0, 0.0, 0.0);
     DirectX::SimpleMath::Vector4    m_forward = DirectX::XMVectorSet(1.0, 0.0, 0.0, 0.0);
@@ -327,7 +324,7 @@ private:
     std::vector<std::pair<std::string, float>> m_debugUI;
     std::vector<std::string> m_debugUIVector;
 
-    float m_rotorTimer = 0.0f;
+    float m_rotorTimerTest = 0.0f;
 
     float testYawInput = 0.0f;
     float testPitchInput = 0.0f;
