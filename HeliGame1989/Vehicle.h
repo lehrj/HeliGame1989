@@ -44,7 +44,9 @@ struct Rotor
     float pitchAngleMax;
     float pitchAngleMin;
     float radius;
+    float rotorRotation;
     float width;
+
 
     struct RotorBlade
     {
