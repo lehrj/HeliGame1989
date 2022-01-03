@@ -49,6 +49,32 @@ float Vehicle::GetYawRate(double aTimeDelta)
     return omegaT;
 }
 
+void Vehicle::InitializeEngine(Engine& aEngine)
+{
+    // all data is temp and just guessed at. update once good data from a turboshaft engine found, currently using an internal combustion engine model
+    aEngine.currentTorque = 0.0f;
+    aEngine.gearRatio = 3.44f;
+    aEngine.powerCurveLow = 0.0f;
+    aEngine.powerCurveMid = 0.025f;
+    aEngine.powerCurveHigh = -0.032f;
+    aEngine.revLimit = 7400.0f;
+    aEngine.rpm = 0.0f;
+    aEngine.torquePointLow = 220.0f;
+    aEngine.torquePointMid = 195.0f;
+    aEngine.torquePointHigh = 457.2f;
+}
+
+void Vehicle::InitializeFlightControls(ControlInput& aInput)
+{
+    aInput.collectiveInput = 0.0f;
+    aInput.cyclicInputPitch = 0.0f;
+    aInput.cyclicInputPitchIsPressed = false;
+    aInput.cyclicInputRoll = 0.0f;
+    aInput.cyclicInputRollIsPressed = false;
+    aInput.throttleInput = 0.0f;
+    aInput.yawPedalInput = 0.0f;
+    aInput.yawPedalIsPressed = false;
+}
 
 void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData)
 {
@@ -338,6 +364,8 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
 
 void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
 {
+    InitializeFlightControls(m_heli.controlInput);
+
     // helicopter data
     m_heli.collectiveInput = 0.0f;
     m_heli.cyclicInputPitch = 0.0f;
@@ -347,6 +375,8 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.throttleInput = 0.0f;
     m_heli.yawPedalInput = 0.0f;
     m_heli.yawPedalIsPressed = false;
+
+
     m_heli.mainRotorRPM = 0.0f;
 
     m_heli.numEqns = 6;
@@ -398,9 +428,8 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
 
     // set up rotor blades
     InitializeRotorBlades(m_heli);
-
-
     InitializeModel(aContext, m_heli);
+    InitializeEngine(m_heli.engine);
 
     // Intialize key physics hardpoints based on model 
     m_heli.localMainRotorPos = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::Zero, m_heliModel.localMainRotorHubMatrix);

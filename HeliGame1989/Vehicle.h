@@ -5,6 +5,20 @@
 #include "Environment.h"
 
 
+struct Engine
+{
+    float currentTorque;
+    float gearRatio;
+    float powerCurveLow;
+    float powerCurveMid;
+    float powerCurveHigh;
+    float revLimit;
+    float rpm;
+    float torquePointLow;
+    float torquePointMid;
+    float torquePointHigh;
+};
+
 struct Motion
 {
     DirectX::SimpleMath::Vector3 airResistance;
@@ -60,6 +74,38 @@ struct Rotor
         BLADETYPE_TAILROTOR,
     };
     BladeType bladeType;
+};
+
+struct ControlInput
+{
+    // input control data
+    const float inputDeadZone = 0.001;  // small deadzone to ignore gas and brake peddle input
+
+    float       collectiveInput;
+    const float collectiveInputMax = 1.0f;
+    const float collectiveInputMin = 0.0f;
+    const float collectiveInputRate = 1.0f;
+
+    const float cyclicDecayRate = 0.8f;
+    float       cyclicInputPitch;
+    bool        cyclicInputPitchIsPressed;
+    float       cyclicInputRoll;
+    bool        cyclicInputRollIsPressed;
+    const float cyclicInputMax = Utility::ToRadians(35.0f);
+    const float cyclicInputMin = -Utility::ToRadians(35.0f);
+    const float cyclicInputRate = 1.0f;
+
+    float       throttleInput;
+    const float throttleInputMin = 0.0f;
+    const float throttleInputMax = 1.0f;
+    const float throttleInputRate = 1.0f;
+
+    bool        yawPedalIsPressed;
+    float       yawPedalInput;
+    const float yawPedalDecayRate = 0.5f;
+    const float yawPedalInputMax = 1.0f;
+    const float yawPedalInputMin = -1.0f;
+    const float yawPedalInputRate = 1.0f;
 };
 
 struct HeliData
@@ -135,6 +181,8 @@ struct HeliData
 
     Rotor         mainRotor;
     Rotor         tailRotor;
+    Engine        engine;
+    ControlInput  controlInput;
 };
 
 struct HeliModel
@@ -273,7 +321,9 @@ private:
     void DebugPushUILineWholeNumber(std::string aString1, int aVal, std::string aString2);
     void DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor);
     void DebugPushTestLineBetweenPoints(DirectX::SimpleMath::Vector3 aPoint1, DirectX::SimpleMath::Vector3 aPoint2, DirectX::SimpleMath::Vector4 aColor);
-
+   
+    void InitializeEngine(Engine& aEngine);
+    void InitializeFlightControls(ControlInput& aInput);
     void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData);
     void InitializeRotorBlades(HeliData& aHeliData);
 
