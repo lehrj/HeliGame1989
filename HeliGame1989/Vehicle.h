@@ -79,7 +79,7 @@ struct Rotor
 struct ControlInput
 {
     // input control data
-    const float inputDeadZone = 0.001;  // small deadzone to ignore gas and brake peddle input
+    const float inputDeadZone = 0.001;  // small deadzone to ignore nominal control input
 
     float       collectiveInput;
     const float collectiveInputMax = 1.0f;
@@ -110,35 +110,6 @@ struct ControlInput
 
 struct HeliData
 {
-    // input control data
-    const float inputDeadZone = 0.001;  // small deadzone to ignore gas and brake peddle input
-
-    float       collectiveInput;
-    const float collectiveInputMax = 1.0f;
-    const float collectiveInputMin = 0.0f;
-    const float collectiveInputRate = 1.0f;
-
-    const float cyclicDecayRate = 0.8f;
-    float       cyclicInputPitch;
-    bool        cyclicInputPitchIsPressed;
-    float       cyclicInputRoll;
-    bool        cyclicInputRollIsPressed;
-    const float cyclicInputMax = Utility::ToRadians(35.0f);
-    const float cyclicInputMin = -Utility::ToRadians(35.0f);
-    const float cyclicInputRate = 1.0f;
-
-    float       throttleInput;
-    const float throttleInputMin = 0.0f;
-    const float throttleInputMax = 1.0f;
-    const float throttleInputRate = 1.0f;
-
-    bool        yawPedalIsPressed;
-    float       yawPedalInput;
-    const float yawPedalDecayRate = 0.5f;
-    const float yawPedalInputMax = 1.0f;
-    const float yawPedalInputMin = -1.0f;
-    const float yawPedalInputRate = 1.0f;
-
     // rotor data
     const float mainRotorForceMagMax = 15.0f;
     const float mainRotorForceMagMin = 0.0f;

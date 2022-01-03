@@ -44,8 +44,8 @@ float Vehicle::GetYawRate(double aTimeDelta)
     float omegaT = omega * static_cast<float>(aTimeDelta);
     */
     // testing tail blade yaw turn
-    DebugPushUILineDecimalNumber("m_heli.yawPedalInput", m_heli.yawPedalInput, "m_heli.yawPedalInput");
-    const float omegaT = m_heli.yawPedalInput * static_cast<float>(aTimeDelta);
+    DebugPushUILineDecimalNumber("m_heli.yawPedalInput", m_heli.controlInput.yawPedalInput, "m_heli.yawPedalInput");
+    const float omegaT = m_heli.controlInput.yawPedalInput * static_cast<float>(aTimeDelta);
     return omegaT;
 }
 
@@ -367,15 +367,6 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     InitializeFlightControls(m_heli.controlInput);
 
     // helicopter data
-    m_heli.collectiveInput = 0.0f;
-    m_heli.cyclicInputPitch = 0.0f;
-    m_heli.cyclicInputPitchIsPressed = false;
-    m_heli.cyclicInputRoll = 0.0f;
-    m_heli.cyclicInputRollIsPressed = false;
-    m_heli.throttleInput = 0.0f;
-    m_heli.yawPedalInput = 0.0f;
-    m_heli.yawPedalIsPressed = false;
-
 
     m_heli.mainRotorRPM = 0.0f;
 
@@ -448,36 +439,36 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
 
 void Vehicle::InputCollective(const float aCollectiveInput)
 {
-    const float updatedCollective = (aCollectiveInput * m_heli.collectiveInputRate) + m_heli.collectiveInput;
-    if (updatedCollective > m_heli.collectiveInputMax)
+    const float updatedCollective = (aCollectiveInput * m_heli.controlInput.collectiveInputRate) + m_heli.controlInput.collectiveInput;
+    if (updatedCollective > m_heli.controlInput.collectiveInputMax)
     {
-        m_heli.collectiveInput = m_heli.collectiveInputMax;
+        m_heli.controlInput.collectiveInput = m_heli.controlInput.collectiveInputMax;
     }
-    else if (updatedCollective < m_heli.collectiveInputMin)
+    else if (updatedCollective < m_heli.controlInput.collectiveInputMin)
     {
-        m_heli.collectiveInput = m_heli.collectiveInputMin;
+        m_heli.controlInput.collectiveInput = m_heli.controlInput.collectiveInputMin;
     }
     else
     {
-        m_heli.collectiveInput = updatedCollective;
+        m_heli.controlInput.collectiveInput = updatedCollective;
     }
 }
 
 void Vehicle::InputCyclicPitch(const float aPitchInput)
 {
-    m_heli.cyclicInputPitchIsPressed = true;
-    const float updatedPitch = (aPitchInput * m_heli.cyclicInputRate) + m_heli.cyclicInputPitch;
-    if (updatedPitch > m_heli.cyclicInputMax)
+    m_heli.controlInput.cyclicInputPitchIsPressed = true;
+    const float updatedPitch = (aPitchInput * m_heli.controlInput.cyclicInputRate) + m_heli.controlInput.cyclicInputPitch;
+    if (updatedPitch > m_heli.controlInput.cyclicInputMax)
     {
-        m_heli.cyclicInputPitch = m_heli.cyclicInputMax;
+        m_heli.controlInput.cyclicInputPitch = m_heli.controlInput.cyclicInputMax;
     }
-    else if (updatedPitch < m_heli.cyclicInputMin)
+    else if (updatedPitch < m_heli.controlInput.cyclicInputMin)
     {
-        m_heli.cyclicInputPitch = m_heli.cyclicInputMin;
+        m_heli.controlInput.cyclicInputPitch = m_heli.controlInput.cyclicInputMin;
     }
     else
     {
-        m_heli.cyclicInputPitch = updatedPitch;
+        m_heli.controlInput.cyclicInputPitch = updatedPitch;
     }
 
     testPitchInput += aPitchInput * testInputMod;
@@ -485,19 +476,19 @@ void Vehicle::InputCyclicPitch(const float aPitchInput)
 
 void Vehicle::InputCyclicRoll(const float aRollInput)
 {
-    m_heli.cyclicInputRollIsPressed = true;
-    const float updatedRoll = (aRollInput * m_heli.cyclicInputRate) + m_heli.cyclicInputRoll;
-    if (updatedRoll > m_heli.cyclicInputMax)
+    m_heli.controlInput.cyclicInputRollIsPressed = true;
+    const float updatedRoll = (aRollInput * m_heli.controlInput.cyclicInputRate) + m_heli.controlInput.cyclicInputRoll;
+    if (updatedRoll > m_heli.controlInput.cyclicInputMax)
     {
-        m_heli.cyclicInputRoll = m_heli.cyclicInputMax;
+        m_heli.controlInput.cyclicInputRoll = m_heli.controlInput.cyclicInputMax;
     }
-    else if (updatedRoll < m_heli.cyclicInputMin)
+    else if (updatedRoll < m_heli.controlInput.cyclicInputMin)
     {
-        m_heli.cyclicInputRoll = m_heli.cyclicInputMin;
+        m_heli.controlInput.cyclicInputRoll = m_heli.controlInput.cyclicInputMin;
     }
     else
     {
-        m_heli.cyclicInputRoll = updatedRoll;
+        m_heli.controlInput.cyclicInputRoll = updatedRoll;
     }
 
     testRollInput += aRollInput * testInputMod;
@@ -507,138 +498,138 @@ void Vehicle::InputDecay(const double aTimeDelta)
 {
     const float timeDelta = static_cast<float>(aTimeDelta);
 
-    if (m_heli.cyclicInputPitchIsPressed == false)
+    if (m_heli.controlInput.cyclicInputPitchIsPressed == false)
     {
         // Cyclic Pitch Decay
-        if (m_heli.cyclicInputPitch > 0.0f)
+        if (m_heli.controlInput.cyclicInputPitch > 0.0f)
         {
-            if (m_heli.cyclicInputPitch - (m_heli.cyclicDecayRate * timeDelta) < 0.0f)
+            if (m_heli.controlInput.cyclicInputPitch - (m_heli.controlInput.cyclicDecayRate * timeDelta) < 0.0f)
             {
-                m_heli.cyclicInputPitch = 0.0f;
+                m_heli.controlInput.cyclicInputPitch = 0.0f;
             }
             else
             {
-                m_heli.cyclicInputPitch -= m_heli.cyclicDecayRate * timeDelta;
+                m_heli.controlInput.cyclicInputPitch -= m_heli.controlInput.cyclicDecayRate * timeDelta;
             }
         }
-        else if (m_heli.cyclicInputPitch < 0.0f)
+        else if (m_heli.controlInput.cyclicInputPitch < 0.0f)
         {
-            if (m_heli.cyclicInputPitch + (m_heli.cyclicDecayRate * timeDelta) > 0.0f)
+            if (m_heli.controlInput.cyclicInputPitch + (m_heli.controlInput.cyclicDecayRate * timeDelta) > 0.0f)
             {
-                m_heli.cyclicInputPitch = 0.0f;
+                m_heli.controlInput.cyclicInputPitch = 0.0f;
             }
             else
             {
-                m_heli.cyclicInputPitch += m_heli.cyclicDecayRate * timeDelta;
+                m_heli.controlInput.cyclicInputPitch += m_heli.controlInput.cyclicDecayRate * timeDelta;
             }
         }
         else
         {
-            m_heli.cyclicInputPitch = 0.0f;
+            m_heli.controlInput.cyclicInputPitch = 0.0f;
         }
     }
     // Cyclic Roll Decay
-    if (m_heli.cyclicInputRollIsPressed == false)
+    if (m_heli.controlInput.cyclicInputRollIsPressed == false)
     {
-        if (m_heli.cyclicInputRoll > 0.0f)
+        if (m_heli.controlInput.cyclicInputRoll > 0.0f)
         {
-            if (m_heli.cyclicInputRoll - (m_heli.cyclicDecayRate * timeDelta) < 0.0f)
+            if (m_heli.controlInput.cyclicInputRoll - (m_heli.controlInput.cyclicDecayRate * timeDelta) < 0.0f)
             {
-                m_heli.cyclicInputRoll = 0.0f;
+                m_heli.controlInput.cyclicInputRoll = 0.0f;
             }
             else
             {
-                m_heli.cyclicInputRoll -= m_heli.cyclicDecayRate * timeDelta;
+                m_heli.controlInput.cyclicInputRoll -= m_heli.controlInput.cyclicDecayRate * timeDelta;
             }
         }
-        else if (m_heli.cyclicInputRoll < 0.0f)
+        else if (m_heli.controlInput.cyclicInputRoll < 0.0f)
         {
-            if (m_heli.cyclicInputRoll + (m_heli.cyclicDecayRate * timeDelta) > 0.0f)
+            if (m_heli.controlInput.cyclicInputRoll + (m_heli.controlInput.cyclicDecayRate * timeDelta) > 0.0f)
             {
-                m_heli.cyclicInputRoll = 0.0f;
+                m_heli.controlInput.cyclicInputRoll = 0.0f;
             }
             else
             {
-                m_heli.cyclicInputRoll += m_heli.cyclicDecayRate * timeDelta;
+                m_heli.controlInput.cyclicInputRoll += m_heli.controlInput.cyclicDecayRate * timeDelta;
             }
         }
         else
         {
-            m_heli.cyclicInputRoll = 0.0f;
+            m_heli.controlInput.cyclicInputRoll = 0.0f;
         }
     }
     // Yaw Pedal Decay
-    if (m_heli.yawPedalIsPressed == false)
+    if (m_heli.controlInput.yawPedalIsPressed == false)
     {
-        if (m_heli.yawPedalInput + (m_heli.yawPedalDecayRate * timeDelta) < 0.0f)
+        if (m_heli.controlInput.yawPedalInput + (m_heli.controlInput.yawPedalDecayRate * timeDelta) < 0.0f)
         {
-            if (m_heli.yawPedalInput - (m_heli.yawPedalDecayRate * timeDelta) > -m_heli.inputDeadZone)
+            if (m_heli.controlInput.yawPedalInput - (m_heli.controlInput.yawPedalDecayRate * timeDelta) > -m_heli.controlInput.inputDeadZone)
             {
-                m_heli.yawPedalInput = 0.0f;
+                m_heli.controlInput.yawPedalInput = 0.0f;
             }
             else
             {
-                m_heli.yawPedalInput += m_heli.yawPedalDecayRate * timeDelta;
+                m_heli.controlInput.yawPedalInput += m_heli.controlInput.yawPedalDecayRate * timeDelta;
             }
         }
-        else if (m_heli.yawPedalInput - (m_heli.yawPedalDecayRate * timeDelta) > 0.0f)
+        else if (m_heli.controlInput.yawPedalInput - (m_heli.controlInput.yawPedalDecayRate * timeDelta) > 0.0f)
         {
-            if (m_heli.yawPedalInput + (m_heli.yawPedalDecayRate * timeDelta) < m_heli.inputDeadZone)
+            if (m_heli.controlInput.yawPedalInput + (m_heli.controlInput.yawPedalDecayRate * timeDelta) < m_heli.controlInput.inputDeadZone)
             {
-                m_heli.yawPedalInput = 0.0f;
+                m_heli.controlInput.yawPedalInput = 0.0f;
             }
             else
             {
-                m_heli.yawPedalInput -= m_heli.yawPedalDecayRate * timeDelta;
+                m_heli.controlInput.yawPedalInput -= m_heli.controlInput.yawPedalDecayRate * timeDelta;
             }
         }
         else
         {
-            m_heli.yawPedalInput = 0.0f;
+            m_heli.controlInput.yawPedalInput = 0.0f;
         }
     }
 
-    m_heli.cyclicInputPitchIsPressed = false;
-    m_heli.cyclicInputRollIsPressed = false;
-    m_heli.yawPedalIsPressed = false;
+    m_heli.controlInput.cyclicInputPitchIsPressed = false;
+    m_heli.controlInput.cyclicInputRollIsPressed = false;
+    m_heli.controlInput.yawPedalIsPressed = false;
 }
 
 void Vehicle::InputThrottle(const float aThrottleInput)
 {
-    const float updatedThrottle = (aThrottleInput * m_heli.throttleInputRate) + m_heli.throttleInput;
-    if (updatedThrottle > m_heli.throttleInputMax)
+    const float updatedThrottle = (aThrottleInput * m_heli.controlInput.throttleInputRate) + m_heli.controlInput.throttleInput;
+    if (updatedThrottle > m_heli.controlInput.throttleInputMax)
     {
-        m_heli.throttleInput = m_heli.throttleInputMax;
+        m_heli.controlInput.throttleInput = m_heli.controlInput.throttleInputMax;
     }
-    else if (updatedThrottle < m_heli.throttleInputMin)
+    else if (updatedThrottle < m_heli.controlInput.throttleInputMin)
     {
-        m_heli.throttleInput = m_heli.throttleInputMin;
+        m_heli.controlInput.throttleInput = m_heli.controlInput.throttleInputMin;
     }
     else
     {
-        m_heli.throttleInput = updatedThrottle;
+        m_heli.controlInput.throttleInput = updatedThrottle;
     }
 }
 
 void Vehicle::InputYawPedal(const float aYawInput)
 {
-    m_heli.yawPedalIsPressed = true;
-    const float updatedYaw = (aYawInput * m_heli.yawPedalInputRate) + m_heli.yawPedalInput;
-    if (updatedYaw > m_heli.yawPedalInputMax)
+    m_heli.controlInput.yawPedalIsPressed = true;
+    const float updatedYaw = (aYawInput * m_heli.controlInput.yawPedalInputRate) + m_heli.controlInput.yawPedalInput;
+    if (updatedYaw > m_heli.controlInput.yawPedalInputMax)
     {
-        m_heli.yawPedalInput = m_heli.yawPedalInputMax;
+        m_heli.controlInput.yawPedalInput = m_heli.controlInput.yawPedalInputMax;
     }
-    else if (updatedYaw < m_heli.yawPedalInputMin)
+    else if (updatedYaw < m_heli.controlInput.yawPedalInputMin)
     {
-        m_heli.yawPedalInput = m_heli.yawPedalInputMin;
+        m_heli.controlInput.yawPedalInput = m_heli.controlInput.yawPedalInputMin;
     }
-    else if (updatedYaw < m_heli.inputDeadZone && updatedYaw > -m_heli.inputDeadZone)
+    else if (updatedYaw < m_heli.controlInput.inputDeadZone && updatedYaw > -m_heli.controlInput.inputDeadZone)
     {
-        m_heli.yawPedalInput = 0.0f;
+        m_heli.controlInput.yawPedalInput = 0.0f;
     }
     else
     {
-        m_heli.yawPedalInput = updatedYaw;
+        m_heli.controlInput.yawPedalInput = updatedYaw;
     }
 
     testYawInput += aYawInput * testInputMod;
@@ -680,12 +671,12 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
     newQ.position = aQ->position + static_cast<float>(aQScale) * aDeltaQ->position;
     newQ.torqueForceMat = aQ->torqueForceMat + static_cast<float>(aQScale) * aDeltaQ->torqueForceMat;
 
-    DirectX::SimpleMath::Vector3 rotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
+    DirectX::SimpleMath::Vector3 rotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput;
     rotorForce = UpdateRotorForceRunge();
-    rotorForce *= aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
+    rotorForce *= aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput;
     newQ.mainRotorForceNormal = rotorForce;
     newQ.mainRotorForceNormal.Normalize();
-    newQ.mainRotorForceMagnitude = aQ->mainRotorForceMagnitude * m_heli.collectiveInput;
+    newQ.mainRotorForceMagnitude = aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput;
 
     newQ.velocity += rotorForce + static_cast<float>(aQScale) * aDeltaQ->velocity;
 
@@ -1079,7 +1070,7 @@ void Vehicle::UpdateBodyTorque()
     DirectX::SimpleMath::Matrix preTorque = m_heli.q.torqueForceMat;
     const float timeStepMod = 0.1f;
     DirectX::SimpleMath::Vector3 mainRotorAxisLine = m_heli.mainRotorPos - m_heli.centerOfMass;
-    DirectX::SimpleMath::Matrix mainRotorTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), m_heli.q.mainRotorForceNormal * (m_heli.q.mainRotorForceMagnitude * m_heli.collectiveInput), timeStepMod);
+    DirectX::SimpleMath::Matrix mainRotorTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), m_heli.q.mainRotorForceNormal * (m_heli.q.mainRotorForceMagnitude * m_heli.controlInput.collectiveInput), timeStepMod);
     DirectX::SimpleMath::Matrix gravityTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), -m_heli.gravity, timeStepMod);
     m_heli.q.torqueForceMat = DirectX::SimpleMath::Matrix::Lerp(preTorque, (mainRotorTorqueMat * gravityTorqueMat * m_heli.q.tailRotorTorqueMat), 0.8);
 }
@@ -1089,10 +1080,10 @@ void Vehicle::UpdateBodyTorqueRunge(Motion* aQ)
     DirectX::SimpleMath::Matrix preTorque = aQ->torqueForceMat;
     const float timeStepMod = 0.1f;
     DirectX::SimpleMath::Vector3 mainRotorAxisLine = m_heli.mainRotorPos - m_heli.centerOfMass;
-    DirectX::SimpleMath::Matrix mainRotorTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), aQ->mainRotorForceNormal * (aQ->mainRotorForceMagnitude * m_heli.collectiveInput) * 0.01, timeStepMod) * 0.01;
+    DirectX::SimpleMath::Matrix mainRotorTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), aQ->mainRotorForceNormal * (aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput) * 0.01, timeStepMod) * 0.01;
     DirectX::SimpleMath::Matrix gravityTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), -m_heli.gravity, timeStepMod);
 
-    DirectX::SimpleMath::Vector3 tailYawForce = -m_heli.right * (m_heli.yawPedalInput * 0.001f);
+    DirectX::SimpleMath::Vector3 tailYawForce = -m_heli.right * (m_heli.controlInput.yawPedalInput * 0.001f);
     DirectX::SimpleMath::Vector3 tailRotorTorqueArm = m_heli.tailRotorPos - m_heli.centerOfMass;
     DirectX::SimpleMath::Matrix tailYawTorqueMat = Utility::GetTorqueMat(tailRotorTorqueArm, tailYawForce, 1.0);
 
@@ -1116,10 +1107,10 @@ DirectX::SimpleMath::Matrix Vehicle::UpdateBodyTorqueRunge2(const Motion* aQ)
     DirectX::SimpleMath::Matrix preTorque = aQ->torqueForceMat;
     const float timeStepMod = 0.1f;
     DirectX::SimpleMath::Vector3 mainRotorAxisLine = m_heli.mainRotorPos - m_heli.centerOfMass;
-    DirectX::SimpleMath::Matrix mainRotorTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), aQ->mainRotorForceNormal * (aQ->mainRotorForceMagnitude * m_heli.collectiveInput) * 0.01, timeStepMod) * 0.01;
+    DirectX::SimpleMath::Matrix mainRotorTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), aQ->mainRotorForceNormal * (aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput) * 0.01, timeStepMod) * 0.01;
     DirectX::SimpleMath::Matrix gravityTorqueMat = Utility::GetTorqueMat((mainRotorAxisLine), -m_heli.gravity, timeStepMod);
 
-    DirectX::SimpleMath::Vector3 tailYawForce = -m_heli.right * (m_heli.yawPedalInput * 0.001f);
+    DirectX::SimpleMath::Vector3 tailYawForce = -m_heli.right * (m_heli.controlInput.yawPedalInput * 0.001f);
     DirectX::SimpleMath::Vector3 tailRotorTorqueArm = m_heli.tailRotorPos - m_heli.centerOfMass;
     DirectX::SimpleMath::Matrix tailYawTorqueMat = Utility::GetTorqueMat(tailRotorTorqueArm, tailYawForce, 1.0);
 
@@ -1153,8 +1144,8 @@ Utility::Torque Vehicle::UpdateBodyTorqueTest(const float aTimeStep)
     DirectX::SimpleMath::Vector3 gravityTorqueArm = centerMassPos - rotorPos;
 
     const float modVal = aTimeStep;
-    DirectX::SimpleMath::Vector3 mainRotorForce = m_heli.q.mainRotorForceNormal * (m_heli.q.mainRotorForceMagnitude * m_heli.collectiveInput) * modVal;
-    DirectX::SimpleMath::Vector3 tailForce = -m_heli.right * (m_heli.yawPedalInput) * modVal;
+    DirectX::SimpleMath::Vector3 mainRotorForce = m_heli.q.mainRotorForceNormal * (m_heli.q.mainRotorForceMagnitude * m_heli.controlInput.collectiveInput) * modVal;
+    DirectX::SimpleMath::Vector3 tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput) * modVal;
     DirectX::SimpleMath::Vector3 gravityForce = (m_heli.gravity ) * modVal;
 
     Utility::Torque rotorTorque = Utility::GetTorqueForce(mainRotorTorqueArm, mainRotorForce);
@@ -1194,19 +1185,19 @@ void Vehicle::UpdateRotorData(HeliData& aHeliData, const double aTimer)
 
 void Vehicle::UpdateRotorForce()
 {
-    float pitch = m_heli.cyclicInputPitch;
-    float roll = m_heli.cyclicInputRoll;
+    float pitch = m_heli.controlInput.cyclicInputPitch;
+    float roll = m_heli.controlInput.cyclicInputRoll;
 
     DirectX::SimpleMath::Vector3 swashplate = DirectX::SimpleMath::Vector3::UnitY;
     swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationZ(pitch));
     swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationX(roll));
     float combinedAngle = Utility::GetAngleBetweenVectors(DirectX::SimpleMath::Vector3::UnitY, swashplate);
 
-    if (combinedAngle > m_heli.cyclicInputMax)
+    if (combinedAngle > m_heli.controlInput.cyclicInputMax)
     {
-        float ratio = m_heli.cyclicInputMax / combinedAngle;
-        pitch = m_heli.cyclicInputPitch * ratio;
-        roll = m_heli.cyclicInputRoll * ratio;
+        float ratio = m_heli.controlInput.cyclicInputMax / combinedAngle;
+        pitch = m_heli.controlInput.cyclicInputPitch * ratio;
+        roll = m_heli.controlInput.cyclicInputRoll * ratio;
 
         swashplate = DirectX::SimpleMath::Vector3::UnitY;
         swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationZ(pitch));
@@ -1226,19 +1217,19 @@ void Vehicle::UpdateRotorForce()
 
 DirectX::SimpleMath::Vector3 Vehicle::UpdateRotorForceRunge()
 {
-    float pitch = m_heli.cyclicInputPitch;
-    float roll = m_heli.cyclicInputRoll;
+    float pitch = m_heli.controlInput.cyclicInputPitch;
+    float roll = m_heli.controlInput.cyclicInputRoll;
 
     DirectX::SimpleMath::Vector3 swashplate = DirectX::SimpleMath::Vector3::UnitY;
     swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationZ(pitch));
     swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationX(roll));
     float combinedAngle = Utility::GetAngleBetweenVectors(DirectX::SimpleMath::Vector3::UnitY, swashplate);
 
-    if (combinedAngle > m_heli.cyclicInputMax)
+    if (combinedAngle > m_heli.controlInput.cyclicInputMax)
     {
-        float ratio = m_heli.cyclicInputMax / combinedAngle;
-        pitch = m_heli.cyclicInputPitch * ratio;
-        roll = m_heli.cyclicInputRoll * ratio;
+        float ratio = m_heli.controlInput.cyclicInputMax / combinedAngle;
+        pitch = m_heli.controlInput.cyclicInputPitch * ratio;
+        roll = m_heli.controlInput.cyclicInputRoll * ratio;
 
         swashplate = DirectX::SimpleMath::Vector3::UnitY;
         swashplate = DirectX::SimpleMath::Vector3::Transform(swashplate, DirectX::SimpleMath::Matrix::CreateRotationZ(pitch));
@@ -1256,7 +1247,7 @@ DirectX::SimpleMath::Vector3 Vehicle::UpdateRotorForceRunge()
 void Vehicle::UpdateTailYawForce()
 {
     m_heli.q.tailRotorForceNormal = -m_heli.right;
-    m_heli.q.tailRotorForceMagnitude = m_heli.yawPedalInput * 0.001f;
+    m_heli.q.tailRotorForceMagnitude = m_heli.controlInput.yawPedalInput * 0.001f;
     DirectX::SimpleMath::Vector3 tailYawForce = m_heli.q.tailRotorForceNormal * m_heli.q.tailRotorForceMagnitude;
     DirectX::SimpleMath::Vector3 tailRotorTorqueArm = m_heli.tailRotorPos - m_heli.centerOfMass;
 
@@ -1269,7 +1260,7 @@ DirectX::SimpleMath::Matrix Vehicle::UpdateTailYawForceRunge()
     //m_heli.q.tailRotorForceNormal = -m_heli.right;
     //m_heli.q.tailRotorForceMagnitude = m_heli.yawPedalInput * 0.001f;
     //DirectX::SimpleMath::Vector3 tailYawForce = m_heli.q.tailRotorForceNormal * m_heli.q.tailRotorForceMagnitude;
-    DirectX::SimpleMath::Vector3 tailYawForce = -m_heli.right * (m_heli.yawPedalInput * 0.001f);
+    DirectX::SimpleMath::Vector3 tailYawForce = -m_heli.right * (m_heli.controlInput.yawPedalInput * 0.001f);
     DirectX::SimpleMath::Vector3 tailRotorTorqueArm = m_heli.tailRotorPos - m_heli.centerOfMass;
 
     DirectX::SimpleMath::Matrix tailYawTorqueMat = Utility::GetTorqueMat(tailRotorTorqueArm, tailYawForce, 1.0);
@@ -1341,7 +1332,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     UpdateModel();
 
     InputDecay(aTimeDelta);
-    DebugPushUILineDecimalNumber("test rotor mag : ", m_heli.collectiveInput, "");
+    DebugPushUILineDecimalNumber("test rotor mag : ", m_heli.controlInput.collectiveInput, "");
 
     const float rotorAngle = Utility::ToDegrees(Utility::GetAngleBetweenVectors(m_heli.up, m_heli.q.mainRotorForceNormal));
     DebugPushUILineDecimalNumber("rotorAngleX: ", rotorAngle, "");
