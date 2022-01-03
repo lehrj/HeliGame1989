@@ -291,8 +291,8 @@ private:
     void UpdateBodyTorque();
     void UpdateBodyTorqueRunge(Motion* aQ);
     DirectX::SimpleMath::Matrix UpdateBodyTorqueRunge2(const Motion* aQ);
-    Utility::Torque UpdateBodyTorqueTest(const Motion* aQ, const float aTimeStep);
-    void UpdateModel(const double aTimer);
+    Utility::Torque UpdateBodyTorqueTest(const float aTimeStep);
+    void UpdateModel();
     void UpdateParabolicMomentum();
     void UpdateResistance();
     void UpdateRotorForce();
@@ -305,7 +305,6 @@ private:
     DirectX::SimpleMath::Matrix UpdateTailYawForceRunge();
 
     void UpdateTerrainNorm();
-    void UpdateVelocity(double aTimeDelta);
 
     Environment const*              m_environment;
     HeliData                        m_heli;
