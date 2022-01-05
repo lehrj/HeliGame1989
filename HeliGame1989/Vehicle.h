@@ -57,6 +57,7 @@ struct Rotor
     float pitchAngleMax;
     float pitchAngleMin;
     float radius;
+    float rpm;
     float rotorRotation;
     float width;
 
