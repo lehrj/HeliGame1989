@@ -54,6 +54,7 @@ struct Rotor
     float inputPitchAngleMax;
     float inputPitchAngleMin;
     float length;
+    float neutralAngle;
     float pitchAngleMax;
     float pitchAngleMin;
     float radius;
@@ -321,6 +322,9 @@ private:
     DirectX::SimpleMath::Vector3 UpdateRotorForceRunge();
 
     void UpdateRotorData(HeliData& aHeliData, const double aTimer);
+    void UpdateRotorPitch(HeliData& aHeliData, const double aTimer);
+    void UpdateRotorSpin(HeliData& aHeliData, const double aTimer);
+
 
     void UpdateRotorInputForce();
     void UpdateTailYawForce();

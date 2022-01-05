@@ -295,13 +295,14 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     const float radiusMainRotor = 7.0f;
     const float heightMainRotor = 0.15f;
     const float lengthMainRotor = 6.57999992f;
-    const float widthMainRotor = 0.80f;   
-    const float initialPitchAngleMainRotor = Utility::ToRadians(45.0f);
+    const float widthMainRotor = 0.80f;       
     const float initialRPMMainRotor = 0.0f;
     const float maxPitchAngleMainRotor = Utility::ToRadians(45.0f);
     const float maxInputPitchAngleMainRotor = Utility::ToRadians(45.0f);
     const float minInputPitchAngleMainRotor = Utility::ToRadians(0.0f);
     const float minPitchAngleMainRotor = Utility::ToRadians(0.0f);
+    const float neutralAngleMainRotor = Utility::ToRadians(0.0f);
+    const float initialPitchAngleMainRotor = neutralAngleMainRotor;
     const float rotorRotationMainRotor = 0.5f;
 
     aHeliData.mainRotor.angleBetweenBlades = bladeCountMainRotor;
@@ -310,6 +311,7 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     aHeliData.mainRotor.inputPitchAngleMax = maxInputPitchAngleMainRotor;
     aHeliData.mainRotor.inputPitchAngleMin = minInputPitchAngleMainRotor;
     aHeliData.mainRotor.length = lengthMainRotor;
+    aHeliData.mainRotor.neutralAngle = neutralAngleMainRotor;
     aHeliData.mainRotor.pitchAngleMax = maxPitchAngleMainRotor;
     aHeliData.mainRotor.pitchAngleMin = minPitchAngleMainRotor;
     aHeliData.mainRotor.radius = radiusMainRotor;
@@ -334,12 +336,14 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     const float heightTailRotor = 0.1f;
     const float lengthTailRotor = 1.11300004f;
     const float widthTailRotor = 0.300000012f;
-    const float initialPitchAngleTailRotor = Utility::ToRadians(40.0f);
+    
     const float initialRPMTailRotor = 0.0f;
     const float maxPitchAngleTailRotor = Utility::ToRadians(45.0f);
     const float maxInputPitchAngleTailRotor = Utility::ToRadians(45.0f);
     const float minInputPitchAngleTailRotor = Utility::ToRadians(0.0f);
     const float minPitchAngleTailRotor = Utility::ToRadians(0.0f);
+    const float neutralAngleTailRotor = (maxPitchAngleTailRotor + minInputPitchAngleTailRotor) / 2.0f;
+    const float initialPitchAngleTailRotor = neutralAngleTailRotor;
     const float rotorRotationTailBlade = 0.0f;
 
     aHeliData.tailRotor.angleBetweenBlades = bladeCountTailRotor;
@@ -348,6 +352,7 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     aHeliData.tailRotor.inputPitchAngleMax = maxInputPitchAngleTailRotor;
     aHeliData.tailRotor.inputPitchAngleMin = minInputPitchAngleTailRotor;
     aHeliData.tailRotor.length = lengthTailRotor;
+    aHeliData.tailRotor.neutralAngle = neutralAngleTailRotor;
     aHeliData.tailRotor.pitchAngleMax = maxPitchAngleTailRotor;
     aHeliData.tailRotor.pitchAngleMin = minPitchAngleTailRotor;
     aHeliData.tailRotor.radius = radiusTailRotor;
@@ -1167,6 +1172,26 @@ Utility::Torque Vehicle::UpdateBodyTorqueTest(const float aTimeStep)
 
 void Vehicle::UpdateRotorData(HeliData& aHeliData, const double aTimer)
 {
+    UpdateRotorSpin(aHeliData, aTimer);
+    UpdateRotorPitch(aHeliData, aTimer);  
+}
+
+void Vehicle::UpdateRotorPitch(HeliData& aHeliData, const double aTimer)
+{
+    float mainRotorPitch = aHeliData.controlInput.collectiveInput * aHeliData.mainRotor.pitchAngleMax;  
+    for (unsigned int i = 0; i < aHeliData.mainRotor.bladeVec.size(); ++i)
+    {
+        aHeliData.mainRotor.bladeVec[i].pitchAngle = mainRotorPitch;
+    }
+    float tailRotorPitch = aHeliData.tailRotor.neutralAngle + (aHeliData.controlInput.yawPedalInput * (aHeliData.tailRotor.pitchAngleMax * .5f));
+    for (unsigned int i = 0; i < aHeliData.tailRotor.bladeVec.size(); ++i)
+    {
+        aHeliData.tailRotor.bladeVec[i].pitchAngle = tailRotorPitch;
+    }  
+}
+
+void Vehicle::UpdateRotorSpin(HeliData& aHeliData, const double aTimer)
+{
     const float rpmMax = 400.0f;
     const float rpmMin = 0.0f;
     const float prevRPM = aHeliData.mainRotor.rpm;
@@ -1178,11 +1203,11 @@ void Vehicle::UpdateRotorData(HeliData& aHeliData, const double aTimer)
     const float currentTorqueCurvePos = (prevRPM / rpmMax) + 0.001; // Small value added so the value can push past 0 rpm value for prevRPM
     const float rpmD = 30.5f * aTimer;
     //float rpmDelta = rpmD * ((prevRPM / rpmMax) + 0.001);
-    
+
     float rpmDelta;
     if (currentTorqueCurvePos < 0.333)
     {
-        const float revDeltaRate = 1.5f;
+        const float revDeltaRate = .5f;
         rpmDelta = revDeltaRate * currentTorqueCurvePos;
     }
     else if (currentTorqueCurvePos < 0.666)
@@ -1234,27 +1259,13 @@ void Vehicle::UpdateRotorData(HeliData& aHeliData, const double aTimer)
     DebugPushUILineDecimalNumber("rpmDelta : ", rpmDelta, "");
     DebugPushUILineDecimalNumber("RPM : ", m_heli.mainRotor.rpm, "");
 
-
-    m_rotorTimerTest += static_cast<float>(aTimer * 0.01f);
-    m_rotorTimerTest = Utility::WrapAngle(m_rotorTimerTest);
-    //const float testSpin = m_rotorTimerTest * 1.0f;
-    const float testSpin = rpmUpdate / 60.0f;
-    const float testPitch = abs(cos(m_rotorTimerTest));
+    //const float testSpin = rpmUpdate / 60.0f;
+    const float testSpin = rpmUpdate;
 
     aHeliData.mainRotor.rotorRotation += testSpin;
     aHeliData.mainRotor.rotorRotation = Utility::WrapAngle(aHeliData.mainRotor.rotorRotation);
     aHeliData.tailRotor.rotorRotation += testSpin * 0.1f;
     aHeliData.tailRotor.rotorRotation = Utility::WrapAngle(aHeliData.tailRotor.rotorRotation);
-
-
-    for (unsigned int i = 0; i < aHeliData.mainRotor.bladeVec.size(); ++i)
-    {
-        aHeliData.mainRotor.bladeVec[i].pitchAngle = testPitch;
-    }
-    for (unsigned int i = 0; i < aHeliData.tailRotor.bladeVec.size(); ++i)
-    {
-        aHeliData.tailRotor.bladeVec[i].pitchAngle = testPitch;
-    }
 }
 
 void Vehicle::UpdateRotorForce()
