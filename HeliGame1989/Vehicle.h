@@ -350,6 +350,8 @@ private:
     std::vector<std::string> m_debugUIVector;
 
     float m_rotorTimerTest = 0.0f;
+    float m_rotorTimerTest2 = 0.0f;
+    float m_testFPS = 0.0f;
 
     float testYawInput = 0.0f;
     float testPitchInput = 0.0f;
