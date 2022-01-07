@@ -93,8 +93,8 @@ struct ControlInput
     bool        cyclicInputPitchIsPressed;
     float       cyclicInputRoll;
     bool        cyclicInputRollIsPressed;
-    const float cyclicInputMax = Utility::ToRadians(35.0f);
-    const float cyclicInputMin = -Utility::ToRadians(35.0f);
+    const float cyclicInputMax = Utility::ToRadians(20.0f);
+    const float cyclicInputMin = -Utility::ToRadians(20.0f);
     const float cyclicInputRate = 1.0f;
 
     float       throttleInput;
