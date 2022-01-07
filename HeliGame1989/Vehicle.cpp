@@ -1195,19 +1195,13 @@ void Vehicle::UpdateRotorSpin(HeliData& aHeliData, const double aTimer)
     const float rpmMax = 400.0f;
     const float rpmMin = 0.0f;
     const float prevRPM = aHeliData.mainRotor.rpm;
-
     const float rpmThrottleSet = aHeliData.controlInput.throttleInput * rpmMax;
     float rpmUpdate = prevRPM;
-
-
     const float currentTorqueCurvePos = (prevRPM / rpmMax) + 0.001; // Small value added so the value can push past 0 rpm value for prevRPM
-    const float rpmD = 30.5f * aTimer;
-    //float rpmDelta = rpmD * ((prevRPM / rpmMax) + 0.001);
-
     float rpmDelta;
     if (currentTorqueCurvePos < 0.333)
     {
-        const float revDeltaRate = .5f;
+        const float revDeltaRate = 2.9f;
         rpmDelta = revDeltaRate * currentTorqueCurvePos;
     }
     else if (currentTorqueCurvePos < 0.666)
@@ -1254,56 +1248,27 @@ void Vehicle::UpdateRotorSpin(HeliData& aHeliData, const double aTimer)
         rpmUpdate = rpmMin;
     }
 
-    float smoothing = 0.9f;
-    m_testFPS = (m_testFPS * smoothing) + (aTimer * (1.0 - smoothing));
-    DebugPushUILineDecimalNumber("m_testFPS : ", m_testFPS, "");
-    float test2 = (1.0f / m_testFPS);
-    DebugPushUILineDecimalNumber("test2 : ", static_cast<int>(test2), "");
-
-    rpmUpdate = test2 * 0.016666f;
     aHeliData.mainRotor.rpm = rpmUpdate;
-
     DebugPushUILineDecimalNumber("currentTorqueCurvePos : ", currentTorqueCurvePos, "");
-    DebugPushUILineDecimalNumber("rpmDelta : ", rpmDelta, "");
     DebugPushUILineDecimalNumber("RPM : ", m_heli.mainRotor.rpm, "");
-    DebugPushUILineDecimalNumber("aTimer : ", aTimer, "");
 
-    //const float testSpin = rpmUpdate / 60.0f;
-    //const float testSpin = rpmUpdate;
-    float testSpin = (rpmUpdate / (2.0f * Utility::GetPi())) * aTimer;
-    testSpin = (rpmUpdate / (1.0f * Utility::GetPi())) * aTimer;
     float preRotAngle = aHeliData.mainRotor.rotorRotation;
-    aHeliData.mainRotor.rotorRotation += testSpin;
+    const float mainRotorSpinUpdate = (aHeliData.mainRotor.rpm * 0.10472) * aTimer; // 0.10472 is conversion or RPM to rads per second
+    const float tailRotarGearing = 0.2f;
+    const float tailRotorSpinUpdate = mainRotorSpinUpdate * tailRotarGearing;
+    aHeliData.mainRotor.rotorRotation += mainRotorSpinUpdate;
     aHeliData.mainRotor.rotorRotation = Utility::WrapAngle(aHeliData.mainRotor.rotorRotation);
-    aHeliData.tailRotor.rotorRotation += testSpin * 0.1f;
+    aHeliData.tailRotor.rotorRotation += tailRotorSpinUpdate;
     aHeliData.tailRotor.rotorRotation = Utility::WrapAngle(aHeliData.tailRotor.rotorRotation);
 
     m_rotorTimerTest += aTimer;
-    if (m_rotorTimerTest > m_rotorTimerTest2)
-    {
-        m_rotorTimerTest2 = m_rotorTimerTest;
-    }
     if (preRotAngle >= aHeliData.mainRotor.rotorRotation)
     {
+        m_rotorTimerTest2 = m_rotorTimerTest;
         m_rotorTimerTest = 0.0f;
     }
     DebugPushUILineDecimalNumber("m_rotorTimerTest : ", m_rotorTimerTest, "");
     DebugPushUILineDecimalNumber("m_rotorTimerTest2 : ", m_rotorTimerTest2, "");
-
-    float test1 = (1.0f / aTimer);
-    DebugPushUILineDecimalNumber("test1 : ", test1, "");
-    DebugPushUILineDecimalNumber("aTimer : ", aTimer, "");
-
-
-
-    float test3 = abs(test2 - 60.0f);
-    DebugPushUILineDecimalNumber("test3 : ", test3, "");
-
-    if (test2 > 65.0f || test2 < 55.0f)
-    {
-        int tstBreak = 0;
-        tstBreak++;
-    }
 }
 
 void Vehicle::UpdateRotorForce()
