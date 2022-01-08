@@ -88,6 +88,7 @@ struct ControlInput
     const float collectiveInputMin = 0.0f;
     const float collectiveInputRate = 1.0f;
 
+    DirectX::SimpleMath::Vector3 cyclicStick;
     const float cyclicDecayRate = 0.8f;
     float       cyclicInputPitch;
     bool        cyclicInputPitchIsPressed;
@@ -315,6 +316,9 @@ private:
     void UpdateBodyTorqueRunge(Motion* aQ);
     DirectX::SimpleMath::Matrix UpdateBodyTorqueRunge2(const Motion* aQ);
     Utility::Torque UpdateBodyTorqueTest(const float aTimeStep);
+
+    void UpdateCyclicStick(ControlInput& aInput);
+
     void UpdateModel();
     void UpdateParabolicMomentum();
     void UpdateResistance();

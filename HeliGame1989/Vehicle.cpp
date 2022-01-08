@@ -71,6 +71,7 @@ void Vehicle::InitializeFlightControls(ControlInput& aInput)
     aInput.cyclicInputPitchIsPressed = false;
     aInput.cyclicInputRoll = 0.0f;
     aInput.cyclicInputRollIsPressed = false;
+    aInput.cyclicStick = DirectX::SimpleMath::Vector3::UnitY;
     aInput.throttleInput = 0.0f;
     aInput.yawPedalInput = 0.0f;
     aInput.yawPedalIsPressed = false;
@@ -944,6 +945,22 @@ DirectX::SimpleMath::Matrix Vehicle::UpdateAlignmentTest(const DirectX::SimpleMa
     return preAlignment * rotMat;
 }
 
+void Vehicle::UpdateCyclicStick(ControlInput& aInput)
+{
+    DirectX::SimpleMath::Quaternion cyclicQuat = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, aInput.cyclicInputRoll, aInput.cyclicInputPitch);
+    DirectX::SimpleMath::Vector3 updatedCyclic = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::UnitY, cyclicQuat);
+
+    float cyclicAngle = Utility::GetAngleBetweenVectors(DirectX::SimpleMath::Vector3::UnitY, updatedCyclic);
+    if (cyclicAngle > aInput.cyclicInputMax)
+    {
+        const float angleProportionToEdgeOfCone = aInput.cyclicInputMax / cyclicAngle;
+        cyclicQuat = DirectX::SimpleMath::Quaternion::Slerp(DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f), cyclicQuat, angleProportionToEdgeOfCone);
+        updatedCyclic = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::UnitY, cyclicQuat);
+    }
+
+    aInput.cyclicStick = updatedCyclic;
+}
+
 void Vehicle::UpdateModel()
 {
     DirectX::SimpleMath::Matrix updateMat = DirectX::SimpleMath::Matrix::Identity;
@@ -1173,37 +1190,20 @@ Utility::Torque Vehicle::UpdateBodyTorqueTest(const float aTimeStep)
 void Vehicle::UpdateRotorData(HeliData& aHeliData, const double aTimer)
 {
     UpdateRotorSpin(aHeliData, aTimer);
-    UpdateRotorPitch(aHeliData, aTimer);  
+    UpdateRotorPitch(aHeliData, aTimer);   
 }
 
 void Vehicle::UpdateRotorPitch(HeliData& aHeliData, const double aTimer)
 {
-    DirectX::SimpleMath::Vector3 pitchVec = DirectX::SimpleMath::Vector3::UnitY;
-    pitchVec = DirectX::SimpleMath::Vector3::Transform(pitchVec, DirectX::SimpleMath::Matrix::CreateRotationZ(aHeliData.controlInput.cyclicInputPitch));
-
-    DirectX::SimpleMath::Vector3 rollVec = DirectX::SimpleMath::Vector3::UnitY;
-    rollVec = DirectX::SimpleMath::Vector3::Transform(rollVec, DirectX::SimpleMath::Matrix::CreateRotationX(aHeliData.controlInput.cyclicInputRoll));
-
-    DirectX::SimpleMath::Vector3 cyclic = pitchVec + rollVec;
-    cyclic.Normalize();
-    DebugPushUILineDecimalNumber("pitchVec.Length() : ", pitchVec.Length(), "");
-    DebugPushUILineDecimalNumber("rollVec.Length() : ", rollVec.Length(), "");
-    DebugPushUILineDecimalNumber("cyclic.Length() : ", cyclic.Length(), "");
-    //DebugPushTestLine(m_heli.q.position, cyclic, 10.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-    DebugPushTestLine(m_heli.mainRotorPos, cyclic, 2.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-    float testAng = aHeliData.mainRotor.angleBetweenBlades;
-    float testAngDeg = Utility::ToDegrees(testAng);
-
     float mainRotorPitch = aHeliData.controlInput.collectiveInput * aHeliData.mainRotor.pitchAngleMax;  
     for (unsigned int i = 0; i < aHeliData.mainRotor.bladeVec.size(); ++i)
     {
         aHeliData.mainRotor.bladeVec[i].pitchAngle = mainRotorPitch;
+        DirectX::SimpleMath::Vector3 rotorDir = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::UnitX, 
+            DirectX::SimpleMath::Matrix::CreateRotationY(aHeliData.mainRotor.rotorRotation + (static_cast<float>(i) * aHeliData.mainRotor.angleBetweenBlades)));
 
-        DirectX::SimpleMath::Vector3 rotorDir = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::UnitX, DirectX::SimpleMath::Matrix::CreateRotationY(aHeliData.mainRotor.rotorRotation + (static_cast<float>(i) * aHeliData.mainRotor.angleBetweenBlades)));
-        const float pitchAng = Utility::GetAngleBetweenVectors(cyclic, rotorDir) - Utility::ToRadians(90.0f);
+        const float pitchAng = Utility::GetAngleBetweenVectors(aHeliData.controlInput.cyclicStick, rotorDir) - Utility::ToRadians(90.0f);
         aHeliData.mainRotor.bladeVec[i].pitchAngle = mainRotorPitch + pitchAng;
-        DebugPushTestLine(m_heli.mainRotorPos, rotorDir, 10.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-        DebugPushUILineDecimalNumber("pitchAng : ", Utility::ToDegrees(pitchAng), "");
     }
     float tailRotorPitch = aHeliData.tailRotor.neutralAngle + (aHeliData.controlInput.yawPedalInput * (aHeliData.tailRotor.pitchAngleMax * .5f));
     for (unsigned int i = 0; i < aHeliData.tailRotor.bladeVec.size(); ++i)
@@ -1395,6 +1395,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     DirectX::SimpleMath::Vector3 prevVelocity = m_heli.q.velocity;
     DirectX::SimpleMath::Vector3 prevPos = m_heli.q.position;
 
+    UpdateCyclicStick(m_heli.controlInput);
     UpdateRotorForce();
     //UpdateTailYawForce();
     //UpdateBodyTorque();
