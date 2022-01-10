@@ -323,6 +323,7 @@ private:
 
     void UpdateModel();
     void UpdateParabolicMomentum();
+    void UpdatePhysicsPoints(struct HeliData& aHeli);
     void UpdateResistance();
     void UpdateRotorForce();
     DirectX::SimpleMath::Vector3 UpdateRotorForceRunge();
@@ -364,5 +365,9 @@ private:
     float testRollInput = 0.0f;
     float testTurnSpeed = 1.0f;
     float testInputMod = 1.0f;
+
+    DirectX::SimpleMath::Vector3 m_prevPos = DirectX::SimpleMath::Vector3::Zero;
+    DirectX::SimpleMath::Vector3 m_prevRight = -DirectX::SimpleMath::Vector3::UnitZ;
+    DirectX::SimpleMath::Vector3 m_prevUp = DirectX::SimpleMath::Vector3::UnitY;
 };
 
