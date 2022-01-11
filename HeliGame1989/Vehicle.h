@@ -133,6 +133,7 @@ struct HeliData
     float   airDensity;
     float   dragCoefficient;
     const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
+
     float   mass;
     Motion  q;
     float   totalResistance;
@@ -318,6 +319,7 @@ private:
     void UpdateBodyTorqueRunge(Motion* aQ);
     DirectX::SimpleMath::Matrix UpdateBodyTorqueRunge2(const Motion* aQ);
     Utility::Torque UpdateBodyTorqueTest(const float aTimeStep);
+    Utility::Torque UpdateBodyTorqueTest2(const float aTimeStep);
 
     void UpdateCyclicStick(ControlInput& aInput);
 
