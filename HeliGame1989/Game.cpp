@@ -3464,6 +3464,14 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
             m_vehicle->Jump();
         }
     }
+    if (m_kbStateTracker.released.Q)
+    {
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
+        {
+            m_vehicle->DebugToggle();
+        }
+    }
+
     auto mouse = m_mouse->GetState();
 
     if (m_camera->GetCameraState() == CameraState::CAMERASTATE_FIRSTPERSON)

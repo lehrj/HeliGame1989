@@ -23,7 +23,6 @@ struct Motion
 {
     DirectX::SimpleMath::Vector3 airResistance;
     DirectX::SimpleMath::Vector3 bodyVelocity;
-    DirectX::SimpleMath::Matrix  bodyTorque;
     DirectX::SimpleMath::Vector3 engineForce;
 
     DirectX::SimpleMath::Vector3 mainRotorForceNormal;
@@ -32,9 +31,6 @@ struct Motion
   
     float                        tailRotorForceMagnitude;
     DirectX::SimpleMath::Vector3 tailRotorForceNormal;
-    DirectX::SimpleMath::Matrix  tailRotorTorqueMat;
-
-    DirectX::SimpleMath::Matrix  torqueForceMat;
 
     DirectX::SimpleMath::Vector3 totalVelocity;
     DirectX::SimpleMath::Vector3 velocity;
@@ -133,11 +129,9 @@ struct HeliData
     float   airDensity;
     float   dragCoefficient;
     const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
-
     float   mass;
     Motion  q;
     float   totalResistance;
-
     //
     float   speed;                   // speed vehicle is traveling
     bool    isVehicleAirborne; 
@@ -253,6 +247,7 @@ struct HeliModel
 class Vehicle
 {
 public: 
+    void DebugToggle();
     std::vector<std::pair<std::string, float>> DebugGetUI() { return m_debugUI; };
     std::vector<std::string> DebugGetUIVector() { return m_debugUIVector; };
     std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> DebugGetTestLines() const { return m_debugLinesVec; };
@@ -302,8 +297,6 @@ private:
     void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData);
     void InitializeRotorBlades(HeliData& aHeliData);
 
-    float GetYawRate(double aTimeDelta);
-
     void LandVehicle();
 
     void RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos, struct HeliModel& aModel);
@@ -311,15 +304,9 @@ private:
     void RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ, double aTimeDelta, float aQScale, Motion* aDQ);
     void RungeKutta4(struct HeliData* aHeli, double aTimeDelta);
     
-    void UpdateAlignment();
     void UpdateAlignmentTorqueTest();
-    DirectX::SimpleMath::Matrix UpdateAlignmentTest(const DirectX::SimpleMath::Vector3 aAxis, const float aMagnitude);
 
-    void UpdateBodyTorque();
-    void UpdateBodyTorqueRunge(Motion* aQ);
-    DirectX::SimpleMath::Matrix UpdateBodyTorqueRunge2(const Motion* aQ);
     Utility::Torque UpdateBodyTorqueTest(const float aTimeStep);
-    Utility::Torque UpdateBodyTorqueTest2(const float aTimeStep);
 
     void UpdateCyclicStick(ControlInput& aInput);
 
@@ -333,11 +320,6 @@ private:
     void UpdateRotorData(HeliData& aHeliData, const double aTimer);
     void UpdateRotorPitch(HeliData& aHeliData, const double aTimer);
     void UpdateRotorSpin(HeliData& aHeliData, const double aTimer);
-
-
-    void UpdateRotorInputForce();
-    void UpdateTailYawForce();
-    DirectX::SimpleMath::Matrix UpdateTailYawForceRunge();
 
     void UpdateTerrainNorm();
 
@@ -371,5 +353,7 @@ private:
     DirectX::SimpleMath::Vector3 m_prevPos = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_prevRight = -DirectX::SimpleMath::Vector3::UnitZ;
     DirectX::SimpleMath::Vector3 m_prevUp = DirectX::SimpleMath::Vector3::UnitY;
+
+    bool m_debugToggle = false;
 };
 
