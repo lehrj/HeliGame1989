@@ -39,6 +39,8 @@ struct Motion
     float                        bodyTorqueMagnitude;
     DirectX::SimpleMath::Vector3 bodyTorqueVec;
 
+    Utility::Torque              pendulumTorqueForceTest;
+
     DirectX::SimpleMath::Vector3 parabolicMomentum;
 };
 
@@ -143,7 +145,6 @@ struct HeliData
     DirectX::SimpleMath::Vector3 right;
     DirectX::SimpleMath::Matrix alignment;
     DirectX::SimpleMath::Matrix cameraOrientation;
-    //DirectX::SimpleMath::Matrix torqueForce;
     float   terrainHightAtPos;
 
     float   testAccel = 0.0;
