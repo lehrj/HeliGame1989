@@ -864,7 +864,7 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     //aHeli->q.torqueForceMat = q.torqueForceMat;
     //aHeli->q.bodyTorqueForce = q.bodyTorqueForce;
 
-    UpdateParabolicMomentum(static_cast<float>(aTimeDelta));
+    UpdatePendulumMotion(static_cast<float>(aTimeDelta));
     Utility::Torque testTorque = UpdateBodyTorqueTest(static_cast<float>(aTimeDelta));
     /*
     DebugPushUILineDecimalNumber("testTorque.axis.Length() : ", testTorque.axis.Length(), "");
@@ -1034,78 +1034,33 @@ Utility::Torque Vehicle::UpdateBodyTorqueTest(const float aTimeStep)
     return updatedTorque;
 }
 
-void Vehicle::UpdateParabolicMomentum(const float aTimeStep)
+void Vehicle::UpdatePendulumMotion(const float aTimeStep)
 {
-    DirectX::SimpleMath::Vector3 grav = m_heli.gravity;
     float rodLength = (m_heli.q.mainRotorForceMagnitude * m_heli.controlInput.collectiveInput);
     DirectX::SimpleMath::Vector3 rodUp = m_heli.up;
     DirectX::SimpleMath::Vector3 rodRotor = m_heli.q.mainRotorForceNormal;
     DirectX::SimpleMath::Vector3 rod = rodUp + rodRotor;
     float thetaAngle = Utility::GetAngleBetweenVectors(DirectX::SimpleMath::Vector3::UnitY, rod);
-    DebugPushUILineDecimalNumber("thetaAngle : ", Utility::ToDegrees(thetaAngle), "");
-    DirectX::SimpleMath::Vector3 testRod = m_heli.up * rodLength;
 
-    DirectX::SimpleMath::Vector3 testAccel2 = -(grav / rodLength) * sin(thetaAngle);
-    DirectX::SimpleMath::Vector3 testAccel = -(grav / testRod ) * sin(thetaAngle);
-    DebugPushUILineDecimalNumber("testRod.x", testAccel.x, "");
-    DebugPushUILineDecimalNumber("testRod.y", testAccel.y, "");
-    DebugPushUILineDecimalNumber("testRod.z", testAccel.z, "");
+    // body roll torque due to pendulum
+    Utility::Torque torqueUpdate;
+    torqueUpdate.axis = -rod;
+    torqueUpdate.axis = torqueUpdate.axis.Cross(-DirectX::SimpleMath::Vector3::UnitY);;
+    torqueUpdate.axis.Normalize();
+    torqueUpdate.magnitude = -(m_heli.gravity.y * aTimeStep) * rodLength * sin(thetaAngle);
+    torqueUpdate.magnitude *= aTimeStep; // reducing further to eliminate rotational jitters, needs further investigation
+    m_heli.q.pendulumTorqueForceTest = torqueUpdate;
 
-    DirectX::SimpleMath::Vector3 testAccel3 = DirectX::SimpleMath::Vector3::Transform(testAccel, m_heli.alignment);
-    //DebugPushTestLine(m_heli.mainRotorPos, testAccel, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-    DebugPushTestLine(m_heli.mainRotorPos, testAccel, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    DebugPushTestLine(m_heli.mainRotorPos, testAccel2, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 1.0f, 1.0f));
-    DebugPushTestLine(m_heli.mainRotorPos, testRod, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 1.0f, 1.0f));
-    /*
-    DebugPushTestLine(m_heli.mainRotorPos, rodUp, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-    DebugPushTestLine(m_heli.mainRotorPos, rodRotor, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    DebugPushTestLine(m_heli.mainRotorPos, rod, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-    */
+    // acceleration due to pendulum motion
+    DirectX::SimpleMath::Vector3 accelerationDirection = torqueUpdate.axis;
+    accelerationDirection = accelerationDirection.Cross(-rod);
+    float accelerationMag = -((m_heli.gravity.y) / rodLength) * sin(thetaAngle);
 
-    // calculate pendulum force direction
-    DirectX::SimpleMath::Vector3 testArm = m_heli.up;
-    //testArm.y *= -1.0f;
-    DebugPushTestLine(m_heli.mainRotorPos, testArm, 13.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-    DirectX::SimpleMath::Vector3 testV = - DirectX::SimpleMath::Vector3::UnitY;
-    testV -= testArm;
-    //DebugPushTestLine(m_heli.mainRotorPos, testV, 13.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-    DirectX::SimpleMath::Vector3 testV2 = -m_heli.up;
-    testV2 = testV2.Cross(-DirectX::SimpleMath::Vector3::UnitY);
-    DebugPushTestLine(m_heli.mainRotorPos, testV2, 13.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-
-    DirectX::SimpleMath::Vector3 testV3 = m_heli.up;
-    testV3 = testV3.Cross(testV2);
-    DebugPushTestLine(m_heli.mainRotorPos, testV3, 13.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-
-
-    DirectX::SimpleMath::Vector3 testV4 = -rod;
-    testV4 = testV4.Cross(-DirectX::SimpleMath::Vector3::UnitY);
-    DebugPushTestLine(m_heli.mainRotorPos, testV4, 13.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    Utility::Torque testTorqueUpdate;
-    testTorqueUpdate.axis = testV4;
-    testTorqueUpdate.axis.Normalize();
-    testTorqueUpdate.magnitude = -(m_heli.gravity.y * aTimeStep) * rodLength * sin(thetaAngle);
-    testTorqueUpdate.magnitude *= aTimeStep;
-    testTorqueUpdate.magnitude *= 1.0f;
-    DebugPushUILineDecimalNumber("testTorqueUpdate.magnitude", testTorqueUpdate.magnitude, "");
-    m_heli.q.pendulumTorqueForceTest = testTorqueUpdate;
-
-    // test pendulum acceleration
-    float testAc = -((m_heli.gravity.y * aTimeStep) / rodLength) * sin(thetaAngle);
-    testAc = -((m_heli.gravity.y) / rodLength) * sin(thetaAngle);
-    DebugPushUILineDecimalNumber("testAccel", testAc, "");
-    DirectX::SimpleMath::Vector3 testPendAccel = testV3;
-    testPendAccel.Normalize();
-
-    if (testAc > 0.00001f && testAc < 20.0f)
+    // only update with viable data and if not aligned with gravity direction
+    if (accelerationMag > 0.00001f && accelerationMag < 20.0f)
     {
-        testPendAccel *= testAc;
-        m_heli.q.velocity += testPendAccel;
-    }
-    else
-    {
-        testPendAccel *= 0.0f;
+        accelerationDirection *= accelerationMag;
+        m_heli.q.velocity += accelerationDirection;
     }
 }
 

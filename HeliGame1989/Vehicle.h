@@ -312,7 +312,7 @@ private:
     void UpdateCyclicStick(ControlInput& aInput);
 
     void UpdateModel();
-    void UpdateParabolicMomentum(const float aTimeStep);
+    void UpdatePendulumMotion(const float aTimeStep);
     void UpdatePhysicsPoints(struct HeliData& aHeli);
     void UpdateResistance();
     void UpdateRotorForce();
