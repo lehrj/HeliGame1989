@@ -859,11 +859,12 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     q.bodyTorqueForce.magnitude += bodyTorqueUpdate.magnitude;
 
     aHeli->q.engineForce = q.engineForce;
-    //aHeli->q.position = q.position;
+    aHeli->q.position = q.position;
     aHeli->q.velocity = q.velocity;
     //aHeli->q.torqueForceMat = q.torqueForceMat;
     //aHeli->q.bodyTorqueForce = q.bodyTorqueForce;
 
+    UpdateParabolicMomentum(static_cast<float>(aTimeDelta));
     Utility::Torque testTorque = UpdateBodyTorqueTest(static_cast<float>(aTimeDelta));
     /*
     DebugPushUILineDecimalNumber("testTorque.axis.Length() : ", testTorque.axis.Length(), "");
@@ -876,7 +877,7 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     DebugPushUILineDecimalNumber("aTimeDelta : ", aTimeDelta, "");
     aHeli->q.bodyTorqueForce = testTorque;
 
-    UpdateParabolicMomentum(static_cast<float>(aTimeDelta));
+    
 
     //aHeli->q = q;
 
@@ -938,7 +939,7 @@ void Vehicle::UpdateAlignmentTorqueTest()
         //DirectX::SimpleMath::Quaternion updateQuat = DirectX::SimpleMath::Quaternion::Slerp(preAlignmentQuat, rotQuat, t);
         m_heli.alignment = DirectX::SimpleMath::Matrix::Transform(m_heli.alignment, rotQuat);
         m_heli.alignment = DirectX::SimpleMath::Matrix::Lerp(preAlignment, postAlignment, t);
-        m_heli.alignment = postAlignment;
+        //m_heli.alignment = postAlignment;
 
         //m_heli.alignment = DirectX::SimpleMath::Matrix::CreateFromQuaternion(updateQuat);
         //m_heli.alignment = DirectX::SimpleMath::Matrix::Transform(preAlignment, updateQuat);
@@ -1053,7 +1054,7 @@ void Vehicle::UpdateParabolicMomentum(const float aTimeStep)
     DirectX::SimpleMath::Vector3 testAccel3 = DirectX::SimpleMath::Vector3::Transform(testAccel, m_heli.alignment);
     //DebugPushTestLine(m_heli.mainRotorPos, testAccel, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
     DebugPushTestLine(m_heli.mainRotorPos, testAccel, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-    DebugPushTestLine(m_heli.mainRotorPos, testAccel2, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+    DebugPushTestLine(m_heli.mainRotorPos, testAccel2, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 1.0f, 1.0f));
     DebugPushTestLine(m_heli.mainRotorPos, testRod, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 1.0f, 1.0f));
     /*
     DebugPushTestLine(m_heli.mainRotorPos, rodUp, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -1071,7 +1072,7 @@ void Vehicle::UpdateParabolicMomentum(const float aTimeStep)
 
     DirectX::SimpleMath::Vector3 testV2 = -m_heli.up;
     testV2 = testV2.Cross(-DirectX::SimpleMath::Vector3::UnitY);
-    DebugPushTestLine(m_heli.mainRotorPos, testV2, 13.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+    DebugPushTestLine(m_heli.mainRotorPos, testV2, 13.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
     DirectX::SimpleMath::Vector3 testV3 = m_heli.up;
     testV3 = testV3.Cross(testV2);
@@ -1090,6 +1091,22 @@ void Vehicle::UpdateParabolicMomentum(const float aTimeStep)
     DebugPushUILineDecimalNumber("testTorqueUpdate.magnitude", testTorqueUpdate.magnitude, "");
     m_heli.q.pendulumTorqueForceTest = testTorqueUpdate;
 
+    // test pendulum acceleration
+    float testAc = -((m_heli.gravity.y * aTimeStep) / rodLength) * sin(thetaAngle);
+    testAc = -((m_heli.gravity.y) / rodLength) * sin(thetaAngle);
+    DebugPushUILineDecimalNumber("testAccel", testAc, "");
+    DirectX::SimpleMath::Vector3 testPendAccel = testV3;
+    testPendAccel.Normalize();
+
+    if (testAc > 0.00001f && testAc < 20.0f)
+    {
+        testPendAccel *= testAc;
+        m_heli.q.velocity += testPendAccel;
+    }
+    else
+    {
+        testPendAccel *= 0.0f;
+    }
 }
 
 void Vehicle::UpdateCyclicStick(ControlInput& aInput)
