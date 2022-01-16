@@ -63,7 +63,9 @@ struct Rotor
     struct RotorBlade
     {
         float pitchAngle;
-        float cyclicAngle;
+        float cyclicAngle;        
+        float liftMag;
+        DirectX::SimpleMath::Vector3 liftNorm;
         float rotationAngle;
     };
     std::vector<RotorBlade> bladeVec;
@@ -283,6 +285,8 @@ public:
     void UpdateVehicle(const double aTimeDelta);
 
 private:
+    float CalculateLiftCoefficient(const float aAngle);
+
     void DebugClearUI() { 
         m_debugUI.clear();
         m_debugUIVector.clear();
@@ -307,12 +311,16 @@ private:
     
     void UpdateAlignmentTorqueTest();
 
+    void UpdateBladeLiftForce(const float aTimeStep);
+
     Utility::Torque UpdateBodyTorqueTest(const float aTimeStep);
+    Utility::Torque UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorque, const float aTimeStep);
 
     void UpdateCyclicStick(ControlInput& aInput);
 
     void UpdateModel();
-    void UpdatePendulumMotion(const float aTimeStep);
+    void UpdatePendulumMotion(Utility::Torque& aTorque, DirectX::SimpleMath::Vector3& aVelocity, const float aTimeStep);
+    void UpdatePendulumMotion2(const float aTimeStep);
     void UpdatePhysicsPoints(struct HeliData& aHeli);
     void UpdateResistance();
     void UpdateRotorForce();
