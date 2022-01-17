@@ -125,6 +125,8 @@ struct HeliData
     DirectX::SimpleMath::Vector3 localTailRotorPos;
     DirectX::SimpleMath::Vector3 centerOfMass;
     DirectX::SimpleMath::Vector3 localCenterOfMass;
+    DirectX::SimpleMath::Vector3 landingGearPos;
+    DirectX::SimpleMath::Vector3 localLandingGearPos;
     //
     int     numEqns;
     double  time;
@@ -180,11 +182,27 @@ struct HeliModel
     DirectX::SimpleMath::Matrix bodyMatrix;
     DirectX::SimpleMath::Matrix localBodyMatrix;
 
+    std::unique_ptr<DirectX::GeometricPrimitive>    sideStripeShape;
+    DirectX::SimpleMath::Matrix sideStripeMatrix;
+    DirectX::SimpleMath::Matrix localSidestripeMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    landingGearShape;
+    DirectX::SimpleMath::Matrix landingGearFrontMatrix;
+    DirectX::SimpleMath::Matrix localLandingGearFrontMatrix;
+    DirectX::SimpleMath::Matrix landingGearRearLeftMatrix;
+    DirectX::SimpleMath::Matrix localLandingGearRearLeftMatrix;
+    DirectX::SimpleMath::Matrix landingGearRearRightMatrix;
+    DirectX::SimpleMath::Matrix localLandingGearRearRightMatrix;
+
     std::unique_ptr<DirectX::GeometricPrimitive>    bodyCapShape;
     DirectX::SimpleMath::Matrix windShieldMatrix;
     DirectX::SimpleMath::Matrix localWindShieldMatrix;
     DirectX::SimpleMath::Matrix bodyRearMatrix;
     DirectX::SimpleMath::Matrix localBodyRearMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    sideWindowShape;
+    DirectX::SimpleMath::Matrix sideWindowMatrix;
+    DirectX::SimpleMath::Matrix localSideWindowMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    engineHousingShape;
     DirectX::SimpleMath::Matrix engineHousingMatrix;
