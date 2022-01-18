@@ -162,10 +162,13 @@ struct HeliData
 struct HeliModel
 {
     // Colors for model parts
+    DirectX::SimpleMath::Vector4 axelColor;
     DirectX::SimpleMath::Vector4 bodyColor;
     DirectX::SimpleMath::Vector4 rotorColor;
-    DirectX::SimpleMath::Vector4 axelColor;
+    DirectX::SimpleMath::Vector4 stripeColor0;
+    DirectX::SimpleMath::Vector4 stripeColor1;
     DirectX::SimpleMath::Vector4 windshieldColor;
+
     DirectX::SimpleMath::Vector4 testColor1;
     DirectX::SimpleMath::Vector4 testColor2;
 
@@ -182,9 +185,21 @@ struct HeliModel
     DirectX::SimpleMath::Matrix bodyMatrix;
     DirectX::SimpleMath::Matrix localBodyMatrix;
 
-    std::unique_ptr<DirectX::GeometricPrimitive>    sideStripeShape;
-    DirectX::SimpleMath::Matrix sideStripeMatrix;
-    DirectX::SimpleMath::Matrix localSidestripeMatrix;
+    std::unique_ptr<DirectX::GeometricPrimitive>    sideStripeShape0;
+    DirectX::SimpleMath::Matrix sideStripeMatrix0;
+    DirectX::SimpleMath::Matrix localSidestripeMatrix0;
+    std::unique_ptr<DirectX::GeometricPrimitive>    sideStripeShape1;
+    DirectX::SimpleMath::Matrix sideStripeMatrix1;
+    DirectX::SimpleMath::Matrix localSidestripeMatrix1;
+    std::unique_ptr<DirectX::GeometricPrimitive>    sideStripeShape2;
+    DirectX::SimpleMath::Matrix sideStripeMatrix2;
+    DirectX::SimpleMath::Matrix localSidestripeMatrix2;
+    std::unique_ptr<DirectX::GeometricPrimitive>    sideStripeShape3;
+    DirectX::SimpleMath::Matrix sideStripeMatrix3;
+    DirectX::SimpleMath::Matrix localSidestripeMatrix3;
+    std::unique_ptr<DirectX::GeometricPrimitive>    sideStripeShape4;
+    DirectX::SimpleMath::Matrix sideStripeMatrix4;
+    DirectX::SimpleMath::Matrix localSidestripeMatrix4;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    landingGearShape;
     DirectX::SimpleMath::Matrix landingGearFrontMatrix;
@@ -200,6 +215,18 @@ struct HeliModel
     DirectX::SimpleMath::Matrix bodyRearMatrix;
     DirectX::SimpleMath::Matrix localBodyRearMatrix;
 
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainWingShape;
+    DirectX::SimpleMath::Matrix mainWingMatrix;
+    DirectX::SimpleMath::Matrix localMainWingMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainWingLeadingEdgeShape;
+    DirectX::SimpleMath::Matrix mainWingLeadingEdgeMatrix;
+    DirectX::SimpleMath::Matrix localMainWingLeadingEdgeMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainWingTailEdgeShape;
+    DirectX::SimpleMath::Matrix mainWingTailEdgeMatrix;
+    DirectX::SimpleMath::Matrix localMainWingTailEdgeMatrix;
+
     std::unique_ptr<DirectX::GeometricPrimitive>    sideWindowShape;
     DirectX::SimpleMath::Matrix sideWindowMatrix;
     DirectX::SimpleMath::Matrix localSideWindowMatrix;
@@ -208,21 +235,62 @@ struct HeliModel
     DirectX::SimpleMath::Matrix engineHousingMatrix;
     DirectX::SimpleMath::Matrix localEngineHousingMatrix;
 
+    std::unique_ptr<DirectX::GeometricPrimitive>    engineHousingFrontCornerShape;
+    DirectX::SimpleMath::Matrix engineHousingFrontLeftMatrix;
+    DirectX::SimpleMath::Matrix localEngineHousingFrontLeftMatrix;
+    DirectX::SimpleMath::Matrix engineHousingFrontRightMatrix;
+    DirectX::SimpleMath::Matrix localEngineHousingFrontRightMatrix;
+
+    DirectX::SimpleMath::Matrix engineHousingIntakeLeftMatrix;
+    DirectX::SimpleMath::Matrix localEngineHousingIntakeLeftMatrix;
+    DirectX::SimpleMath::Matrix engineHousingIntakeRightMatrix;
+    DirectX::SimpleMath::Matrix localEngineHousingIntakeRightMatrix;
+
+
     std::unique_ptr<DirectX::GeometricPrimitive>    engineHousingFrontShape;
     DirectX::SimpleMath::Matrix engineHousingFrontMatrix;
     DirectX::SimpleMath::Matrix localEngineHousingFrontMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    engineHousingSideShape;
+    DirectX::SimpleMath::Matrix engineHousingSideLeftMatrix;
+    DirectX::SimpleMath::Matrix localEngineHousingSideLeftMatrix;
+    DirectX::SimpleMath::Matrix engineHousingSideRightMatrix;
+    DirectX::SimpleMath::Matrix localEngineHousingSideRightMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    engineExhaustExteriorShape;
+    std::unique_ptr<DirectX::GeometricPrimitive>    engineExhaustInteriorShape;
+    DirectX::SimpleMath::Matrix engineExhaustLeftMatrix;
+    DirectX::SimpleMath::Matrix localEngineExhaustLeftMatrix;
+    DirectX::SimpleMath::Matrix engineExhaustRightMatrix;
+    DirectX::SimpleMath::Matrix localEngineExhaustRightMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    tailBoomShape;
     DirectX::SimpleMath::Matrix tailBoomMatrix;
     DirectX::SimpleMath::Matrix localTailBoomMatrix;
 
-    std::unique_ptr<DirectX::GeometricPrimitive>    tailFinShape;
-    DirectX::SimpleMath::Matrix tailFinMatrix;
-    DirectX::SimpleMath::Matrix localTailFinMatrix;
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailBoomNewShape;
+    DirectX::SimpleMath::Matrix tailBoomLowerMatrix;
+    DirectX::SimpleMath::Matrix localTailBoomLowerMatrix;
+    DirectX::SimpleMath::Matrix tailBoomUpperMatrix;
+    DirectX::SimpleMath::Matrix localTailBoomUpperMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailFinUpperShape;
+    DirectX::SimpleMath::Matrix tailFinUpperMatrix;
+    DirectX::SimpleMath::Matrix localTailFinUpperMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailFinLowerShape;
+    DirectX::SimpleMath::Matrix tailFinLowerMatrix;
+    DirectX::SimpleMath::Matrix localTailFinLowerMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    tailWingShape;
     DirectX::SimpleMath::Matrix tailWingMatrix;
     DirectX::SimpleMath::Matrix localTailWingMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailWingFinShape;
+    DirectX::SimpleMath::Matrix tailWingFinLeftMatrix;
+    DirectX::SimpleMath::Matrix localTailWingFinLeftMatrix;
+    DirectX::SimpleMath::Matrix tailWingFinRightMatrix;
+    DirectX::SimpleMath::Matrix localTailWingFinRightMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorAxelShape;
     DirectX::SimpleMath::Matrix mainRotorAxelMatrix;
