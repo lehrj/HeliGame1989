@@ -167,6 +167,9 @@ struct HeliModel
     DirectX::SimpleMath::Vector4 rotorColor;
     DirectX::SimpleMath::Vector4 stripeColor0;
     DirectX::SimpleMath::Vector4 stripeColor1;
+    DirectX::SimpleMath::Vector4 landingGearTireColor;
+    DirectX::SimpleMath::Vector4 landingGearWheelColor;
+    DirectX::SimpleMath::Vector4 landingGearArmColor;
     DirectX::SimpleMath::Vector4 windshieldColor;
 
     DirectX::SimpleMath::Vector4 testColor1;
@@ -208,13 +211,38 @@ struct HeliModel
     DirectX::SimpleMath::Matrix sideStripeMatrix5;
     DirectX::SimpleMath::Matrix localSidestripeMatrix5;
 
-    std::unique_ptr<DirectX::GeometricPrimitive>    landingGearShape;
+
+
+
+
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    landingGearTireShape;
+    std::unique_ptr<DirectX::GeometricPrimitive>    landingGearWheelShape;
+    std::unique_ptr<DirectX::GeometricPrimitive>    landingGearLowerArmShape;
+    std::unique_ptr<DirectX::GeometricPrimitive>    landingGearUpperArmShape;
+
+    DirectX::SimpleMath::Matrix landingGearTireMatrix;
+    DirectX::SimpleMath::Matrix localLandingGearTireMatrix;
+
+    DirectX::SimpleMath::Matrix landingGearWheelMatrix;
+    DirectX::SimpleMath::Matrix localLandingGearWheelMatrix;
+
+    DirectX::SimpleMath::Matrix landingGearLowerArmMatrix;
+    DirectX::SimpleMath::Matrix localLandingGearLowerArmMatrix;
+    DirectX::SimpleMath::Matrix landingGearUpperArmMatrix;
+    DirectX::SimpleMath::Matrix localLandingGearUperArmMatrix;
+
     DirectX::SimpleMath::Matrix landingGearFrontMatrix;
     DirectX::SimpleMath::Matrix localLandingGearFrontMatrix;
     DirectX::SimpleMath::Matrix landingGearRearLeftMatrix;
     DirectX::SimpleMath::Matrix localLandingGearRearLeftMatrix;
     DirectX::SimpleMath::Matrix landingGearRearRightMatrix;
     DirectX::SimpleMath::Matrix localLandingGearRearRightMatrix;
+
+    DirectX::SimpleMath::Matrix landingGearRotationMatrix;
+
+
+
 
     std::unique_ptr<DirectX::GeometricPrimitive>    bodyCapShape;
     DirectX::SimpleMath::Matrix windShieldMatrix;
@@ -369,11 +397,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix localTailRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix tailRotorBladeTranslationMatrix2;
 
-    DirectX::SimpleMath::Matrix testArm;
-    DirectX::SimpleMath::Matrix testBlade1;
-    DirectX::SimpleMath::Matrix testEdge1;
-    DirectX::SimpleMath::Matrix testBlade2;
-    DirectX::SimpleMath::Matrix testEdge2;
 };
 
 class Vehicle
@@ -493,10 +516,6 @@ private:
     DirectX::SimpleMath::Vector3 m_prevUp = DirectX::SimpleMath::Vector3::UnitY;
 
     bool m_debugToggle = false;
-    float m_prevRot = 0.0f;
-    float m_prevRot1 = 0.0f;
-    float m_prevRot2 = 0.0f;
-    float m_prevRot3 = 0.0f;
-    float m_prevRot4 = 0.0f;
+    DirectX::SimpleMath::Vector3 m_testPos = DirectX::SimpleMath::Vector3::Zero;
 };
 
