@@ -5,6 +5,40 @@
 #include "Environment.h"
 
 
+
+struct ControlInput
+{
+    // input control data
+    const float inputDeadZone = 0.001;  // small deadzone to ignore nominal control input
+
+    float       collectiveInput;
+    const float collectiveInputMax = 1.0f;
+    const float collectiveInputMin = 0.0f;
+    const float collectiveInputRate = 1.0f;
+
+    DirectX::SimpleMath::Vector3 cyclicStick;
+    const float cyclicDecayRate = 0.8f;
+    float       cyclicInputPitch;
+    bool        cyclicInputPitchIsPressed;
+    float       cyclicInputRoll;
+    bool        cyclicInputRollIsPressed;
+    const float cyclicInputMax = Utility::ToRadians(20.0f);
+    const float cyclicInputMin = -Utility::ToRadians(20.0f);
+    const float cyclicInputRate = 1.0f;
+
+    float       throttleInput;
+    const float throttleInputMin = 0.0f;
+    const float throttleInputMax = 1.0f;
+    const float throttleInputRate = 1.0f;
+
+    bool        yawPedalIsPressed;
+    float       yawPedalInput;
+    const float yawPedalDecayRate = 0.5f;
+    const float yawPedalInputMax = 1.0f;
+    const float yawPedalInputMin = -1.0f;
+    const float yawPedalInputRate = 1.0f;
+};
+
 struct Engine
 {
     float currentTorque;
@@ -17,6 +51,23 @@ struct Engine
     float torquePointLow;
     float torquePointMid;
     float torquePointHigh;
+};
+
+struct LandingGear
+{
+    const float angleAtDown = Utility::ToRadians(-110.0f);
+    const float angleAtUp = Utility::ToRadians(5.0f);  
+    float angleCurrent = angleAtDown;
+    const float angleDelta = Utility::ToRadians(30.0f);
+
+    enum class LandingGearState
+    {
+        LANDINGGEARSTATE_ASCENDING,
+        LANDINGGEARSTATE_DESCENDING,
+        LANDINGGEARSTATE_DOWN,
+        LANDINGGEARSTATE_UP,
+    };
+    LandingGearState currentState = LandingGearState::LANDINGGEARSTATE_DOWN;
 };
 
 struct Motion
@@ -78,38 +129,9 @@ struct Rotor
     BladeType bladeType;
 };
 
-struct ControlInput
-{
-    // input control data
-    const float inputDeadZone = 0.001;  // small deadzone to ignore nominal control input
 
-    float       collectiveInput;
-    const float collectiveInputMax = 1.0f;
-    const float collectiveInputMin = 0.0f;
-    const float collectiveInputRate = 1.0f;
 
-    DirectX::SimpleMath::Vector3 cyclicStick;
-    const float cyclicDecayRate = 0.8f;
-    float       cyclicInputPitch;
-    bool        cyclicInputPitchIsPressed;
-    float       cyclicInputRoll;
-    bool        cyclicInputRollIsPressed;
-    const float cyclicInputMax = Utility::ToRadians(20.0f);
-    const float cyclicInputMin = -Utility::ToRadians(20.0f);
-    const float cyclicInputRate = 1.0f;
 
-    float       throttleInput;
-    const float throttleInputMin = 0.0f;
-    const float throttleInputMax = 1.0f;
-    const float throttleInputRate = 1.0f;
-
-    bool        yawPedalIsPressed;
-    float       yawPedalInput;
-    const float yawPedalDecayRate = 0.5f;
-    const float yawPedalInputMax = 1.0f;
-    const float yawPedalInputMin = -1.0f;
-    const float yawPedalInputRate = 1.0f;
-};
 
 struct HeliData
 {
@@ -153,10 +175,11 @@ struct HeliData
 
     float   testAccel = 0.0;
 
+    ControlInput  controlInput;
+    Engine        engine;
+    LandingGear   landingGear;
     Rotor         mainRotor;
     Rotor         tailRotor;
-    Engine        engine;
-    ControlInput  controlInput;
 };
 
 struct HeliModel
@@ -430,9 +453,10 @@ public:
 
     void Jump();
 
+    void ResetVehicle();
     void SetEnvironment(Environment* aEnviron);
 
-    void ResetVehicle();
+    void ToggleLandingGearState();
 
     void UpdateVehicle(const double aTimeDelta);
 
@@ -469,7 +493,7 @@ private:
     Utility::Torque UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorque, const float aTimeStep);
 
     void UpdateCyclicStick(ControlInput& aInput);
-
+    void UpdateLandingGear(struct LandingGear& aLandingGear, const double aTimeDelta);
     void UpdateModel();
     void UpdatePendulumMotion(Utility::Torque& aTorque, DirectX::SimpleMath::Vector3& aVelocity, const float aTimeStep);
     void UpdatePendulumMotion2(const float aTimeStep);
