@@ -96,7 +96,22 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.sideWindowUpperShape->Draw(m_heliModel.sideWindowUpperMatrix, aView, aProj, m_heliModel.windshieldColor);
     m_heliModel.sideWindowLowerShape->Draw(m_heliModel.sideWindowLowerMatrix, aView, aProj, m_heliModel.windshieldColor);
 
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix1, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix2, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix3, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix4, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix5, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix6, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix7, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix8, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix9, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix10, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix11, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix12, aView, aProj, m_heliModel.windshieldColor);
 
+    //m_heliModel.toothBackdropShape->Draw(m_heliModel.toothBackdropLeftMatrix, aView, aProj, m_heliModel.testColor3);
+    //m_heliModel.toothBackdropShape->Draw(m_heliModel.toothBackdropRightMatrix, aView, aProj, m_heliModel.testColor3);
+    m_heliModel.toothBackdropTestShape->Draw(m_heliModel.toothBackdropLeftMatrix, aView, aProj, m_heliModel.testColor3);
 
 
     m_heliModel.landingGearLowerArmShape->Draw(m_heliModel.landingGearLowerArmMatrix , aView, aProj, m_heliModel.landingGearArmColor);
@@ -144,6 +159,7 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.tailBoomShape->Draw(m_heliModel.tailBoomMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.tailBoomNewShape->Draw(m_heliModel.tailBoomLowerMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.tailBoomNewShape->Draw(m_heliModel.tailBoomUpperMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailBoomEndCapShape->Draw(m_heliModel.tailBoomEndCapMatrix, aView, aProj, m_heliModel.bodyColor);
 
     m_heliModel.tailFinUpperShape->Draw(m_heliModel.tailFinUpperMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.tailFinUpperTipShape->Draw(m_heliModel.tailFinUpperTipMatrix, aView, aProj, m_heliModel.bodyColor);
@@ -204,7 +220,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     // set model part colors
     m_heliModel.axelColor = DirectX::SimpleMath::Vector4(0.411764741f, 0.411764741f, 0.411764741f, 1.0f);
     //m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.501960814f, 0.501960814f, 1.0f);
-    m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.0, 0.0, 1.0f);
+    m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.2f, 0.2f, 0.2f, 1.0f);
     m_heliModel.landingGearArmColor = DirectX::SimpleMath::Vector4(0.9f, 0.9f, 0.9f, 1.0f);
     m_heliModel.landingGearTireColor = DirectX::SimpleMath::Vector4(0.411764741f, 0.411764741f, 0.411764741f, 1.0f);
     //m_heliModel.landingGearWheelColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.501960814f, 0.501960814f, 1.0f);
@@ -215,7 +231,8 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.windshieldColor = DirectX::SimpleMath::Vector4(0.662745118f, 0.662745118f, 0.662745118f, 1.20f);
     m_heliModel.testColor1 = DirectX::SimpleMath::Vector4(1.0, 0.0f, 0.0f, 1.0f);
     m_heliModel.testColor2 = DirectX::SimpleMath::Vector4(1.0, 1.0f, 1.0f, 1.0f);
- 
+    m_heliModel.testColor3 = DirectX::SimpleMath::Vector4(1.0, 0.0f, 0.0f, 1.0f);
+
     // set model shapes and local positions   
     // main body
     const DirectX::SimpleMath::Vector3 bodySize(5.0f, 3.0f, 3.0f);
@@ -381,7 +398,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.landingGearWheelMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.landingGearWheelMatrix = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
     m_heliModel.landingGearWheelMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(landingGearWheelTranslation);
-    m_testPos = landingGearWheelTranslation;
+
     m_heliModel.localLandingGearWheelMatrix = m_heliModel.landingGearWheelMatrix;
 
     m_heliModel.landingGearRotationMatrix = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(0.0f));
@@ -429,6 +446,202 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.noseConeMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(45.0));
     m_heliModel.noseConeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(noseConeTranslation);
     m_heliModel.localNoseConeMatrix = m_heliModel.noseConeMatrix;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Nose teeth
+    const float toothHeight = 0.1f;
+    const float toothDiameter = 0.75f;
+    const float toothDiameter2 = 0.75f;
+    m_heliModel.toothShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), toothHeight, toothDiameter, 3);
+    m_heliModel.toothShape2 = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), toothHeight, toothDiameter2, 3);
+    
+    const float noseLength = (noseConeSize.z * 0.5f) * sqrt(2.0f);
+    DirectX::SimpleMath::Vector3 toothUpperTranslation(noseConeTranslation.x, noseConeTranslation.y + toothDiameter * 0.65, 0.0f);
+    DirectX::SimpleMath::Vector3 toothLowerTranslation(noseConeTranslation.x, noseConeTranslation.y - toothDiameter * 0.65, 0.0f);
+    DirectX::SimpleMath::Vector3 toothHorizontalTranslation;
+
+    DirectX::SimpleMath::Matrix toothRotX1 = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0));
+    DirectX::SimpleMath::Matrix toothRotY1 = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(45.0f));
+    DirectX::SimpleMath::Matrix toothRotX2 = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-90.0));
+    DirectX::SimpleMath::Matrix toothRotY2 = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(-45.0f));
+    float toothRot = Utility::ToRadians(80.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = noseLength - (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix1 *= toothRotX1;
+    m_heliModel.toothMatrix1 *= toothRotY1;
+    m_heliModel.toothMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothUpperTranslation);
+    m_heliModel.toothMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix1 = m_heliModel.toothMatrix1;
+
+    toothRot = Utility::ToRadians(60.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = noseLength - (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix2 *= toothRotX1;
+    m_heliModel.toothMatrix2 *= toothRotY1;
+    m_heliModel.toothMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothUpperTranslation);
+    m_heliModel.toothMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix2 = m_heliModel.toothMatrix2;
+
+    toothRot = Utility::ToRadians(35.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = noseLength - (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix3 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix3 *= toothRotX1;
+    m_heliModel.toothMatrix3 *= toothRotY1;
+    m_heliModel.toothMatrix3 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothUpperTranslation);
+    m_heliModel.toothMatrix3 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix3 = m_heliModel.toothMatrix3;
+
+    toothRot = Utility::ToRadians(-80.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = -noseLength + (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix4 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix4 *= toothRotX1;
+    m_heliModel.toothMatrix4 *= toothRotY2;
+    m_heliModel.toothMatrix4 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothUpperTranslation);
+    m_heliModel.toothMatrix4 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix4 = m_heliModel.toothMatrix4;
+
+    toothRot = Utility::ToRadians(-60.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = -noseLength + (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix5 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix5 *= toothRotX1;
+    m_heliModel.toothMatrix5 *= toothRotY2;
+    m_heliModel.toothMatrix5 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothUpperTranslation);
+    m_heliModel.toothMatrix5 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix5 = m_heliModel.toothMatrix5;
+
+    toothRot = Utility::ToRadians(-35.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = -noseLength + (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix6 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix6 *= toothRotX1;
+    m_heliModel.toothMatrix6 *= toothRotY2;
+    m_heliModel.toothMatrix6 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothUpperTranslation);
+    m_heliModel.toothMatrix6*= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix6 = m_heliModel.toothMatrix6;
+
+    toothRot = Utility::ToRadians(80.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = noseLength - (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix7 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix7 *= toothRotX2;
+    m_heliModel.toothMatrix7 *= toothRotY1;
+    m_heliModel.toothMatrix7 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothLowerTranslation);
+    m_heliModel.toothMatrix7 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix7 = m_heliModel.toothMatrix7;
+
+    toothRot = Utility::ToRadians(60.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = noseLength - (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix8 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix8 *= toothRotX2;
+    m_heliModel.toothMatrix8 *= toothRotY1;
+    m_heliModel.toothMatrix8 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothLowerTranslation);
+    m_heliModel.toothMatrix8 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix8 = m_heliModel.toothMatrix8;
+
+    toothRot = Utility::ToRadians(35.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = noseLength - (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix9 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix9 *= toothRotX2;
+    m_heliModel.toothMatrix9 *= toothRotY1;
+    m_heliModel.toothMatrix9 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothLowerTranslation);
+    m_heliModel.toothMatrix9 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix9 = m_heliModel.toothMatrix9;
+
+    toothRot = Utility::ToRadians(-35.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = -noseLength + (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix10 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix10 *= toothRotX2;
+    m_heliModel.toothMatrix10 *= toothRotY2;
+    m_heliModel.toothMatrix10 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothLowerTranslation);
+    m_heliModel.toothMatrix10 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix10 = m_heliModel.toothMatrix10;
+
+    toothRot = Utility::ToRadians(-60.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = -noseLength + (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix11 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix11 *= toothRotX2;
+    m_heliModel.toothMatrix11 *= toothRotY2;
+    m_heliModel.toothMatrix11 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothLowerTranslation);
+    m_heliModel.toothMatrix11 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix11 = m_heliModel.toothMatrix11;
+
+    toothRot = Utility::ToRadians(-80.0);
+    toothHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothHorizontalTranslation.y = 0.0f;
+    toothHorizontalTranslation.z = -noseLength + (noseLength * cos(toothRot));
+    m_heliModel.toothMatrix12 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothMatrix12 *= toothRotX2;
+    m_heliModel.toothMatrix12 *= toothRotY2;
+    m_heliModel.toothMatrix12 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothLowerTranslation);
+    m_heliModel.toothMatrix12 *= DirectX::SimpleMath::Matrix::CreateTranslation(toothHorizontalTranslation);
+    m_heliModel.localToothMatrix12 = m_heliModel.toothMatrix12;
+
+    // nose tooth mouth backdrop left
+    const float toothBackdropHeight = noseConeSize.x * 0.99f;
+    const float toothBackdropDiameter = -noseConeSize.y * 0.95f;
+    m_heliModel.toothBackdropShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), toothBackdropHeight, toothBackdropDiameter, 3);
+    DirectX::SimpleMath::Vector3 toothBackDropTranslation(noseConeTranslation.x + toothBackdropDiameter * 0.32f, noseConeTranslation.y + toothBackdropDiameter * 0.0f, 0.0f);
+    DirectX::SimpleMath::Vector3 toothBackdropHorizontalTranslation;
+    toothRot = Utility::ToRadians(47.8f);
+    toothBackdropHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothBackdropHorizontalTranslation.y = 0.0f;
+    toothBackdropHorizontalTranslation.z = - noseLength + (noseLength * cos(toothRot));
+    m_heliModel.toothBackdropLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(-30.0));
+    m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0));
+    m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(45.0));
+    m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(toothBackDropTranslation);
+    m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(toothBackdropHorizontalTranslation);
+    m_heliModel.localToothBackdropLeftMatrix = m_heliModel.toothBackdropLeftMatrix;
+
+    // nose tooth mouth backdrop left
+    toothRot = Utility::ToRadians(-47.8f);
+    toothBackdropHorizontalTranslation.x = noseLength * cos(toothRot);
+    toothBackdropHorizontalTranslation.y = 0.0f;
+    toothBackdropHorizontalTranslation.z = noseLength - (noseLength * cos(toothRot));
+    m_heliModel.toothBackdropLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothBackdropRightMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(-30.0));
+    m_heliModel.toothBackdropRightMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-90.0));
+    m_heliModel.toothBackdropRightMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(-45.0));
+    m_heliModel.toothBackdropRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(toothBackDropTranslation);
+    m_heliModel.toothBackdropRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(toothBackdropHorizontalTranslation);
+    m_heliModel.localToothBackdropRightMatrix = m_heliModel.toothBackdropRightMatrix;
+
+    // test mouth design
+    DirectX::SimpleMath::Vector3 testMouthSize = noseConeSize;
+    testMouthSize.x *= 0.845f;
+    testMouthSize.y *= 0.25f;
+    testMouthSize.z *= 0.845f;
+    m_heliModel.toothBackdropTestShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), testMouthSize);
+    DirectX::SimpleMath::Vector3 testMouthTrans = noseConeTranslation;
+    testMouthTrans.x += 0.26f;
+    testMouthTrans.y -= 0.41f;
+    m_heliModel.toothBackdropLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(45.0));
+    m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(0.0));
+    m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(testMouthTrans);
+    m_heliModel.localToothBackdropLeftMatrix = m_heliModel.toothBackdropLeftMatrix;
 
     /// nose body
     float noseBodyXSize = 0.7;
@@ -673,9 +886,19 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailBoomUpperMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBoomUpperTranslation);
     m_heliModel.localTailBoomUpperMatrix = m_heliModel.tailBoomUpperMatrix;
 
+    // tail boom endcap
+    const DirectX::SimpleMath::Vector3 tailBoomEndCapSize((tailBoomSize.z * 0.5f) * sqrt(2.0f), tailBoomSize.y, (tailBoomSize.z * 0.5f) * sqrt(2.0f));
+    DirectX::SimpleMath::Vector3 tailBoomEndCapTranslation(tailBoomTranslation.x - tailBoomSize.x * 0.5f, tailBoomTranslation.y, tailBoomTranslation.z);
+    m_heliModel.tailBoomEndCapShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), tailBoomEndCapSize);
+    m_heliModel.tailBoomEndCapMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailBoomEndCapMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(45.0));
+    m_heliModel.tailBoomEndCapMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBoomEndCapTranslation);
+    m_heliModel.localTailBoomEndCapMatrix = m_heliModel.tailBoomEndCapMatrix;
+
+
     // tail fin upper
-    const float tailfinWidth = 0.3f;
-    const DirectX::SimpleMath::Vector3 tailFinOffset(-0.3f, 0.0f, 0.0f);
+    const float tailfinWidth = 0.2f;
+    const DirectX::SimpleMath::Vector3 tailFinOffset(-0.34f, 0.0f, 0.0f);
     const DirectX::SimpleMath::Vector3 tailFinUpperSize(1.0f, 2.2f, tailfinWidth);
     //const DirectX::SimpleMath::Vector3 tailFinUpperTranslation(tailBoomTranslation.x - (tailBoomSize.x * 0.546f) + (tailFinUpperSize.x * 0.5f), tailBoomTranslation.y + (tailBoomSize.y * 1.0f), 0.0f);
     DirectX::SimpleMath::Vector3 tailFinUpperTranslation(tailBoomUpperTranslation.x - (tailBoomHeight * 0.546f) + (tailFinUpperSize.x * 0.5f), tailBoomTranslation.y + (tailBoomSize.y * 1.85f), 0.0f);
@@ -725,7 +948,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     // tail wing
     const float tailWingFinWidth = 0.15f;
     const DirectX::SimpleMath::Vector3 tailWingSize(0.7f, 0.2f, mainWingSize.z - (4.0f * tailWingFinWidth));
-    const DirectX::SimpleMath::Vector3 tailWingTranslation(tailBoomTranslation.x - (tailBoomSize.x * 0.21f) + (tailWingSize.x * 0.5f), tailBoomTranslation.y + (tailBoomSize.y * .1f), 0.0f);
+    const DirectX::SimpleMath::Vector3 tailWingTranslation(tailBoomTranslation.x - (tailBoomSize.x * 0.27f) + (tailWingSize.x * 0.5f), tailBoomTranslation.y + (tailBoomSize.y * .1f), 0.0f);
     const DirectX::SimpleMath::Matrix tailWingRotation = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(0.0f));
     m_heliModel.tailWingShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), tailWingSize);
     m_heliModel.tailWingMatrix = DirectX::SimpleMath::Matrix::Identity;
@@ -778,7 +1001,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const float tailAxelLength = 0.45f;
     const float tailAxelDiameter = 0.1f;
     const float tailAxelOffsetY = 0.25f;
-    const DirectX::SimpleMath::Vector3 tailAxelTranslation(tailBoomTranslation.x * 1.8f, tailBoomTranslation.y * 1.0f, -tailAxelLength);
+    const DirectX::SimpleMath::Vector3 tailAxelTranslation(tailBoomTranslation.x * 1.85f, tailBoomTranslation.y * 1.0f, -tailAxelLength);
     //const DirectX::SimpleMath::Vector3 tailAxelTranslation(tailFinTranslation.x * 1.02f, tailFinTranslation.y * 1.15f, (-tailFinSize.z * 0.5f) - (tailAxelLength * 0.5f));
     m_heliModel.tailRotorAxelShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), tailAxelLength, tailAxelDiameter, 16);
     m_heliModel.tailRotorAxelMatrix = DirectX::SimpleMath::Matrix::Identity;
@@ -1291,8 +1514,27 @@ void Vehicle::LandVehicle()
 
 void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos, struct HeliModel& aModel)
 {
+    m_testPos -= aPos;
+    m_testPos2 -= aPos;
+    m_testPos3 -= aPos;
+
     aModel.localNoseBodyMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localNoseConeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix3 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix4 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix5 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix6 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix7 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix8 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix9 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix10 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix11 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothMatrix12 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localToothBackdropRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+
     aModel.localBodyMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localDoorMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localMainWingMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
@@ -1332,6 +1574,7 @@ void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos,
     aModel.localTailBoomMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailBoomLowerMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailBoomUpperMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localTailBoomEndCapMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailFinUpperMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailFinUpperTipMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailFinLowerMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
@@ -1872,6 +2115,36 @@ void Vehicle::UpdateModel()
     m_heliModel.noseConeMatrix = m_heliModel.localNoseConeMatrix;
     m_heliModel.noseConeMatrix *= updateMat;
 
+    m_heliModel.toothMatrix1 = m_heliModel.localToothMatrix1;
+    m_heliModel.toothMatrix1 *= updateMat;
+    m_heliModel.toothMatrix2 = m_heliModel.localToothMatrix2;
+    m_heliModel.toothMatrix2 *= updateMat;
+    m_heliModel.toothMatrix3 = m_heliModel.localToothMatrix3;
+    m_heliModel.toothMatrix3 *= updateMat;
+    m_heliModel.toothMatrix4 = m_heliModel.localToothMatrix4;
+    m_heliModel.toothMatrix4 *= updateMat;
+    m_heliModel.toothMatrix5 = m_heliModel.localToothMatrix5;
+    m_heliModel.toothMatrix5 *= updateMat;
+    m_heliModel.toothMatrix6 = m_heliModel.localToothMatrix6;
+    m_heliModel.toothMatrix6 *= updateMat;
+    m_heliModel.toothMatrix7 = m_heliModel.localToothMatrix7;
+    m_heliModel.toothMatrix7 *= updateMat;
+    m_heliModel.toothMatrix8 = m_heliModel.localToothMatrix8;
+    m_heliModel.toothMatrix8 *= updateMat;
+    m_heliModel.toothMatrix9 = m_heliModel.localToothMatrix9;
+    m_heliModel.toothMatrix9 *= updateMat;
+    m_heliModel.toothMatrix10 = m_heliModel.localToothMatrix10;
+    m_heliModel.toothMatrix10 *= updateMat;
+    m_heliModel.toothMatrix11 = m_heliModel.localToothMatrix11;
+    m_heliModel.toothMatrix11 *= updateMat;
+    m_heliModel.toothMatrix12 = m_heliModel.localToothMatrix12;
+    m_heliModel.toothMatrix12 *= updateMat;
+
+    m_heliModel.toothBackdropLeftMatrix = m_heliModel.localToothBackdropLeftMatrix;
+    m_heliModel.toothBackdropLeftMatrix *= updateMat;
+    m_heliModel.toothBackdropRightMatrix = m_heliModel.localToothBackdropRightMatrix;
+    m_heliModel.toothBackdropRightMatrix *= updateMat;
+
     m_heliModel.sideStripeMatrix0 = m_heliModel.localSidestripeMatrix0;
     m_heliModel.sideStripeMatrix0 *= updateMat;
     m_heliModel.sideStripeMatrix1 = m_heliModel.localSidestripeMatrix1;
@@ -1985,6 +2258,9 @@ void Vehicle::UpdateModel()
 
     m_heliModel.tailBoomUpperMatrix = m_heliModel.localTailBoomUpperMatrix;
     m_heliModel.tailBoomUpperMatrix *= updateMat;
+
+    m_heliModel.tailBoomEndCapMatrix = m_heliModel.localTailBoomEndCapMatrix;
+    m_heliModel.tailBoomEndCapMatrix *= updateMat;
 
     m_heliModel.tailFinUpperMatrix = m_heliModel.localTailFinUpperMatrix;
     m_heliModel.tailFinUpperMatrix *= updateMat;
@@ -2442,6 +2718,20 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     DebugPushTestLine(m_testPos, -DirectX::SimpleMath::Vector3::UnitX, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
     DebugPushTestLine(m_testPos, -DirectX::SimpleMath::Vector3::UnitY, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
     DebugPushTestLine(m_testPos, -DirectX::SimpleMath::Vector3::UnitZ, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+
+    DebugPushTestLine(m_testPos2, DirectX::SimpleMath::Vector3::UnitX, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos2, DirectX::SimpleMath::Vector3::UnitY, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos2, DirectX::SimpleMath::Vector3::UnitZ, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos2, -DirectX::SimpleMath::Vector3::UnitX, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos2, -DirectX::SimpleMath::Vector3::UnitY, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos2, -DirectX::SimpleMath::Vector3::UnitZ, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+    DebugPushTestLine(m_testPos3, DirectX::SimpleMath::Vector3::UnitX, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos3, DirectX::SimpleMath::Vector3::UnitY, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos3, DirectX::SimpleMath::Vector3::UnitZ, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos3, -DirectX::SimpleMath::Vector3::UnitX, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos3, -DirectX::SimpleMath::Vector3::UnitY, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+    DebugPushTestLine(m_testPos3, -DirectX::SimpleMath::Vector3::UnitZ, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
     //m_heli.landingGear.angleCurrent = cos(m_rotorTimerTest) - Utility::ToRadians(45.0f);
     DebugPushUILineDecimalNumber("m_heli.landingGear.angleCurrent : ", Utility::ToDegrees(m_heli.landingGear.angleCurrent), "");

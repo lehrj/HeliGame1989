@@ -197,6 +197,7 @@ struct HeliModel
 
     DirectX::SimpleMath::Vector4 testColor1;
     DirectX::SimpleMath::Vector4 testColor2;
+    DirectX::SimpleMath::Vector4 testColor3;
 
     // part shape and local positions
     std::unique_ptr<DirectX::GeometricPrimitive>    noseConeShape;
@@ -233,10 +234,6 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    sideStripeShape5;
     DirectX::SimpleMath::Matrix sideStripeMatrix5;
     DirectX::SimpleMath::Matrix localSidestripeMatrix5;
-
-
-
-
 
 
     std::unique_ptr<DirectX::GeometricPrimitive>    landingGearTireShape;
@@ -276,6 +273,42 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    noseCowlShape;
     DirectX::SimpleMath::Matrix noseCowlMatrix;
     DirectX::SimpleMath::Matrix localNoseCowlMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    toothShape;
+    std::unique_ptr<DirectX::GeometricPrimitive>    toothShape2;
+    DirectX::SimpleMath::Matrix toothMatrix1;
+    DirectX::SimpleMath::Matrix localToothMatrix1;
+    DirectX::SimpleMath::Matrix toothMatrix2;
+    DirectX::SimpleMath::Matrix localToothMatrix2;
+    DirectX::SimpleMath::Matrix toothMatrix3;
+    DirectX::SimpleMath::Matrix localToothMatrix3;
+    DirectX::SimpleMath::Matrix toothMatrix4;
+    DirectX::SimpleMath::Matrix localToothMatrix4;
+    DirectX::SimpleMath::Matrix toothMatrix5;
+    DirectX::SimpleMath::Matrix localToothMatrix5;
+    DirectX::SimpleMath::Matrix toothMatrix6;
+    DirectX::SimpleMath::Matrix localToothMatrix6;
+    DirectX::SimpleMath::Matrix toothMatrix7;
+    DirectX::SimpleMath::Matrix localToothMatrix7;
+    DirectX::SimpleMath::Matrix toothMatrix8;
+    DirectX::SimpleMath::Matrix localToothMatrix8;
+    DirectX::SimpleMath::Matrix toothMatrix9;
+    DirectX::SimpleMath::Matrix localToothMatrix9;
+    DirectX::SimpleMath::Matrix toothMatrix10;
+    DirectX::SimpleMath::Matrix localToothMatrix10;
+    DirectX::SimpleMath::Matrix toothMatrix11;
+    DirectX::SimpleMath::Matrix localToothMatrix11;   
+    DirectX::SimpleMath::Matrix toothMatrix12;
+    DirectX::SimpleMath::Matrix localToothMatrix12;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    toothBackdropShape;
+    DirectX::SimpleMath::Matrix toothBackdropLeftMatrix;
+    DirectX::SimpleMath::Matrix localToothBackdropLeftMatrix;
+    DirectX::SimpleMath::Matrix toothBackdropRightMatrix;
+    DirectX::SimpleMath::Matrix localToothBackdropRightMatrix;
+    std::unique_ptr<DirectX::GeometricPrimitive>    toothBackdropTestShape;
+
+
 
     std::unique_ptr<DirectX::GeometricPrimitive>    mainWingShape;
     DirectX::SimpleMath::Matrix mainWingMatrix;
@@ -345,6 +378,10 @@ struct HeliModel
     DirectX::SimpleMath::Matrix localTailBoomLowerMatrix;
     DirectX::SimpleMath::Matrix tailBoomUpperMatrix;
     DirectX::SimpleMath::Matrix localTailBoomUpperMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailBoomEndCapShape;
+    DirectX::SimpleMath::Matrix tailBoomEndCapMatrix;
+    DirectX::SimpleMath::Matrix localTailBoomEndCapMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    tailFinUpperShape;
     DirectX::SimpleMath::Matrix tailFinUpperMatrix;
@@ -541,5 +578,7 @@ private:
 
     bool m_debugToggle = false;
     DirectX::SimpleMath::Vector3 m_testPos = DirectX::SimpleMath::Vector3::Zero;
+    DirectX::SimpleMath::Vector3 m_testPos2 = DirectX::SimpleMath::Vector3::Zero;
+    DirectX::SimpleMath::Vector3 m_testPos3 = DirectX::SimpleMath::Vector3::Zero;
 };
 
