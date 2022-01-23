@@ -259,11 +259,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix landingGearRearRightMatrix;
     DirectX::SimpleMath::Matrix localLandingGearRearRightMatrix;
 
-    DirectX::SimpleMath::Matrix landingGearRotationMatrix;
-
-
-
-
     std::unique_ptr<DirectX::GeometricPrimitive>    bodyCapShape;
     DirectX::SimpleMath::Matrix windShieldMatrix;
     DirectX::SimpleMath::Matrix localWindShieldMatrix;
@@ -309,7 +304,6 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    toothBackdropTestShape;
 
 
-
     std::unique_ptr<DirectX::GeometricPrimitive>    mainWingShape;
     DirectX::SimpleMath::Matrix mainWingMatrix;
     DirectX::SimpleMath::Matrix localMainWingMatrix;
@@ -329,6 +323,27 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    sideWindowLowerShape;
     DirectX::SimpleMath::Matrix sideWindowLowerMatrix;
     DirectX::SimpleMath::Matrix localSideWindowLowerMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    wingJetCenterShape;
+    DirectX::SimpleMath::Matrix wingJetCenterMatrix;
+    DirectX::SimpleMath::Matrix localWingJetCenterMatrix;
+    std::unique_ptr<DirectX::GeometricPrimitive>    wingJetForwardHousingShape;
+    DirectX::SimpleMath::Matrix wingJetForwardHousingLeftMatrix;
+    DirectX::SimpleMath::Matrix localWingJetForwardHousingLeftMatrix;
+    DirectX::SimpleMath::Matrix wingJetForwardHousingRightMatrix;
+    DirectX::SimpleMath::Matrix localWingJetForwardHousingRightMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    wingJetForwardCowlShape;
+    DirectX::SimpleMath::Matrix wingJetForwardCowlLeftMatrix;
+    DirectX::SimpleMath::Matrix localWingJetForwardCowlLeftMatrix;
+    DirectX::SimpleMath::Matrix wingJetForwardCowlRightMatrix;
+    DirectX::SimpleMath::Matrix localWingJetForwardCowlRightMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    wingJetCouplingShape;
+    DirectX::SimpleMath::Matrix wingJetCouplingLeftMatrix;
+    DirectX::SimpleMath::Matrix localWingJetCouplingLeftMatrix;
+    DirectX::SimpleMath::Matrix wingJetCouplingRightMatrix;
+    DirectX::SimpleMath::Matrix localWingJetCouplingRightMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    engineHousingShape;
     DirectX::SimpleMath::Matrix engineHousingMatrix;
@@ -399,9 +414,19 @@ struct HeliModel
     DirectX::SimpleMath::Matrix tailFinLowerTipMatrix;
     DirectX::SimpleMath::Matrix localTailFinLowerTipMatrix;
 
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailFinLeadingEdgeShape;
+    DirectX::SimpleMath::Matrix tailFinLeadingEdgeLowerMatrix;
+    DirectX::SimpleMath::Matrix localTailFinLeadingEdgeLowerMatrix;
+    DirectX::SimpleMath::Matrix tailFinLeadingEdgeUpperMatrix;
+    DirectX::SimpleMath::Matrix localTailFinLeadingEdgeUpperMatrix;
+
     std::unique_ptr<DirectX::GeometricPrimitive>    tailWingShape;
     DirectX::SimpleMath::Matrix tailWingMatrix;
     DirectX::SimpleMath::Matrix localTailWingMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailWingLeadingEdgeShape;
+    DirectX::SimpleMath::Matrix tailWingLeadingEdgeMatrix;
+    DirectX::SimpleMath::Matrix localTailWingLeadingEdgeMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    tailWingFinShape;
     DirectX::SimpleMath::Matrix tailWingFinLeftMatrix;
@@ -456,6 +481,14 @@ struct HeliModel
     DirectX::SimpleMath::Matrix tailRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix localTailRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix tailRotorBladeTranslationMatrix2;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorBladeEdgeShape;
+    DirectX::SimpleMath::Matrix tailRotorBladeEdgeMatrix1;
+    DirectX::SimpleMath::Matrix tailRotorBladeEdgeTranslationMatrix1;
+    DirectX::SimpleMath::Matrix localTailRotorBladeEdgeMatrix1;
+    DirectX::SimpleMath::Matrix tailRotorBladeEdgeMatrix2;
+    DirectX::SimpleMath::Matrix tailRotorBladeEdgeTranslationMatrix2;
+    DirectX::SimpleMath::Matrix localTailRotorBladeEdgeMatrix2;
 
 };
 
