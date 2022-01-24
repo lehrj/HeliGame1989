@@ -84,13 +84,23 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.mainWingShape->Draw(m_heliModel.mainWingMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.mainWingLeadingEdgeShape->Draw(m_heliModel.mainWingLeadingEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.mainWingTailEdgeShape->Draw(m_heliModel.mainWingTailEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.wingJetCenterShape->Draw(m_heliModel.wingJetCenterMatrix, aView, aProj, m_heliModel.bodyColor);
+    //m_heliModel.wingJetCenterShape->Draw(m_heliModel.wingJetCenterMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.wingJetForwardHousingShape->Draw(m_heliModel.wingJetForwardHousingLeftMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.wingJetForwardHousingShape->Draw(m_heliModel.wingJetForwardHousingRightMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.wingJetForwardCowlShape->Draw(m_heliModel.wingJetForwardCowlLeftMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.wingJetForwardCowlShape->Draw(m_heliModel.wingJetForwardCowlRightMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.wingJetCouplingShape->Draw(m_heliModel.wingJetCouplingLeftMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.wingJetCouplingShape->Draw(m_heliModel.wingJetCouplingRightMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.wingJetRearHousingShape->Draw(m_heliModel.wingJetRearHousingRightMatrix, aView, aProj, m_heliModel.exhaustColor);
+    m_heliModel.wingJetRearHousingShape->Draw(m_heliModel.wingJetRearHousingLeftMatrix, aView, aProj, m_heliModel.exhaustColor);
+
+    m_heliModel.wingJetForwardIntakeShape->Draw(m_heliModel.wingJetForwardHousingLeftMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.wingJetForwardIntakeShape->Draw(m_heliModel.wingJetForwardHousingRightMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.wingJetExhaustShape->Draw(m_heliModel.wingJetRearHousingLeftMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.wingJetExhaustShape->Draw(m_heliModel.wingJetRearHousingRightMatrix, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.wingJetExhaustTipShape->Draw(m_heliModel.wingJetExhaustTipLeftMatrix, aView, aProj, m_heliModel.exhaustColor);
+    m_heliModel.wingJetExhaustTipShape->Draw(m_heliModel.wingJetExhaustTipRightMatrix, aView, aProj, m_heliModel.exhaustColor);
 
     m_heliModel.sideStripeShape0->Draw(m_heliModel.sideStripeMatrix0, aView, aProj, m_heliModel.stripeColor1);
     m_heliModel.sideStripeShape1->Draw(m_heliModel.sideStripeMatrix1, aView, aProj, m_heliModel.stripeColor1);
@@ -102,6 +112,7 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.noseCowlShape->Draw(m_heliModel.noseCowlMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.bodyCapShape->Draw(m_heliModel.bodyRearMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.sideWindowUpperShape->Draw(m_heliModel.sideWindowUpperMatrix, aView, aProj, m_heliModel.windshieldColor);
+    //m_heliModel.sideWindowEyeShape->Draw(m_heliModel.sideWindowEyeMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.sideWindowLowerShape->Draw(m_heliModel.sideWindowLowerMatrix, aView, aProj, m_heliModel.windshieldColor);
 
     m_heliModel.toothShape->Draw(m_heliModel.toothMatrix1, aView, aProj, m_heliModel.windshieldColor);
@@ -119,14 +130,7 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
 
     //m_heliModel.toothBackdropShape->Draw(m_heliModel.toothBackdropLeftMatrix, aView, aProj, m_heliModel.testColor3);
     //m_heliModel.toothBackdropShape->Draw(m_heliModel.toothBackdropRightMatrix, aView, aProj, m_heliModel.testColor3);
-    m_heliModel.toothBackdropTestShape->Draw(m_heliModel.toothBackdropLeftMatrix, aView, aProj, m_heliModel.testColor3);
-
-
-    m_heliModel.landingGearLowerArmShape->Draw(m_heliModel.landingGearLowerArmMatrix , aView, aProj, m_heliModel.landingGearArmColor);
-    m_heliModel.landingGearUpperArmShape->Draw(m_heliModel.landingGearUpperArmMatrix , aView, aProj, m_heliModel.landingGearArmColor);
-    m_heliModel.landingGearTireShape->Draw(m_heliModel.landingGearWheelMatrix , aView, aProj, m_heliModel.landingGearTireColor);
-    m_heliModel.landingGearWheelShape->Draw(m_heliModel.landingGearWheelMatrix , aView, aProj, m_heliModel.landingGearWheelColor);
-
+    //m_heliModel.toothBackdropTestShape->Draw(m_heliModel.toothBackdropLeftMatrix, aView, aProj, m_heliModel.testColor3);
 
     m_heliModel.landingGearLowerArmShape->Draw(m_heliModel.landingGearLowerArmMatrix * m_heliModel.landingGearFrontMatrix, aView, aProj, m_heliModel.landingGearArmColor);
     m_heliModel.landingGearUpperArmShape->Draw(m_heliModel.landingGearUpperArmMatrix * m_heliModel.landingGearFrontMatrix, aView, aProj, m_heliModel.landingGearArmColor);
@@ -147,22 +151,28 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.noseBodyShape->Draw(m_heliModel.noseBodyMatrix, aView, aProj, m_heliModel.bodyColor);
 
     m_heliModel.engineHousingShape->Draw(m_heliModel.engineHousingMatrix, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingFrontRightMatrix, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingFrontLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    //m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingFrontRightMatrix, aView, aProj, m_heliModel.bodyColor);
+    //m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingFrontLeftMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingRearLeftMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingRearRightMatrix, aView, aProj, m_heliModel.bodyColor);
 
-    m_heliModel.engineHousingIntakeShape->Draw(m_heliModel.engineHousingIntakeLeftMatrix, aView, aProj, m_heliModel.stripeColor1);
-    m_heliModel.engineHousingIntakeShape->Draw(m_heliModel.engineHousingIntakeRightMatrix, aView, aProj, m_heliModel.stripeColor1);
+    m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingIntakeLeftMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingIntakeRightMatrix, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.engineHousingIntakeCowlShape->Draw(m_heliModel.engineHousingIntakeCowlLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.engineHousingIntakeCowlShape->Draw(m_heliModel.engineHousingIntakeCowlRightMatrix, aView, aProj, m_heliModel.bodyColor);
+
     m_heliModel.engineHousingFrontShape->Draw(m_heliModel.engineHousingFrontMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.engineHousingFrontShape->Draw(m_heliModel.engineHousingRearMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.engineHousingSideShape->Draw(m_heliModel.engineHousingSideLeftMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.engineHousingSideShape->Draw(m_heliModel.engineHousingSideRightMatrix, aView, aProj, m_heliModel.bodyColor);
 
-    m_heliModel.engineExhaustExteriorShape->Draw(m_heliModel.engineExhaustLeftMatrix, aView, aProj, m_heliModel.stripeColor0);
-    m_heliModel.engineExhaustExteriorShape->Draw(m_heliModel.engineExhaustRightMatrix, aView, aProj, m_heliModel.stripeColor0);
-    m_heliModel.engineExhaustInteriorShape->Draw(m_heliModel.engineExhaustLeftMatrix, aView, aProj, m_heliModel.stripeColor1);
-    m_heliModel.engineExhaustInteriorShape->Draw(m_heliModel.engineExhaustRightMatrix, aView, aProj, m_heliModel.stripeColor1);
+    m_heliModel.engineExhaustExteriorShape->Draw(m_heliModel.engineExhaustLeftMatrix, aView, aProj, m_heliModel.exhaustColor);
+    m_heliModel.engineExhaustExteriorShape->Draw(m_heliModel.engineExhaustRightMatrix, aView, aProj, m_heliModel.exhaustColor);
+    m_heliModel.engineExhaustInteriorShape->Draw(m_heliModel.engineExhaustLeftMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineExhaustInteriorShape->Draw(m_heliModel.engineExhaustRightMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineExhaustTipShape->Draw(m_heliModel.engineExhaustTipLeftMatrix, aView, aProj, m_heliModel.exhaustColor);
+    m_heliModel.engineExhaustTipShape->Draw(m_heliModel.engineExhaustTipRightMatrix, aView, aProj, m_heliModel.exhaustColor);
 
     m_heliModel.tailBoomShape->Draw(m_heliModel.tailBoomMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.tailBoomNewShape->Draw(m_heliModel.tailBoomLowerMatrix, aView, aProj, m_heliModel.bodyColor);
@@ -177,19 +187,29 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.tailFinLeadingEdgeShape->Draw(m_heliModel.tailFinLeadingEdgeUpperMatrix, aView, aProj, m_heliModel.bodyColor);
 
     m_heliModel.tailWingShape->Draw(m_heliModel.tailWingMatrix, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailWingLeadingEdgeShape->Draw(m_heliModel.tailWingLeadingEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailWingEdgeShape->Draw(m_heliModel.tailWingLeadingEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailWingEdgeShape->Draw(m_heliModel.tailWingTrailingEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.tailWingFinShape->Draw(m_heliModel.tailWingFinLeftMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.tailWingFinShape->Draw(m_heliModel.tailWingFinRightMatrix, aView, aProj, m_heliModel.bodyColor);
+
 
     m_heliModel.mainRotorAxelShape->Draw(m_heliModel.mainRotorAxelMatrix, aView, aProj, m_heliModel.axelColor);
     m_heliModel.mainRotorHubShape->Draw(m_heliModel.mainRotorHubMatrix, aView, aProj, m_heliModel.axelColor);
 
     m_heliModel.mainRotorArmShape->Draw(m_heliModel.mainRotorArmMatrix, aView, aProj, m_heliModel.rotorColor);
+
     m_heliModel.mainRotorBladeShape->Draw(m_heliModel.mainRotorBladeMatrix1, aView, aProj, m_heliModel.rotorColor);
     m_heliModel.mainRotorBladeShape->Draw(m_heliModel.mainRotorBladeMatrix2, aView, aProj, m_heliModel.rotorColor);
 
     m_heliModel.mainRotorBladeEdgeShape->Draw(m_heliModel.mainRotorBladeEdgeMatrix1, aView, aProj, m_heliModel.rotorColor);
     m_heliModel.mainRotorBladeEdgeShape->Draw(m_heliModel.mainRotorBladeEdgeMatrix2, aView, aProj, m_heliModel.rotorColor);
+
+    m_heliModel.mainRotorArmEndCapShape->Draw(m_heliModel.mainRotorArmEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainRotorArmEndCapShape->Draw(m_heliModel.mainRotorArmEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainRotorBladeEndCapShape->Draw(m_heliModel.mainRotorBladeEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainRotorBladeEndCapShape->Draw(m_heliModel.mainRotorBladeEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(m_heliModel.mainRotorBladeEdgeEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(m_heliModel.mainRotorBladeEdgeEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
 
     m_heliModel.tailRotorAxelShape->Draw(m_heliModel.tailRotorAxelMatrix, aView, aProj, m_heliModel.axelColor);
     m_heliModel.tailRotorHubShape->Draw(m_heliModel.tailRotorHubMatrix, aView, aProj, m_heliModel.axelColor);
@@ -198,6 +218,15 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.tailRotorBladeShape->Draw(m_heliModel.tailRotorBladeMatrix2, aView, aProj, m_heliModel.rotorColor);
     m_heliModel.tailRotorBladeEdgeShape->Draw(m_heliModel.tailRotorBladeEdgeMatrix1, aView, aProj, m_heliModel.rotorColor);
     m_heliModel.tailRotorBladeEdgeShape->Draw(m_heliModel.tailRotorBladeEdgeMatrix2, aView, aProj, m_heliModel.rotorColor);
+
+    m_heliModel.tailRotorBladeEndCapShape->Draw(m_heliModel.tailRotorBladeEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorBladeEndCapShape->Draw(m_heliModel.tailRotorBladeEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
+
+    m_heliModel.tailRotorArmEndCapShape->Draw(m_heliModel.tailRotorArmEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorArmEndCapShape->Draw(m_heliModel.tailRotorArmEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
+
+    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(m_heliModel.tailRotorBladeEdgeEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(m_heliModel.tailRotorBladeEdgeEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
 }
 
 void Vehicle::InitializeEngine(Engine& aEngine)
@@ -232,20 +261,21 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
 {
     // set model part colors
     m_heliModel.axelColor = DirectX::SimpleMath::Vector4(0.411764741f, 0.411764741f, 0.411764741f, 1.0f);
-    //m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.501960814f, 0.501960814f, 1.0f);
-    m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.2f, 0.2f, 0.2f, 1.0f);
+    m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.501960814f, 0.501960814f, 1.0f);
+    m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.0f, 0.0f, 1.0f);
+    m_heliModel.exhaustColor = DirectX::SimpleMath::Vector4(0.8, 0.8f, 0.8f, 1.0f);
     m_heliModel.landingGearArmColor = DirectX::SimpleMath::Vector4(0.9f, 0.9f, 0.9f, 1.0f);
     m_heliModel.landingGearTireColor = DirectX::SimpleMath::Vector4(0.411764741f, 0.411764741f, 0.411764741f, 1.0f);
-    //m_heliModel.landingGearWheelColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.501960814f, 0.501960814f, 1.0f);
     m_heliModel.landingGearWheelColor = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     m_heliModel.rotorColor = DirectX::SimpleMath::Vector4(0.827451050f, 0.827451050f, 0.827451050f, 1.0f);
+    m_heliModel.shadowColor = DirectX::SimpleMath::Vector4(0.0, 0.0f, 0.0f, 1.0f);
     m_heliModel.stripeColor0 = DirectX::SimpleMath::Vector4(0.8, 0.8f, 0.8f, 1.0f);
     m_heliModel.stripeColor1 = DirectX::SimpleMath::Vector4(0.0, 0.0f, 0.0f, 1.0f);
     m_heliModel.windshieldColor = DirectX::SimpleMath::Vector4(0.662745118f, 0.662745118f, 0.662745118f, 1.20f);
     m_heliModel.testColor1 = DirectX::SimpleMath::Vector4(1.0, 0.0f, 0.0f, 1.0f);
     m_heliModel.testColor2 = DirectX::SimpleMath::Vector4(1.0, 1.0f, 1.0f, 1.0f);
     m_heliModel.testColor3 = DirectX::SimpleMath::Vector4(1.0, 0.0f, 0.0f, 1.0f);
-
+    
     // set model shapes and local positions   
     // main body
     const DirectX::SimpleMath::Vector3 bodySize(5.0f, 3.0f, 3.0f);
@@ -256,8 +286,8 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localBodyMatrix = m_heliModel.bodyMatrix;
 
     // main wing
-    const DirectX::SimpleMath::Vector3 mainWingSize(1.5f, 0.9f, 5.8f);
-    const DirectX::SimpleMath::Vector3 mainWingTranslation(-mainWingSize.x * 0.65f, mainWingSize.y * 0.6f, 0.0f);
+    const DirectX::SimpleMath::Vector3 mainWingSize(1.5f, 0.9f, 6.8f);
+    const DirectX::SimpleMath::Vector3 mainWingTranslation(-mainWingSize.x * 0.65f, mainWingSize.y * 0.7f, 0.0f);
     m_heliModel.mainWingShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), mainWingSize);
     m_heliModel.mainWingMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.mainWingMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(mainWingTranslation);
@@ -301,11 +331,10 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.mainWingTailEdgeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(mainWingTailEdgeTranslation);
     m_heliModel.localMainWingTailEdgeMatrix = m_heliModel.mainWingTailEdgeMatrix;
 
-
     // wing jet center
-    const DirectX::SimpleMath::Vector3 wingJetCenterSize(mainWingSize.x * 1.0, mainWingSize.y * 1.2f, mainWingSize.z * 0.6f);
+    const DirectX::SimpleMath::Vector3 wingJetCenterSize(mainWingSize.x * 1.0, mainWingSize.y * 1.5f, mainWingSize.z * 0.5f);
     m_heliModel.wingJetCenterShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), wingJetCenterSize);
-    const DirectX::SimpleMath::Vector3 wingJetCenterTranslation(mainWingTranslation.x + (mainWingLeadingEdgeSize.x * 0.75f),  wingJetCenterSize.y  * 0.5f, mainWingTranslation.z);
+    const DirectX::SimpleMath::Vector3 wingJetCenterTranslation(mainWingTranslation.x + (mainWingLeadingEdgeSize.x * 0.75f), mainWingTranslation.y * 1.2f, mainWingTranslation.z);
     m_heliModel.wingJetCenterMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.wingJetCenterMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(wingJetCenterTranslation);
     m_heliModel.localWingJetCenterMatrix = m_heliModel.wingJetCenterMatrix;
@@ -313,7 +342,9 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     // wing jet forward housing left
     const float wingJetForwardHousingDiameter = wingJetCenterSize.y;
     const float wingJetForwardHousingHeight = wingJetCenterSize.x;
-    m_heliModel.wingJetForwardHousingShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), wingJetForwardHousingHeight, wingJetForwardHousingDiameter, 6);
+    m_heliModel.wingJetForwardHousingShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), wingJetForwardHousingHeight, wingJetForwardHousingDiameter, m_heliModel.circleTessellationVal1);
+    m_heliModel.wingJetForwardIntakeShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), wingJetForwardHousingHeight + 0.01, wingJetForwardHousingDiameter * 0.9f, m_heliModel.circleTessellationVal1);
+
     const DirectX::SimpleMath::Vector3 wingJetForwardHousingLeftTranslation(wingJetCenterTranslation.x, wingJetCenterTranslation.y, -wingJetCenterSize.z * 0.5f);
     m_heliModel.wingJetForwardHousingLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.wingJetForwardHousingLeftMatrix = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
@@ -330,7 +361,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     // wing jet forward cowl left  
     const float wingJetForwardCowlThickness = 0.3f;
     const float wingJetForwardCowlDiameter = wingJetForwardHousingDiameter - wingJetForwardCowlThickness;
-    m_heliModel.wingJetForwardCowlShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), wingJetForwardCowlDiameter, wingJetForwardCowlThickness, 6);
+    m_heliModel.wingJetForwardCowlShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), wingJetForwardCowlDiameter, wingJetForwardCowlThickness, m_heliModel.circleTessellationVal1);
     const DirectX::SimpleMath::Vector3 wingJetForwardCowlLeftTranslation(wingJetForwardHousingLeftTranslation.x + wingJetForwardHousingHeight * 0.5f, wingJetForwardHousingLeftTranslation.y, -wingJetForwardHousingLeftTranslation.z);
     m_heliModel.wingJetForwardCowlLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.wingJetForwardCowlLeftMatrix = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
@@ -347,7 +378,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     // wing jet coupling left  
     const float wingJetCouplingHeight = wingJetForwardHousingHeight;
     const float wingJetCouplingDiameter = wingJetForwardHousingDiameter;
-    m_heliModel.wingJetCouplingShape = DirectX::GeometricPrimitive::CreateCone(aContext.Get(), wingJetCouplingDiameter, wingJetCouplingHeight, 6);
+    m_heliModel.wingJetCouplingShape = DirectX::GeometricPrimitive::CreateCone(aContext.Get(), wingJetCouplingDiameter, wingJetCouplingHeight, m_heliModel.circleTessellationVal1);
     const DirectX::SimpleMath::Vector3 wingJetCouplingLeftTranslation(wingJetForwardHousingLeftTranslation.x - wingJetForwardHousingHeight, wingJetForwardHousingLeftTranslation.y, -wingJetForwardHousingLeftTranslation.z);
     m_heliModel.wingJetCouplingLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.wingJetCouplingLeftMatrix = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
@@ -361,7 +392,39 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.wingJetCouplingRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(wingJetCouplingRightTranslation);
     m_heliModel.localWingJetCouplingRightMatrix = m_heliModel.wingJetCouplingRightMatrix;
 
+    // wing jet rear housing left
+    const float wingJetRearHousingDiameter = wingJetCenterSize.y * 0.45f;
+    const float wingJetRearHousingHeight = wingJetCenterSize.x * 0.8f;
+    m_heliModel.wingJetRearHousingShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), wingJetRearHousingHeight, wingJetRearHousingDiameter, m_heliModel.circleTessellationVal1);
+    const float wingJetExhaustDiameter = wingJetRearHousingDiameter * 0.9f;
+    const float wingJetExhaustHeight = wingJetRearHousingHeight + 0.01f;
+    m_heliModel.wingJetExhaustShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), wingJetExhaustHeight, wingJetExhaustDiameter, m_heliModel.circleTessellationVal1);
+    const float wingJetRearHousingOffsetX = -1.7f;
+    const float wingJetRearHousingOffsetY = 0.1f;
+    const float wingJetRearHousingOffsetZ = -0.0f;
+    const DirectX::SimpleMath::Vector3 wingJetRearHousingLeftTranslation(wingJetCenterTranslation.x + wingJetRearHousingOffsetX, wingJetCenterTranslation.y + wingJetRearHousingOffsetY, -wingJetCenterSize.z * 0.5f - wingJetRearHousingOffsetZ);
+    m_heliModel.wingJetRearHousingLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.wingJetRearHousingLeftMatrix = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
+    m_heliModel.wingJetRearHousingLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(wingJetRearHousingLeftTranslation);
+    m_heliModel.localWingJetRearHousingLeftMatrix = m_heliModel.wingJetRearHousingLeftMatrix;
 
+    // wing jet rear housing right
+    const DirectX::SimpleMath::Vector3 wingJetRearHousingRightTranslation(wingJetCenterTranslation.x + wingJetRearHousingOffsetX, wingJetCenterTranslation.y + wingJetRearHousingOffsetY, wingJetCenterSize.z * 0.5f + wingJetRearHousingOffsetZ);
+    m_heliModel.wingJetRearHousingRightMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.wingJetRearHousingRightMatrix = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
+    m_heliModel.wingJetRearHousingRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(wingJetRearHousingRightTranslation);
+    m_heliModel.localWingJetRearHousingRightMatrix = m_heliModel.wingJetRearHousingRightMatrix;
+
+    // wing jet exhaust tip
+    const float jetExhaustTipThickness = (wingJetRearHousingDiameter - wingJetExhaustDiameter) * 0.5f;
+    const float jetExhaustTipDiameter = wingJetRearHousingDiameter - jetExhaustTipThickness;
+    m_heliModel.wingJetExhaustTipShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), jetExhaustTipDiameter, jetExhaustTipThickness, m_heliModel.circleTessellationVal2);
+    m_heliModel.wingJetExhaustTipLeftMatrix = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, wingJetRearHousingHeight * 0.5f, 0.0f));
+    m_heliModel.wingJetExhaustTipLeftMatrix *= m_heliModel.wingJetRearHousingLeftMatrix;
+    m_heliModel.localWingJetExhaustTipLeftMatrix = m_heliModel.wingJetExhaustTipLeftMatrix;
+    m_heliModel.wingJetExhaustTipRightMatrix = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, wingJetRearHousingHeight * 0.5f, 0.0f));
+    m_heliModel.wingJetExhaustTipRightMatrix *= m_heliModel.wingJetRearHousingRightMatrix;
+    m_heliModel.localWingJetExhaustTipRightMatrix = m_heliModel.wingJetExhaustTipRightMatrix;
 
     // side stripe 0 base
     const DirectX::SimpleMath::Vector3 sideStripeSize0(4.1f, 0.06f, bodySize.z + 0.001);
@@ -429,7 +492,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.sideStripeMatrix5 *= DirectX::SimpleMath::Matrix::CreateTranslation(sideStripeTranslation5);
     m_heliModel.localSidestripeMatrix5 = m_heliModel.sideStripeMatrix5;
   
-
     // landing gear parts
     const float landingGearTireDiameter = 0.50f;
     const float landingGearTireThickness = 0.25f;
@@ -438,11 +500,9 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const float landingGearWheelHeight = landingGearTireThickness * 1.05f;
     m_heliModel.landingGearWheelShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), landingGearWheelHeight, landingGearWheelDiameter);
     m_heliModel.landingGearTireShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), landingGearTireDiameter, landingGearTireThickness);
-
     const float gearArmThickness = 0.1f;
     const float gearArmDiameter = landingGearTireDiameter * 1.25f;
     m_heliModel.landingGearLowerArmShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), gearArmDiameter, gearArmThickness, 4);
-
     m_heliModel.landingGearUpperArmShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), gearArmDiameter, gearArmThickness, 4);
   
     const float landingGearUpperArmAngle = Utility::ToRadians(35.0f);
@@ -482,13 +542,13 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localLandingGearFrontMatrix = m_heliModel.landingGearFrontMatrix;
 
     // landing gear back left
-    const DirectX::SimpleMath::Vector3 landingGearRearLeftTranslation(bodySize.x * -0.34f, landingGearVerticalOffset, bodySize.z * -0.75f);
+    const DirectX::SimpleMath::Vector3 landingGearRearLeftTranslation(bodySize.x * -0.34f, landingGearVerticalOffset, bodySize.z * -0.9f);
     m_heliModel.landingGearRearLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.landingGearRearLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(landingGearRearLeftTranslation);
     m_heliModel.localLandingGearRearLeftMatrix = m_heliModel.landingGearRearLeftMatrix;
 
     // landing gear back right
-    const DirectX::SimpleMath::Vector3 landingGearRearRightTranslation(bodySize.x * -0.34f, landingGearVerticalOffset, bodySize.z * 0.75f);
+    const DirectX::SimpleMath::Vector3 landingGearRearRightTranslation(bodySize.x * -0.34f, landingGearVerticalOffset, bodySize.z * 0.9f);
     m_heliModel.landingGearRearRightMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.landingGearRearRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(landingGearRearRightTranslation);
     m_heliModel.localLandingGearRearRightMatrix = m_heliModel.landingGearRearRightMatrix;
@@ -517,20 +577,16 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.noseConeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(noseConeTranslation);
     m_heliModel.localNoseConeMatrix = m_heliModel.noseConeMatrix;
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     // Nose teeth
     const float toothHeight = 0.1f;
     const float toothDiameter = 0.75f;
     const float toothDiameter2 = 0.75f;
     m_heliModel.toothShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), toothHeight, toothDiameter, 3);
-    m_heliModel.toothShape2 = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), toothHeight, toothDiameter2, 3);
-    
+    m_heliModel.toothShape2 = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), toothHeight, toothDiameter2, 3);  
     const float noseLength = (noseConeSize.z * 0.5f) * sqrt(2.0f);
     DirectX::SimpleMath::Vector3 toothUpperTranslation(noseConeTranslation.x, noseConeTranslation.y + toothDiameter * 0.65, 0.0f);
     DirectX::SimpleMath::Vector3 toothLowerTranslation(noseConeTranslation.x, noseConeTranslation.y - toothDiameter * 0.65, 0.0f);
     DirectX::SimpleMath::Vector3 toothHorizontalTranslation;
-
     DirectX::SimpleMath::Matrix toothRotX1 = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0));
     DirectX::SimpleMath::Matrix toothRotY1 = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(45.0f));
     DirectX::SimpleMath::Matrix toothRotX2 = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-90.0));
@@ -709,7 +765,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     testMouthTrans.y -= 0.41f;
     m_heliModel.toothBackdropLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(45.0));
-    m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(0.0));
     m_heliModel.toothBackdropLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(testMouthTrans);
     m_heliModel.localToothBackdropLeftMatrix = m_heliModel.toothBackdropLeftMatrix;
 
@@ -772,6 +827,16 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.sideWindowUpperMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(sideWindowUpperTranslation);
     m_heliModel.localSideWindowUpperMatrix = m_heliModel.sideWindowUpperMatrix;
 
+    // Side window eye
+    const DirectX::SimpleMath::Vector3 sideWindowEyeSize(sideWindowUpperSize.x, sideWindowUpperSize.y * 0.35, sideWindowUpperSize.z + indentOffset); 
+    m_heliModel.sideWindowEyeShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), sideWindowEyeSize.z, sideWindowEyeSize.y, 3);
+    const DirectX::SimpleMath::Vector3 sideWindowEyeTranslation(sideWindowUpperTranslation.x - (sideWindowEyeSize.y - sideWindowUpperSize.y) * 0.25f, sideWindowUpperTranslation.y + (sideWindowEyeSize.y - sideWindowUpperSize.y) * 0.2f, sideWindowUpperTranslation.z);
+    m_heliModel.sideWindowEyeMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.sideWindowEyeMatrix = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(30.0f));
+    m_heliModel.sideWindowEyeMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.sideWindowEyeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(sideWindowEyeTranslation);
+    m_heliModel.localSideWindowEyeMatrix = m_heliModel.sideWindowEyeMatrix;
+
     // Side window lower
     const DirectX::SimpleMath::Vector3 sideWindowLowerSize(noseBodySize.x * 0.85f, noseBodySize.y * 0.75f, bodySize.z + indentOffset);
     const DirectX::SimpleMath::Vector3 sideWindowLowerTranslation(noseBodyTranslation.x * 1.0f , noseBodyTranslation.y * 1.6f, noseBodyTranslation.z);
@@ -825,8 +890,8 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localEngineHousingRearRightMatrix = m_heliModel.engineHousingRearRightMatrix;
 
     // engine housing intake left
-    const float intakeVerticalOffset = 0.0f;
-    const float intakeHorizontalOffset = 0.0766f;
+    const float intakeVerticalOffset = -0.05f;
+    const float intakeHorizontalOffset = -0.065;
     const float intakeShapeSize = engineHousingFrontSize * 0.8f;
     m_heliModel.engineHousingIntakeShape = DirectX::GeometricPrimitive::CreateOctahedron(aContext.Get(), intakeShapeSize);
     m_heliModel.engineHousingIntakeLeftMatrix = m_heliModel.engineHousingFrontLeftMatrix;
@@ -839,6 +904,31 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const DirectX::SimpleMath::Vector3 engineIntakeRightTranslation(intakeHorizontalOffset, intakeVerticalOffset, intakeHorizontalOffset);
     m_heliModel.engineHousingIntakeRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(engineIntakeRightTranslation);
     m_heliModel.localEngineHousingIntakeRightMatrix = m_heliModel.engineHousingIntakeRightMatrix;
+
+    // engine house intake cowl left  
+    const float engineIntakeCowlThickness = (engineHousingFrontSize - intakeShapeSize) * 1.5f;
+    const float engineIntakeCowlDiamter = 1.11f;
+    m_heliModel.engineHousingIntakeCowlShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), engineIntakeCowlDiamter, engineIntakeCowlThickness, 3);
+    DirectX::SimpleMath::Vector3 engineIntakeCowlLeftTranslation(engineIntakeCowlDiamter * 0.25 - engineIntakeCowlThickness, engineIntakeCowlDiamter * 0.25f - engineIntakeCowlThickness + 0.72f, -engineIntakeCowlDiamter * 0.25f + engineIntakeCowlThickness);
+    engineIntakeCowlLeftTranslation.x = engineHousingFrontSize * 0.25;
+    engineIntakeCowlLeftTranslation.y = engineHousingFrontSize * 0.5f - engineIntakeCowlThickness * 0.80f;
+    engineIntakeCowlLeftTranslation.z = -engineHousingFrontSize * 0.25f;
+    engineIntakeCowlLeftTranslation.x = 0.196;
+    engineIntakeCowlLeftTranslation.y = 0.195;
+    engineIntakeCowlLeftTranslation.z = -0.196;
+    m_heliModel.engineHousingIntakeCowlLeftMatrix = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-55.0f));
+    m_heliModel.engineHousingIntakeCowlLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(-45.0f));
+    m_heliModel.engineHousingIntakeCowlLeftMatrix *= m_heliModel.engineHousingFrontLeftMatrix;
+    m_heliModel.engineHousingIntakeCowlLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(engineIntakeCowlLeftTranslation);
+    m_heliModel.localEngineHousingIntakeCowlLeftMatrix = m_heliModel.engineHousingIntakeCowlLeftMatrix;
+    
+    // engine intake cowl right
+    DirectX::SimpleMath::Vector3 engineIntakeCowlRightTranslation(engineIntakeCowlLeftTranslation.x, engineIntakeCowlLeftTranslation.y, -engineIntakeCowlLeftTranslation.z);
+    m_heliModel.engineHousingIntakeCowlRightMatrix = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-125.0f));
+    m_heliModel.engineHousingIntakeCowlRightMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(45.0f));
+    m_heliModel.engineHousingIntakeCowlRightMatrix *= m_heliModel.engineHousingFrontRightMatrix;
+    m_heliModel.engineHousingIntakeCowlRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(engineIntakeCowlRightTranslation);
+    m_heliModel.localEngineHousingIntakeCowlRightMatrix = m_heliModel.engineHousingIntakeCowlRightMatrix;
 
     // upper front engine housing body 
     DirectX::SimpleMath::Vector3 engineHousingFrontCoverSize((engineHousingSize.z * 0.5f)* sqrt(2.0f), (engineHousingSize.z * 0.5f)* sqrt(2.0f), engineHousingSize.z);
@@ -855,7 +945,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const DirectX::SimpleMath::Vector3 engineHousingRearCoverTranslation(-engineHousingSize.x * 0.5f, -engineHousingSize.y * 0.0f, 0.0f);
     m_heliModel.engineHousingRearMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.engineHousingRearMatrix = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(45.0f));
-
     m_heliModel.engineHousingRearMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(engineHousingTranslation);
     m_heliModel.engineHousingRearMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(engineHousingRearCoverTranslation);
     m_heliModel.localEngineHousingRearMatrix = m_heliModel.engineHousingRearMatrix;
@@ -880,8 +969,8 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
 
     // engine exhaust left
     const DirectX::SimpleMath::Vector3 exhaustSize(1.6f, engineHousingSize.y * 0.48f, engineHousingSize.z * 0.25f);
+    m_heliModel.engineExhaustExteriorShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), exhaustSize.x, exhaustSize.y, m_heliModel.circleTessellationVal2);
     const DirectX::SimpleMath::Vector3 exhaustLeftTranslation(-engineHousingSize.x * 0.5f, engineHousingSize.y * 0.18f, engineHousingSize.z * 0.35f);
-    m_heliModel.engineExhaustExteriorShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), exhaustSize.x, exhaustSize.y, 6);
     m_heliModel.engineExhaustLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.engineExhaustLeftMatrix = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(75.0f));
     m_heliModel.engineExhaustLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(25.0f));
@@ -898,11 +987,20 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.engineExhaustRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(exhaustRightTranslation);
     m_heliModel.localEngineExhaustRightMatrix = m_heliModel.engineExhaustRightMatrix;
 
-    DirectX::SimpleMath::Vector3 exhaustSizeInterior = exhaustSize;
-    exhaustSizeInterior.x *= 1.001f;
-    exhaustSizeInterior.y *= 0.96f;
-    m_heliModel.engineExhaustInteriorShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), exhaustSizeInterior.x, exhaustSizeInterior.y, 6);
-
+    // engine exhaust interior
+    const float engineExhaustInteriorHeight = exhaustSize.x * 1.001f;
+    const float engineExhaustInteriorDiameter = exhaustSize.y * 0.96f;
+    m_heliModel.engineExhaustInteriorShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), engineExhaustInteriorHeight, engineExhaustInteriorDiameter, m_heliModel.circleTessellationVal2);
+    // engine exhaust tip
+    const float engineExhaustTipThickness = (exhaustSize.y - engineExhaustInteriorDiameter) * 0.5f;
+    const float engineExhaustTipDiameter = exhaustSize.y - engineExhaustTipThickness;
+    m_heliModel.engineExhaustTipShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), engineExhaustTipDiameter, engineExhaustTipThickness, m_heliModel.circleTessellationVal2);
+    m_heliModel.engineExhaustTipLeftMatrix = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, exhaustSize.x * 0.5f, 0.0f));
+    m_heliModel.engineExhaustTipLeftMatrix *= m_heliModel.engineExhaustLeftMatrix;
+    m_heliModel.localEngineExhaustTipLeftMatrix = m_heliModel.engineExhaustTipLeftMatrix;
+    m_heliModel.engineExhaustTipRightMatrix = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, exhaustSize.x * 0.5f, 0.0f));
+    m_heliModel.engineExhaustTipRightMatrix *= m_heliModel.engineExhaustRightMatrix;
+    m_heliModel.localEngineExhaustTipRightMatrix = m_heliModel.engineExhaustTipRightMatrix;
 
     // tail boom
     const DirectX::SimpleMath::Vector3 tailBoomSize(8.9f, 0.65f, 0.7f);
@@ -911,48 +1009,36 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     testSize *= 0.5f;
     DirectX::SimpleMath::Vector3 tailBoomTranslation(-bodySize.x, bodySize.y - (tailBoomSize.y * 1.0f), 0.0f);
     tailBoomTranslation.y = bodySize.y - testSize - testSize;
-    tailBoomTranslation.y += 0.165f;
-    //const DirectX::SimpleMath::Vector3 tailBoomTranslation(-bodySize.x, bodySize.y - (tailBoomSize.y * 1.5f), 0.0f);    
+    tailBoomTranslation.y += 0.165f; 
     m_heliModel.tailBoomShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), tailBoomSize);
     m_heliModel.tailBoomMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailBoomMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(0.0));
-    //m_heliModel.tailBoomMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(0.0));
     m_heliModel.tailBoomMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBoomTranslation);
     m_heliModel.localTailBoomMatrix = m_heliModel.tailBoomMatrix;
 
     // tail boom lower
     float tailBoomDiameter = 0.8f;
-    //tailBoomDiameter = tailBoomSize.z / sin(Utility::ToRadians(60.0f));
     tailBoomDiameter = tailBoomSize.z;
     tailBoomDiameter = 0.2f;
-
     const float tailBoomHeight = 8.9f;
-    //DirectX::SimpleMath::Vector3 tailBoomLowerTranslation(-bodySize.x, bodySize.y - (tailBoomDiameter * 1.0f), 0.0f);
     DirectX::SimpleMath::Vector3 tailBoomLowerTranslation(-bodySize.x, tailBoomTranslation.y, 0.0f);
     tailBoomLowerTranslation.y +=  ((tailBoomDiameter * 0.5f) / 2.0f);
-    //tailBoomLowerTranslation.y -= tailBoomDiameter * 0.5f + tailBoomSize.y * 0.5f;
     tailBoomLowerTranslation.y -= tailBoomSize.y * 0.5f + tailBoomDiameter * 0.25f;
     DirectX::SimpleMath::Vector3 tailBoomLowerSize(tailBoomHeight, testSize, testSize);
-    //m_heliModel.tailBoomNewShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), tailBoomHeight, tailBoomDiameter, 3);
     m_heliModel.tailBoomNewShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), tailBoomLowerSize);
     m_heliModel.tailBoomLowerMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailBoomLowerMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(45.0));
-    //m_heliModel.tailBoomLowerMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0));
     m_heliModel.tailBoomLowerMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBoomLowerTranslation);
     m_heliModel.localTailBoomLowerMatrix = m_heliModel.tailBoomLowerMatrix;
 
     // tail boom upper
-    //DirectX::SimpleMath::Vector3 tailBoomUpperTranslation(-bodySize.x, bodySize.y - (tailBoomSize.y * 0.5f), 0.0f);
     DirectX::SimpleMath::Vector3 tailBoomUpperTranslation(-bodySize.x, tailBoomTranslation.y, 0.0f);
     tailBoomUpperTranslation.y -= ((tailBoomDiameter * 0.5f) / 2.0f);
     tailBoomUpperTranslation.y += tailBoomDiameter * 0.5f + tailBoomSize.y * 0.5f;
-
     tailBoomUpperTranslation = tailBoomLowerTranslation;
     tailBoomUpperTranslation.y += tailBoomSize.y;
-    //tailBoomUpperTranslation.y -= .5f;
     m_heliModel.tailBoomUpperMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailBoomUpperMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-45.0));
-    //m_heliModel.tailBoomUpperMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0));
     m_heliModel.tailBoomUpperMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBoomUpperTranslation);
     m_heliModel.localTailBoomUpperMatrix = m_heliModel.tailBoomUpperMatrix;
 
@@ -1048,13 +1134,21 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
 
     // tail wing leading edge
     const DirectX::SimpleMath::Vector3 tailWingLeadingEdgeSize((tailWingSize.y * 0.5f) * sqrt(2.0f), (tailWingSize.y * 0.5f) * sqrt(2.0f), tailWingSize.z);
-    m_heliModel.tailWingLeadingEdgeShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), tailWingLeadingEdgeSize);
+    m_heliModel.tailWingEdgeShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), tailWingLeadingEdgeSize);
     const DirectX::SimpleMath::Vector3 tailWingLeadingEdgeTranslation(tailWingTranslation.x + tailWingSize.x * 0.5f, tailWingTranslation.y, tailWingTranslation.z);
     m_heliModel.tailWingLeadingEdgeMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailWingLeadingEdgeMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(45.0f));
     m_heliModel.tailWingLeadingEdgeMatrix *= tailWingRotation;
     m_heliModel.tailWingLeadingEdgeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailWingLeadingEdgeTranslation);
     m_heliModel.localTailWingLeadingEdgeMatrix = m_heliModel.tailWingLeadingEdgeMatrix;
+
+    // tail wing trailing edge
+    const DirectX::SimpleMath::Vector3 tailWingTrailingEdgeTranslation(tailWingTranslation.x - tailWingSize.x * 0.5f, tailWingTranslation.y, tailWingTranslation.z);
+    m_heliModel.tailWingTrailingEdgeMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailWingTrailingEdgeMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(45.0f));
+    m_heliModel.tailWingTrailingEdgeMatrix *= tailWingRotation;
+    m_heliModel.tailWingTrailingEdgeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailWingTrailingEdgeTranslation);
+    m_heliModel.localTailWingTrailingEdgeMatrix = m_heliModel.tailWingTrailingEdgeMatrix;
 
     // tail wing fin left
     const float tailWingFinDiameter = 1.25f;
@@ -1065,9 +1159,15 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     tailWingFinLeftTranslation.z -= tailWingSize.z * 0.5f + tailWingFinHeight * 0.5f;
     m_heliModel.tailWingFinLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailWingFinLeftMatrix = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(-30.0f));
-    m_heliModel.tailWingFinLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(91.0f));
+    m_heliModel.tailWingFinLeftMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
     m_heliModel.tailWingFinLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailWingFinLeftTranslation);
     m_heliModel.localTailWingFinLeftMatrix = m_heliModel.tailWingFinLeftMatrix;
+
+    // tail wing fin edge
+    m_heliModel.tailWingFinEdgeLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailWingFinEdgeLeftMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailWingFinEdgeRightMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.localTailWingFinEdgeRightMatrix = DirectX::SimpleMath::Matrix::Identity;
 
     // tail wing fin right
     DirectX::SimpleMath::Vector3 tailWingFinRightTranslation = tailWingTranslation;
@@ -1075,7 +1175,7 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     tailWingFinRightTranslation.z += tailWingSize.z * 0.5f + tailWingFinHeight * 0.5f;
     m_heliModel.tailWingFinRightMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailWingFinRightMatrix = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(-30.0f));
-    m_heliModel.tailWingFinRightMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(89.0f));
+    m_heliModel.tailWingFinRightMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
     m_heliModel.tailWingFinRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailWingFinRightTranslation);
     m_heliModel.localTailWingFinRightMatrix = m_heliModel.tailWingFinRightMatrix;
 
@@ -1126,11 +1226,10 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
 
     // tail rotor arm
     const float tailArmDiameter = aHeliData.tailRotor.radius * 2.0f;
-    const float tailArmHeight = aHeliData.tailRotor.height;;
-    const DirectX::SimpleMath::Vector3 tailArmTranslation(tailHubTranslation.x, tailHubTranslation.y, tailHubTranslation.z);
+    const float tailArmHeight = aHeliData.tailRotor.height;
     m_heliModel.tailRotorArmShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), tailArmDiameter, tailArmHeight);
+    const DirectX::SimpleMath::Vector3 tailArmTranslation(tailHubTranslation.x, tailHubTranslation.y, tailHubTranslation.z);
     m_heliModel.tailRotorArmMatrix = DirectX::SimpleMath::Matrix::Identity;
-    m_heliModel.tailRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(0.0f));
     m_heliModel.tailRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
     m_heliModel.localTailRotorArmMatrix = m_heliModel.tailRotorArmMatrix;
 
@@ -1140,9 +1239,25 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.mainRotorArmShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), mainArmDiameter, mainArmHeight);
     const DirectX::SimpleMath::Vector3 rotorArmTranslation(0.0f, mainHubTranslation.y, 0.0f);
     m_heliModel.mainRotorArmMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.mainRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(90.0f));
     m_heliModel.mainRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
     m_heliModel.mainRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorArmTranslation);
     m_heliModel.localMainRotorArmMatrix = m_heliModel.mainRotorArmMatrix;
+
+    // main rotor arm end cap
+    m_heliModel.mainRotorArmEndCapShape = DirectX::GeometricPrimitive::CreateSphere(aContext.Get(),  mainArmHeight);
+    const DirectX::SimpleMath::Vector3 rotorArmEndCapTranslation1(mainArmDiameter * 0.5f, mainHubTranslation.y, 0.0f);
+    m_heliModel.mainRotorArmEndCapMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.mainRotorArmEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(90.0f));
+    m_heliModel.mainRotorArmEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
+    m_heliModel.mainRotorArmEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorArmEndCapTranslation1);
+    m_heliModel.localMainRotorArmEndCapMatrix1 = m_heliModel.mainRotorArmEndCapMatrix1;
+    const DirectX::SimpleMath::Vector3 rotorArmEndCapTranslation2(-mainArmDiameter * 0.5f, mainHubTranslation.y, 0.0f);
+    m_heliModel.mainRotorArmEndCapMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.mainRotorArmEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(90.0f));
+    m_heliModel.mainRotorArmEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
+    m_heliModel.mainRotorArmEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorArmEndCapTranslation2);
+    m_heliModel.localMainRotorArmEndCapMatrix2 = m_heliModel.mainRotorArmEndCapMatrix2;
 
     // main rotor blade 1
     const float mainBladeWidth = aHeliData.mainRotor.width;
@@ -1150,11 +1265,27 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const DirectX::SimpleMath::Vector3 rotorBladeSize(mainBladeLength, mainArmHeight, mainBladeWidth);
     const DirectX::SimpleMath::Vector3 rotorBladeTranslation1(((mainArmDiameter * 0.5f) - (rotorBladeSize.x * 0.5f)), mainHubTranslation.y, 0.0f);
     m_heliModel.mainRotorBladeShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), rotorBladeSize);
-
     m_heliModel.mainRotorBladeMatrix1 = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.mainRotorBladeMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorBladeTranslation1);
     m_heliModel.localMainRotorBladeMatrix1 = m_heliModel.mainRotorBladeMatrix1;
     m_heliModel.mainRotorBladeTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, rotorBladeSize.z * 0.5f));
+
+    // main rotor blade end cap 1
+    m_heliModel.mainRotorBladeEndCapShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), mainBladeWidth, mainArmHeight);
+    const DirectX::SimpleMath::Vector3 rotorBladeEndCapTranslation1(((mainArmDiameter * 0.5f) - (mainBladeWidth * 0.0f)), mainHubTranslation.y * 1.0f + (mainBladeWidth * 0.0f), rotorBladeSize.z * 0.0f);
+    m_heliModel.mainRotorBladeEndCapMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.mainRotorBladeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.mainRotorBladeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorBladeEndCapTranslation1);
+    m_heliModel.localMainRotorBladeEndCapMatrix1 = m_heliModel.mainRotorBladeEndCapMatrix1;
+    m_heliModel.mainRotorBladeEndCapTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, mainBladeWidth * 0.5f, mainBladeLength * 0.0f));
+    // main rotor blade end cap 2
+    const DirectX::SimpleMath::Vector3 rotorBladeEndCapTranslation2(((-mainArmDiameter * 0.5f) - (-mainBladeWidth * 0.0f)), mainHubTranslation.y * 1.0f + (mainBladeWidth * 0.0f), 0.0f);
+    m_heliModel.mainRotorBladeEndCapMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.mainRotorBladeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.mainRotorBladeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(180.0f));
+    m_heliModel.mainRotorBladeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorBladeEndCapTranslation2);
+    m_heliModel.localMainRotorBladeEndCapMatrix2 = m_heliModel.mainRotorBladeEndCapMatrix2;
+    m_heliModel.mainRotorBladeEndCapTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, mainBladeWidth * 0.5f, mainBladeLength * 0.0f));
 
     // main rotor edge  
     float mainRotorLeadingEdgeDiameter = rotorBladeSize.y / sin(Utility::ToRadians(60.0f));
@@ -1163,9 +1294,28 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.mainRotorBladeEdgeMatrix1 = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.mainRotorBladeEdgeMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorBladeTranslation1);
     m_heliModel.localMainRotorEdgeBladeMatrix1 = m_heliModel.mainRotorBladeEdgeMatrix1;
-    m_heliModel.mainRotorBladeEdgeTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(0.0f));
     m_heliModel.mainRotorBladeEdgeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
     m_heliModel.mainRotorBladeEdgeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, rotorBladeSize.z + (((sqrt(3) / 3) * rotorBladeSize.y) * 0.5f)));
+
+    // main rotor blade edge end cap 1
+    m_heliModel.mainRotorBladeEdgeEndCapShape = DirectX::GeometricPrimitive::CreateCone(aContext.Get(), mainArmHeight, mainRotorLeadingEdgeDiameter);
+    const DirectX::SimpleMath::Vector3 rotorBladeEdgeEndCapTranslation1(((mainArmDiameter * 0.5f) - (mainBladeWidth * 0.0f)), mainHubTranslation.y * 1.0f + (mainBladeWidth * 0.0f), rotorBladeSize.z * 0.0f);
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorBladeEdgeEndCapTranslation1);
+    m_heliModel.localMainRotorBladeEdgeEndCapMatrix1 = m_heliModel.mainRotorBladeEdgeEndCapMatrix1;
+    m_heliModel.mainRotorBladeEdgeEndCapTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, mainBladeWidth * 0.5f, 0.0f));
+    m_heliModel.mainRotorBladeEdgeEndCapTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, rotorBladeSize.z + (((sqrt(3) / 3) * rotorBladeSize.y) * 0.5f), 0.0f));
+    m_heliModel.mainRotorBladeEdgeEndCapTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, mainBladeWidth + (mainArmHeight * 0.57f), 0.0f));
+
+    // main rotor blade edge end cap 2
+    const DirectX::SimpleMath::Vector3 rotorBladeEdgeEndCapTranslation2(((-mainArmDiameter * 0.5f) - (-mainBladeWidth * 0.0f)), mainHubTranslation.y * 1.0f + (mainBladeWidth * 0.0f), 0.0f);
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(180.0f));
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(rotorBladeEdgeEndCapTranslation2);
+    m_heliModel.localMainRotorBladeEdgeEndCapMatrix2 = m_heliModel.mainRotorBladeEdgeEndCapMatrix2;
+    m_heliModel.mainRotorBladeEdgeEndCapTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, mainBladeWidth + (mainArmHeight * 0.57f), 0.0f));
 
     // main rotor blade 2
     const DirectX::SimpleMath::Vector3 rotorBladeTranslation2(((-mainArmDiameter * 0.5f) + (rotorBladeSize.x * 0.5f)), mainHubTranslation.y, 0.0f);
@@ -1194,6 +1344,15 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localTailRotorBladeMatrix1 = m_heliModel.tailRotorBladeMatrix1;
     m_heliModel.tailRotorBladeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
 
+    // tail rotor blade end cap 1
+    m_heliModel.tailRotorBladeEndCapShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), tailBladeWidth, tailArmHeight);
+    const DirectX::SimpleMath::Vector3 tailBladeEndCapTranslation1(-tailBladeWidth * 0.5f, -(tailArmDiameter * 0.5f) - (tailBladeSize.y * 0.0f), 0.0f);
+    m_heliModel.tailRotorBladeEndCapMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailRotorBladeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.tailRotorBladeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(90.0f));
+    m_heliModel.tailRotorBladeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeEndCapTranslation1);
+    m_heliModel.localTailRotorBladeEndCapMatrix1 = m_heliModel.tailRotorBladeEndCapMatrix1;
+    m_heliModel.tailRotorBladeEndCapTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
 
     // tail rotor blade 2
     m_heliModel.tailRotorBladeMatrix2 = DirectX::SimpleMath::Matrix::Identity;
@@ -1202,24 +1361,30 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailRotorBladeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(180.0f));
     m_heliModel.tailRotorBladeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
 
+    // tail rotor blade end cap 2
+    m_heliModel.tailRotorBladeEndCapMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailRotorBladeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.tailRotorBladeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(90.0f));
+    m_heliModel.tailRotorBladeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeEndCapTranslation1);
+    m_heliModel.localTailRotorBladeEndCapMatrix2 = m_heliModel.tailRotorBladeEndCapMatrix2;
+    m_heliModel.tailRotorBladeEndCapTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(180.0f));
+    m_heliModel.tailRotorBladeEndCapTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
 
-    /*
-    // main wing tail edge
-    const float mainWingTailEdgeDiameter = mainWingSize.y / sin(Utility::ToRadians(60.0f));
-    const float mainWingTailEdgeHeight = mainWingSize.z;
-    DirectX::SimpleMath::Vector3 mainWingTailEdgeTranslation = mainWingTranslation;
-    const float median = (mainWingTailEdgeDiameter * 0.5f) + ((mainWingTailEdgeDiameter * 0.5f) / 2.0f);
-    mainWingTailEdgeTranslation.x += -mainWingSize.x * 0.5f - mainWingTailEdgeDiameter * 0.5f + (mainWingTailEdgeDiameter - median);
-    m_heliModel.mainWingTailEdgeShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), mainWingTailEdgeHeight, mainWingTailEdgeDiameter, 3);
-    m_heliModel.mainWingTailEdgeMatrix = DirectX::SimpleMath::Matrix::Identity;
-    m_heliModel.mainWingTailEdgeMatrix = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(30.0f));
-    m_heliModel.mainWingTailEdgeMatrix *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
-    m_heliModel.mainWingTailEdgeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(mainWingTailEdgeTranslation);
-    m_heliModel.localMainWingTailEdgeMatrix = m_heliModel.mainWingTailEdgeMatrix;
-    */
-    // tail rotor blade edge 1   
-//float tailRotorLeadingEdgeDiameter = tailBladeSize.z / sin(Utility::ToRadians(60.0f));
-//float tailRotorLeadingEdgeHeight = tailBladeLength + 3.0f;
+    // tail rotor arm end cap 1
+    m_heliModel.tailRotorArmEndCapShape = DirectX::GeometricPrimitive::CreateSphere(aContext.Get(), tailArmHeight);
+    const DirectX::SimpleMath::Vector3 tailArmEndCapTranslation1(-tailBladeWidth * 0.0f, -(tailArmDiameter * 0.5f) - (tailBladeSize.y * 0.0f), 0.0f);
+    m_heliModel.tailRotorArmEndCapMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailRotorArmEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmEndCapTranslation1);
+    m_heliModel.localTailRotorArmEndCapMatrix1 = m_heliModel.tailRotorArmEndCapMatrix1;
+    m_heliModel.tailRotorArmEndCapTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
+
+    // tail rotor arm end cap 2
+    const DirectX::SimpleMath::Vector3 tailArmEndCapTranslation2(-tailBladeWidth * 0.0f, +(tailArmDiameter * 0.5f) - (tailBladeSize.y * 0.0f), 0.0f);
+    m_heliModel.tailRotorArmEndCapMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailRotorArmEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(180.0f));
+    m_heliModel.tailRotorArmEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmEndCapTranslation2);
+    m_heliModel.localTailRotorArmEndCapMatrix2 = m_heliModel.tailRotorArmEndCapMatrix2;
+    m_heliModel.tailRotorArmEndCapTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
 
     float tailRotorLeadingEdgeDiameter = tailArmHeight / sin(Utility::ToRadians(60.0f));
     float tailRotorLeadingEdgeHeight = tailBladeLength;
@@ -1233,49 +1398,34 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailRotorBladeEdgeMatrix1 = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(-90.0f));
     m_heliModel.tailRotorBladeEdgeMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeEdgeTranslation1);
     m_heliModel.localTailRotorBladeEdgeMatrix1 = m_heliModel.tailRotorBladeEdgeMatrix1;
-    m_heliModel.tailRotorBladeEdgeTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(0.0f));
-    m_heliModel.tailRotorBladeEdgeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(0.0f));
-    //m_heliModel.tailRotorBladeEdgeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
-    //m_heliModel.tailRotorBladeEdgeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, tailBladeSize.z + (((sqrt(3) / 3) * tailBladeSize.y) * 0.5f)));
     m_heliModel.tailRotorBladeEdgeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
-
-
-    float tHeight = tailBladeSize.z;
-    float tWidth = tailBladeSize.y;
-    float tLength = tailBladeSize.x;
-    // {x = 0.300000012 y = 1.11300004 z = 0.100000001 }
-    DirectX::SimpleMath::Vector3 testEdgeTrans((tailBladeSize.x + ((sqrt(3) / 3) * tailBladeSize.z) * 0.5f), 0.0f, 0.0f);
-    testEdgeTrans.x = -tWidth - ((sqrt(3) / 3) * tHeight) * 0.5f;
-    testEdgeTrans.x = - tailBladeSize.x * 0.5f;
-    //testEdgeTrans.x += 0.100000001 * (sqrt(3) / 3);
-
-    testEdgeTrans.x = -tailBladeSize.x * 0.5f - tailRotorLeadingEdgeDiameter * 0.5f + (tailRotorLeadingEdgeDiameter - medianTest);
-    //testEdgeTrans.x = - tailRotorLeadingEdgeDiameter * 0.5f + (tailRotorLeadingEdgeDiameter - medianTest);
-    //testEdgeTrans.x = 0.0f;
-    //testEdgeTrans.x = -tailBladeSize.x * 0.5f;
-    testEdgeTrans.x = 0.0f;
-    testEdgeTrans.y = 0.0f; 
-    testEdgeTrans.z = 0.0f;
-
-    m_heliModel.tailRotorBladeEdgeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(testEdgeTrans);
-    //m_heliModel.tailRotorBladeEdgeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3((tailBladeSize.x + ((sqrt(3) / 3) * tailBladeSize.z) * 0.5f), 0.0f, 0.0f));
-
-    //const float median = (mainWingTailEdgeDiameter * 0.5f) + ((mainWingTailEdgeDiameter * 0.5f) / 2.0f);
-    //mainWingTailEdgeTranslation.x += -mainWingSize.x * 0.5f - mainWingTailEdgeDiameter * 0.5f + (mainWingTailEdgeDiameter - median);
-
 
     // tail blade edge 2
     m_heliModel.tailRotorBladeEdgeMatrix2 = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.tailRotorBladeEdgeMatrix2 = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(-90.0f));
     m_heliModel.tailRotorBladeEdgeMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeEdgeTranslation1);
     m_heliModel.localTailRotorBladeEdgeMatrix2 = m_heliModel.tailRotorBladeEdgeMatrix1;
-    m_heliModel.tailRotorBladeEdgeTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(0.0f));
-    m_heliModel.tailRotorBladeEdgeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(0.0f));
-    //m_heliModel.tailRotorBladeEdgeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
-    //m_heliModel.tailRotorBladeEdgeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, tailBladeSize.z + (((sqrt(3) / 3) * tailBladeSize.y) * 0.5f)));
     m_heliModel.tailRotorBladeEdgeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(180.0f));
     m_heliModel.tailRotorBladeEdgeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
-    m_heliModel.tailRotorBladeEdgeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(testEdgeTrans);
+
+    // tail blade edge end cap 2
+    m_heliModel.tailRotorBladeEdgeEndCapShape = DirectX::GeometricPrimitive::CreateCone(aContext.Get(), tailArmHeight, tailRotorLeadingEdgeDiameter);
+    DirectX::SimpleMath::Vector3 tailBladeEdgeEndCapTranslation1(-tailBladeWidth * 1.0f - tailRotorLeadingEdgeDiameter, - tailArmDiameter * 0.5f, 0.0f);
+    tailBladeEdgeEndCapTranslation1 = tailBladeEdgeTranslation1;
+    tailBladeEdgeEndCapTranslation1.y -= tailBladeLength * 0.5f;
+    tailBladeEdgeEndCapTranslation1.x -= tailBladeWidth * 0.095f ;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix2 = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeEdgeEndCapTranslation1);
+    m_heliModel.localTailRotorBladeEdgeEndCapMatrix2 = m_heliModel.tailRotorBladeEdgeEndCapMatrix2;
+    m_heliModel.tailRotorBladeEdgeEndCapTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(180.0f));
+    m_heliModel.tailRotorBladeEdgeEndCapTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
+    // tail blade edge end cap 1
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix1 = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailBladeEdgeEndCapTranslation1);
+    m_heliModel.localTailRotorBladeEdgeEndCapMatrix1 = m_heliModel.tailRotorBladeEdgeEndCapMatrix1;
+    m_heliModel.tailRotorBladeEdgeEndCapTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
 }
 
 void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
@@ -1283,9 +1433,10 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     // set values for main rotor blade
     const int bladeCountMainRotor = 2;
     const float angleBetweetnBladesMainRotor = (Utility::GetPi() * 2.0f) / bladeCountMainRotor;
-    const float radiusMainRotor = 7.0f;
+    const float radiusMainRotor = 8.0f;
     const float heightMainRotor = 0.15f;
-    const float lengthMainRotor = 6.57999992f;
+    //const float lengthMainRotor = 6.57999992f;
+    const float lengthMainRotor = 7.4f;
     const float widthMainRotor = 0.80f;       
     const float initialRPMMainRotor = 0.0f;
     const float maxPitchAngleMainRotor = Utility::ToRadians(45.0f);
@@ -1325,9 +1476,11 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     // set values for tail rotor blade
     const int bladeCountTailRotor = 2;
     const float angleBetweetnBladesTailRotor = (Utility::GetPi() * 2.0f) / bladeCountTailRotor;
-    const float radiusTailRotor = 1.325f;
+    //const float radiusTailRotor = 1.325f;
+    const float radiusTailRotor = 1.425f;
     const float heightTailRotor = 0.1f;
-    const float lengthTailRotor = 1.11300004f;
+    //const float lengthTailRotor = 1.11300004f;
+    const float lengthTailRotor = 1.25f;
     const float widthTailRotor = 0.300000012f;
     
     const float initialRPMTailRotor = 0.0f;
@@ -1335,7 +1488,7 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     const float maxInputPitchAngleTailRotor = Utility::ToRadians(45.0f);
     const float minInputPitchAngleTailRotor = Utility::ToRadians(0.0f);
     const float minPitchAngleTailRotor = Utility::ToRadians(0.0f);
-    const float neutralAngleTailRotor = 0.0f;// (maxPitchAngleTailRotor + minInputPitchAngleTailRotor) / 2.0f;
+    const float neutralAngleTailRotor = (maxPitchAngleTailRotor + minInputPitchAngleTailRotor) / 2.0f;
     const float initialPitchAngleTailRotor = neutralAngleTailRotor;
     const float rotorRotationTailBlade = 0.0f;
 
@@ -1691,6 +1844,10 @@ void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos,
     aModel.localWingJetForwardCowlRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localWingJetCouplingLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localWingJetCouplingRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localWingJetRearHousingLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localWingJetRearHousingRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localWingJetExhaustTipLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localWingJetExhaustTipRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
 
     aModel.localSidestripeMatrix0 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localSidestripeMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
@@ -1701,6 +1858,7 @@ void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos,
     aModel.localWindShieldMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localNoseCowlMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localSideWindowUpperMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localSideWindowEyeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localSideWindowLowerMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localBodyRearMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
 
@@ -1713,6 +1871,12 @@ void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos,
     aModel.localEngineHousingFrontMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localEngineHousingRearMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localEngineHousingFrontLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localEngineHousingIntakeLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localEngineHousingIntakeRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+
+    aModel.localEngineHousingIntakeCowlLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localEngineHousingIntakeCowlRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+
     aModel.localEngineHousingRearLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localEngineHousingRearRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localEngineHousingSideLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
@@ -1720,8 +1884,8 @@ void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos,
     aModel.localEngineExhaustLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localEngineExhaustRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
 
-    aModel.localEngineHousingIntakeLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
-    aModel.localEngineHousingIntakeRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localEngineExhaustTipLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localEngineExhaustTipRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
 
     aModel.localTailBoomMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailBoomLowerMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
@@ -1735,26 +1899,43 @@ void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos,
     aModel.localTailFinLeadingEdgeUpperMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailWingMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailWingLeadingEdgeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localTailWingTrailingEdgeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailWingFinLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailWingFinRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localTailWingFinEdgeLeftMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localTailWingFinEdgeRightMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localMainRotorHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localMainRotorBladeMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localMainRotorBladeMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localMainRotorBladeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localMainRotorBladeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localMainRotorBladeEdgeEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localMainRotorBladeEdgeEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+
     aModel.localTailRotorAxelMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailRotorHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localTailRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
-    
+    aModel.tailRotorArmEndCapTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.tailRotorArmEndCapTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+
     aModel.tailRotorBladeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.tailRotorBladeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.tailRotorBladeEndCapTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.tailRotorBladeEndCapTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
 
     aModel.tailRotorBladeEdgeTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.tailRotorBladeEdgeTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+
+    aModel.tailRotorBladeEdgeEndCapTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.tailRotorBladeEdgeEndCapTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
 
     aModel.localMainRotorEdgeBladeMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localMainRotorEdgeBladeMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
 
     aModel.localMainRotorAxelMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localMainRotorArmMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localMainRotorArmEndCapMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localMainRotorArmEndCapMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
 
     m_heli.localMainRotorPos += aPos;
     m_heli.localTailRotorPos += aPos;
@@ -2252,22 +2433,7 @@ void Vehicle::UpdateLandingGear(struct LandingGear& aLandingGear, const double a
 
 void Vehicle::UpdateModel()
 {
-    DirectX::SimpleMath::Matrix updateMat = DirectX::SimpleMath::Matrix::Identity;
-
-    DirectX::SimpleMath::Vector3 translation(0.0f, 0.0f, -2.0f);
-    DirectX::SimpleMath::Vector3 antiTrans(0.0f, 0.0f, 2.0f);
-    DirectX::SimpleMath::Matrix translationMat = DirectX::SimpleMath::Matrix::CreateTranslation(translation);
-    DirectX::SimpleMath::Matrix antiTranslationMat = DirectX::SimpleMath::Matrix::CreateTranslation(antiTrans);
-    //updateMat *= translationMat;
-    updateMat = DirectX::SimpleMath::Matrix::CreateWorld(m_heli.q.position, -m_heli.right, m_heli.up);
-    //updateMat *= antiTranslationMat;
-    //updateMat = DirectX::SimpleMath::Matrix::CreateWorld(m_heli.q.position, m_heli.forward, m_heli.up);
-
-    //updateMat = m_heli.alignment;;
-    //updateMat *= DirectX::SimpleMath::Matrix::CreateTranslation(m_heli.q.position);
-
-    DirectX::SimpleMath::Matrix updateMat2 = DirectX::SimpleMath::Matrix::CreateWorld(m_prevPos, -m_prevRight, m_prevUp);
-    //updateMat = updateMat2;
+    DirectX::SimpleMath::Matrix updateMat = DirectX::SimpleMath::Matrix::CreateWorld(m_heli.q.position, -m_heli.right, m_heli.up);
 
     m_heliModel.noseConeMatrix = m_heliModel.localNoseConeMatrix;
     m_heliModel.noseConeMatrix *= updateMat;
@@ -2296,7 +2462,6 @@ void Vehicle::UpdateModel()
     m_heliModel.toothMatrix11 *= updateMat;
     m_heliModel.toothMatrix12 = m_heliModel.localToothMatrix12;
     m_heliModel.toothMatrix12 *= updateMat;
-
     m_heliModel.toothBackdropLeftMatrix = m_heliModel.localToothBackdropLeftMatrix;
     m_heliModel.toothBackdropLeftMatrix *= updateMat;
     m_heliModel.toothBackdropRightMatrix = m_heliModel.localToothBackdropRightMatrix;
@@ -2315,20 +2480,15 @@ void Vehicle::UpdateModel()
     m_heliModel.sideStripeMatrix5 = m_heliModel.localSidestripeMatrix5;
     m_heliModel.sideStripeMatrix5 *= updateMat;
 
-
-
     m_heliModel.landingGearFrontMatrix = m_heliModel.localLandingGearFrontMatrix;
     m_heliModel.landingGearFrontMatrix *= updateMat;
-
     m_heliModel.landingGearRearLeftMatrix = m_heliModel.localLandingGearRearLeftMatrix;
     m_heliModel.landingGearRearLeftMatrix *= updateMat;
     m_heliModel.landingGearRearRightMatrix = m_heliModel.localLandingGearRearRightMatrix;
     m_heliModel.landingGearRearRightMatrix *= updateMat;
-
     m_heliModel.landingGearUpperArmMatrix = m_heliModel.localLandingGearUperArmMatrix;
     m_heliModel.landingGearLowerArmMatrix = m_heliModel.localLandingGearLowerArmMatrix;
     m_heliModel.landingGearWheelMatrix = m_heliModel.localLandingGearWheelMatrix;
-
     DirectX::SimpleMath::Matrix landingGearRotationMatrix = DirectX::SimpleMath::Matrix::CreateRotationZ(m_heli.landingGear.angleCurrent);
     m_heliModel.landingGearUpperArmMatrix *= landingGearRotationMatrix;
     m_heliModel.landingGearLowerArmMatrix *= landingGearRotationMatrix;
@@ -2370,6 +2530,15 @@ void Vehicle::UpdateModel()
     m_heliModel.wingJetCouplingRightMatrix = m_heliModel.localWingJetCouplingRightMatrix;
     m_heliModel.wingJetCouplingRightMatrix *= updateMat;
 
+    m_heliModel.wingJetRearHousingLeftMatrix = m_heliModel.localWingJetRearHousingLeftMatrix;
+    m_heliModel.wingJetRearHousingLeftMatrix *= updateMat;
+    m_heliModel.wingJetRearHousingRightMatrix = m_heliModel.localWingJetRearHousingRightMatrix;
+    m_heliModel.wingJetRearHousingRightMatrix *= updateMat;
+    m_heliModel.wingJetExhaustTipLeftMatrix = m_heliModel.localWingJetExhaustTipLeftMatrix;
+    m_heliModel.wingJetExhaustTipLeftMatrix *= updateMat;
+    m_heliModel.wingJetExhaustTipRightMatrix = m_heliModel.localWingJetExhaustTipRightMatrix;
+    m_heliModel.wingJetExhaustTipRightMatrix *= updateMat;
+
     m_heliModel.windShieldMatrix = m_heliModel.localWindShieldMatrix;
     m_heliModel.windShieldMatrix *= updateMat;
 
@@ -2378,6 +2547,8 @@ void Vehicle::UpdateModel()
 
     m_heliModel.sideWindowUpperMatrix = m_heliModel.localSideWindowUpperMatrix;
     m_heliModel.sideWindowUpperMatrix *= updateMat;
+    m_heliModel.sideWindowEyeMatrix = m_heliModel.localSideWindowEyeMatrix;
+    m_heliModel.sideWindowEyeMatrix *= updateMat;
     m_heliModel.sideWindowLowerMatrix = m_heliModel.localSideWindowLowerMatrix;
     m_heliModel.sideWindowLowerMatrix *= updateMat;
 
@@ -2415,11 +2586,20 @@ void Vehicle::UpdateModel()
     m_heliModel.engineExhaustLeftMatrix *= updateMat;
     m_heliModel.engineExhaustRightMatrix = m_heliModel.localEngineExhaustRightMatrix;
     m_heliModel.engineExhaustRightMatrix *= updateMat;
-
     m_heliModel.engineHousingIntakeLeftMatrix = m_heliModel.localEngineHousingIntakeLeftMatrix;
     m_heliModel.engineHousingIntakeLeftMatrix *= updateMat;
     m_heliModel.engineHousingIntakeRightMatrix = m_heliModel.localEngineHousingIntakeRightMatrix;
     m_heliModel.engineHousingIntakeRightMatrix *= updateMat;
+
+    m_heliModel.engineHousingIntakeCowlLeftMatrix = m_heliModel.localEngineHousingIntakeCowlLeftMatrix;
+    m_heliModel.engineHousingIntakeCowlLeftMatrix *= updateMat;
+    m_heliModel.engineHousingIntakeCowlRightMatrix = m_heliModel.localEngineHousingIntakeCowlRightMatrix;
+    m_heliModel.engineHousingIntakeCowlRightMatrix *= updateMat;
+
+    m_heliModel.engineExhaustTipLeftMatrix = m_heliModel.localEngineExhaustTipLeftMatrix;
+    m_heliModel.engineExhaustTipLeftMatrix *= updateMat;
+    m_heliModel.engineExhaustTipRightMatrix = m_heliModel.localEngineExhaustTipRightMatrix;
+    m_heliModel.engineExhaustTipRightMatrix *= updateMat;
 
     m_heliModel.tailBoomMatrix = m_heliModel.localTailBoomMatrix;
     m_heliModel.tailBoomMatrix *= updateMat;
@@ -2452,14 +2632,20 @@ void Vehicle::UpdateModel()
 
     m_heliModel.tailWingMatrix = m_heliModel.localTailWingMatrix;
     m_heliModel.tailWingMatrix *= updateMat;
-
     m_heliModel.tailWingLeadingEdgeMatrix = m_heliModel.localTailWingLeadingEdgeMatrix;
     m_heliModel.tailWingLeadingEdgeMatrix *= updateMat;
+    m_heliModel.tailWingTrailingEdgeMatrix = m_heliModel.localTailWingTrailingEdgeMatrix;
+    m_heliModel.tailWingTrailingEdgeMatrix *= updateMat;
 
     m_heliModel.tailWingFinLeftMatrix = m_heliModel.localTailWingFinLeftMatrix;
     m_heliModel.tailWingFinLeftMatrix *= updateMat;
     m_heliModel.tailWingFinRightMatrix = m_heliModel.localTailWingFinRightMatrix;
     m_heliModel.tailWingFinRightMatrix *= updateMat;
+
+    m_heliModel.tailWingFinEdgeLeftMatrix = m_heliModel.localTailWingFinEdgeLeftMatrix;
+    m_heliModel.tailWingFinEdgeLeftMatrix *= updateMat;
+    m_heliModel.tailWingFinEdgeRightMatrix = m_heliModel.localTailWingFinEdgeRightMatrix;
+    m_heliModel.tailWingFinEdgeRightMatrix *= updateMat;
 
     m_heliModel.mainRotorAxelMatrix = m_heliModel.localMainRotorAxelMatrix;
     m_heliModel.mainRotorAxelMatrix *= updateMat;
@@ -2478,6 +2664,16 @@ void Vehicle::UpdateModel()
     m_heliModel.mainRotorArmMatrix *= mainRotorSpin;
     m_heliModel.mainRotorArmMatrix *= updateMat;
 
+    // main rotor arm end cap 1
+    m_heliModel.mainRotorArmEndCapMatrix1 = m_heliModel.localMainRotorArmEndCapMatrix1;
+    m_heliModel.mainRotorArmEndCapMatrix1 *= mainRotorSpin;
+    m_heliModel.mainRotorArmEndCapMatrix1 *= updateMat;
+
+    // main rotor arm end cap 2
+    m_heliModel.mainRotorArmEndCapMatrix2 = m_heliModel.localMainRotorArmEndCapMatrix2;
+    m_heliModel.mainRotorArmEndCapMatrix2 *= mainRotorSpin;
+    m_heliModel.mainRotorArmEndCapMatrix2 *= updateMat;
+
     // main rotor blade 1
     DirectX::SimpleMath::Matrix mainRotorPitch1 = DirectX::SimpleMath::Matrix::CreateRotationX(m_heli.mainRotor.bladeVec[0].pitchAngle);
     m_heliModel.mainRotorBladeMatrix1 = m_heliModel.mainRotorBladeTranslationMatrix1;
@@ -2493,6 +2689,20 @@ void Vehicle::UpdateModel()
     m_heliModel.mainRotorBladeEdgeMatrix1 *= mainRotorSpin;
     m_heliModel.mainRotorBladeEdgeMatrix1 *= updateMat;
 
+    // main rotor blade end cap 1
+    m_heliModel.mainRotorBladeEndCapMatrix1 = m_heliModel.mainRotorBladeEndCapTranslationMatrix1;
+    m_heliModel.mainRotorBladeEndCapMatrix1 *= mainRotorPitch1;
+    m_heliModel.mainRotorBladeEndCapMatrix1 *= m_heliModel.localMainRotorBladeEndCapMatrix1;
+    m_heliModel.mainRotorBladeEndCapMatrix1 *= mainRotorSpin;
+    m_heliModel.mainRotorBladeEndCapMatrix1 *= updateMat;
+
+    // main rotor edge end cap 1
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix1 = m_heliModel.mainRotorBladeEdgeEndCapTranslationMatrix1;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix1 *= mainRotorPitch1;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix1 *= m_heliModel.localMainRotorBladeEdgeEndCapMatrix1;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix1 *= mainRotorSpin;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix1 *= updateMat;
+
     // main rotor blade 2
     DirectX::SimpleMath::Matrix mainRotorPitch2 = DirectX::SimpleMath::Matrix::CreateRotationX(m_heli.mainRotor.bladeVec[1].pitchAngle);
     m_heliModel.mainRotorBladeMatrix2 = m_heliModel.mainRotorBladeTranslationMatrix2;
@@ -2501,6 +2711,13 @@ void Vehicle::UpdateModel()
     m_heliModel.mainRotorBladeMatrix2 *= mainRotorSpin;
     m_heliModel.mainRotorBladeMatrix2 *= updateMat;
        
+    // main rotor blade end cap 2
+    m_heliModel.mainRotorBladeEndCapMatrix2 = m_heliModel.mainRotorBladeEndCapTranslationMatrix2;
+    m_heliModel.mainRotorBladeEndCapMatrix2 *= mainRotorPitch2;
+    m_heliModel.mainRotorBladeEndCapMatrix2 *= m_heliModel.localMainRotorBladeEndCapMatrix2;
+    m_heliModel.mainRotorBladeEndCapMatrix2 *= mainRotorSpin;
+    m_heliModel.mainRotorBladeEndCapMatrix2 *= updateMat;
+
     // main rotor edge 2
     m_heliModel.mainRotorBladeEdgeMatrix2 = m_heliModel.mainRotorBladeEdgeTranslationMatrix2;
     DirectX::SimpleMath::Matrix mainEdgePitch2 = DirectX::SimpleMath::Matrix::CreateRotationX(-m_heli.mainRotor.bladeVec[1].pitchAngle);
@@ -2508,6 +2725,13 @@ void Vehicle::UpdateModel()
     m_heliModel.mainRotorBladeEdgeMatrix2 *= m_heliModel.localMainRotorEdgeBladeMatrix2;
     m_heliModel.mainRotorBladeEdgeMatrix2 *= mainRotorSpin;
     m_heliModel.mainRotorBladeEdgeMatrix2 *= updateMat;
+
+    // main rotor edge end cap 2
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix2 = m_heliModel.mainRotorBladeEdgeEndCapTranslationMatrix2;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix2 *= mainRotorPitch2;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix2 *= m_heliModel.localMainRotorBladeEdgeEndCapMatrix2;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix2 *= mainRotorSpin;
+    m_heliModel.mainRotorBladeEdgeEndCapMatrix2 *= updateMat;
 
     // tail rotor axel
     m_heliModel.tailRotorAxelMatrix = m_heliModel.localTailRotorAxelMatrix;
@@ -2523,6 +2747,18 @@ void Vehicle::UpdateModel()
     m_heliModel.tailRotorArmMatrix *= m_heliModel.localTailRotorArmMatrix;       
     m_heliModel.tailRotorArmMatrix *= updateMat;
 
+    // tail arm end cap 1
+    m_heliModel.tailRotorArmEndCapMatrix1 = m_heliModel.localTailRotorArmEndCapMatrix1;
+    m_heliModel.tailRotorArmEndCapMatrix1 *= tailArmSpin;
+    m_heliModel.tailRotorArmEndCapMatrix1 *= m_heliModel.tailRotorArmEndCapTranslationMatrix1;
+    m_heliModel.tailRotorArmEndCapMatrix1 *= updateMat;
+    
+    // tail arm end cap 2
+    m_heliModel.tailRotorArmEndCapMatrix2 = m_heliModel.localTailRotorArmEndCapMatrix2;
+    m_heliModel.tailRotorArmEndCapMatrix2 *= tailArmSpin;
+    m_heliModel.tailRotorArmEndCapMatrix2 *= m_heliModel.tailRotorArmEndCapTranslationMatrix2;
+    m_heliModel.tailRotorArmEndCapMatrix2 *= updateMat;
+
     // tail rotor blade 1
     DirectX::SimpleMath::Matrix tailRotorPitch1 = DirectX::SimpleMath::Matrix::CreateRotationY(m_heli.tailRotor.bladeVec[0].pitchAngle);
     m_heliModel.tailRotorBladeMatrix1 = m_heliModel.localTailRotorBladeMatrix1;
@@ -2531,26 +2767,19 @@ void Vehicle::UpdateModel()
     m_heliModel.tailRotorBladeMatrix1 *= m_heliModel.tailRotorBladeTranslationMatrix1;  
     m_heliModel.tailRotorBladeMatrix1 *= updateMat;
 
+    // tail rotor blade end cap1
+    m_heliModel.tailRotorBladeEndCapMatrix1 = m_heliModel.localTailRotorBladeEndCapMatrix1;
+    m_heliModel.tailRotorBladeEndCapMatrix1 *= tailRotorPitch1;
+    m_heliModel.tailRotorBladeEndCapMatrix1 *= tailArmSpin;
+    m_heliModel.tailRotorBladeEndCapMatrix1 *= m_heliModel.tailRotorBladeEndCapTranslationMatrix1;
+    m_heliModel.tailRotorBladeEndCapMatrix1 *= updateMat;
+
     // tail rotor edge 1
-    //m_heliModel.tailRotorBladeEdgeMatrix1 = m_heliModel.localTailRotorBladeMatrix1;
     m_heliModel.tailRotorBladeEdgeMatrix1 = m_heliModel.localTailRotorBladeEdgeMatrix1;
     m_heliModel.tailRotorBladeEdgeMatrix1 *= tailRotorPitch1;   
     m_heliModel.tailRotorBladeEdgeMatrix1 *= tailArmSpin;
-    //m_heliModel.tailRotorBladeEdgeMatrix1 *= m_heliModel.tailRotorBladeTranslationMatrix1;
-    m_heliModel.tailRotorBladeEdgeMatrix1 *= m_heliModel.tailRotorBladeEdgeTranslationMatrix1;
-    
+    m_heliModel.tailRotorBladeEdgeMatrix1 *= m_heliModel.tailRotorBladeEdgeTranslationMatrix1;   
     m_heliModel.tailRotorBladeEdgeMatrix1 *= updateMat;
-    
-    /*
-    * tailRotorBladeEdgeTranslationMatrix1
-    * localTailRotorBladeEdgeMatrix1
-    // main rotor edge 1
-    m_heliModel.mainRotorBladeEdgeMatrix1 = m_heliModel.mainRotorBladeEdgeTranslationMatrix1;
-    m_heliModel.mainRotorBladeEdgeMatrix1 *= mainRotorPitch1;
-    m_heliModel.mainRotorBladeEdgeMatrix1 *= m_heliModel.localMainRotorEdgeBladeMatrix1;
-    m_heliModel.mainRotorBladeEdgeMatrix1 *= mainRotorSpin;
-    m_heliModel.mainRotorBladeEdgeMatrix1 *= updateMat;
-    */
 
     // tail rotor blade 2
     DirectX::SimpleMath::Matrix tailRotorPitch2 = DirectX::SimpleMath::Matrix::CreateRotationY(m_heli.tailRotor.bladeVec[1].pitchAngle);
@@ -2560,15 +2789,33 @@ void Vehicle::UpdateModel()
     m_heliModel.tailRotorBladeMatrix2 *= m_heliModel.tailRotorBladeTranslationMatrix2;
     m_heliModel.tailRotorBladeMatrix2 *= updateMat;
 
+    // tail rotor blade end cap2
+    m_heliModel.tailRotorBladeEndCapMatrix2 = m_heliModel.localTailRotorBladeEndCapMatrix2;
+    m_heliModel.tailRotorBladeEndCapMatrix2 *= tailRotorPitch2;
+    m_heliModel.tailRotorBladeEndCapMatrix2 *= tailArmSpin;
+    m_heliModel.tailRotorBladeEndCapMatrix2 *= m_heliModel.tailRotorBladeEndCapTranslationMatrix2;
+    m_heliModel.tailRotorBladeEndCapMatrix2 *= updateMat;
+
     // tail rotor edge 2
-    //m_heliModel.tailRotorBladeEdgeMatrix2 = m_heliModel.localTailRotorBladeMatrix2;
     m_heliModel.tailRotorBladeEdgeMatrix2 = m_heliModel.localTailRotorBladeEdgeMatrix2;
     m_heliModel.tailRotorBladeEdgeMatrix2 *= tailRotorPitch2;
     m_heliModel.tailRotorBladeEdgeMatrix2 *= tailArmSpin;
-    //m_heliModel.tailRotorBladeEdgeMatrix2 *= m_heliModel.tailRotorBladeTranslationMatrix2;
     m_heliModel.tailRotorBladeEdgeMatrix2 *= m_heliModel.tailRotorBladeEdgeTranslationMatrix2;
     m_heliModel.tailRotorBladeEdgeMatrix2 *= updateMat;
-    
+
+    // tail rotor edge end cap 1
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix1 = m_heliModel.localTailRotorBladeEdgeEndCapMatrix1;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix1 *= tailRotorPitch2;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix1 *= tailArmSpin;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix1 *= m_heliModel.tailRotorBladeEdgeEndCapTranslationMatrix1;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix1 *= updateMat;
+
+    // tail rotor edge end cap 2
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix2 = m_heliModel.localTailRotorBladeEdgeEndCapMatrix2;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix2 *= tailRotorPitch2;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix2 *= tailArmSpin;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix2 *= m_heliModel.tailRotorBladeEdgeEndCapTranslationMatrix2;
+    m_heliModel.tailRotorBladeEdgeEndCapMatrix2 *= updateMat; 
 }
 
 void Vehicle::UpdatePendulumMotion(Utility::Torque& aTorque, DirectX::SimpleMath::Vector3& aVelocity, const float aTimeStep)
@@ -2920,7 +3167,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     m_heli.q.bodyTorqueForce.magnitude = 0.0f;
 
     m_rotorTimerTest += aTimeDelta;
-
+    /*
     DebugPushTestLine(m_testPos, DirectX::SimpleMath::Vector3::UnitX, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
     DebugPushTestLine(m_testPos, DirectX::SimpleMath::Vector3::UnitY, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
     DebugPushTestLine(m_testPos, DirectX::SimpleMath::Vector3::UnitZ, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
@@ -2941,6 +3188,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     DebugPushTestLine(m_testPos3, -DirectX::SimpleMath::Vector3::UnitX, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
     DebugPushTestLine(m_testPos3, -DirectX::SimpleMath::Vector3::UnitY, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
     DebugPushTestLine(m_testPos3, -DirectX::SimpleMath::Vector3::UnitZ, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+    */
 
     //m_heli.landingGear.angleCurrent = cos(m_rotorTimerTest) - Utility::ToRadians(45.0f);
     DebugPushUILineDecimalNumber("m_heli.landingGear.angleCurrent : ", Utility::ToDegrees(m_heli.landingGear.angleCurrent), "");
@@ -2949,7 +3197,6 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     {
         UpdateLandingGear(m_heli.landingGear, aTimeDelta);
     }
-
 }
 
 void Vehicle::DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor)
