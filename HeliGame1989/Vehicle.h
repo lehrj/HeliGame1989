@@ -424,9 +424,15 @@ struct HeliModel
     DirectX::SimpleMath::Matrix tailBoomUpperMatrix;
     DirectX::SimpleMath::Matrix localTailBoomUpperMatrix;
 
-    std::unique_ptr<DirectX::GeometricPrimitive>    tailBoomEndCapShape;
-    DirectX::SimpleMath::Matrix tailBoomEndCapMatrix;
-    DirectX::SimpleMath::Matrix localTailBoomEndCapMatrix;
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailBoomMidEndCapShape;
+    DirectX::SimpleMath::Matrix tailBoomMidEndCapMatrix;
+    DirectX::SimpleMath::Matrix localTailBoomMidEndCapMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailBoomLowerUpperEndCapShape;
+    DirectX::SimpleMath::Matrix tailBoomLowerEndCapMatrix;
+    DirectX::SimpleMath::Matrix localTailBoomLowerEndCapMatrix;
+    DirectX::SimpleMath::Matrix tailBoomUpperEndCapMatrix;
+    DirectX::SimpleMath::Matrix localTailBoomUpperEndCapMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    tailFinUpperShape;
     DirectX::SimpleMath::Matrix tailFinUpperMatrix;
