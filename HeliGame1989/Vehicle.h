@@ -664,6 +664,25 @@ struct HeliModel
     DirectX::SimpleMath::Matrix tailRotorEdgeStripe1Matrix2;
     DirectX::SimpleMath::Matrix localTailRotorEdgeStripe1Matrix2;
 
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorArmStripe2Shape;
+    DirectX::SimpleMath::Matrix tailRotorArmStripe2Matrix1;
+    DirectX::SimpleMath::Matrix localTailRotorArmStripe2Matrix1;
+    DirectX::SimpleMath::Matrix tailRotorArmStripe2Matrix2;
+    DirectX::SimpleMath::Matrix localTailRotorArmStripe2Matrix2;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorBladeStripe2Shape;
+    DirectX::SimpleMath::Matrix tailRotorBladeStripe2Matrix1;
+    DirectX::SimpleMath::Matrix localTailRotorBladeStripe2Matrix1;
+    DirectX::SimpleMath::Matrix tailRotorBladeStripe2Matrix2;
+    DirectX::SimpleMath::Matrix localTailRotorBladeStripe2Matrix2;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorEdgeStripe2Shape;
+    DirectX::SimpleMath::Matrix tailRotorEdgeStripe2Matrix1;
+    DirectX::SimpleMath::Matrix localTailRotorEdgeStripe2Matrix1;
+    DirectX::SimpleMath::Matrix tailRotorEdgeStripe2Matrix2;
+    DirectX::SimpleMath::Matrix localTailRotorEdgeStripe2Matrix2;
+
+
     DirectX::SimpleMath::Matrix tailRotorTranslationMatrix1;
     DirectX::SimpleMath::Matrix tailRotorTranslationMatrix2;
 };
