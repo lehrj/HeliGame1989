@@ -323,6 +323,8 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    sideWindowLowerShape;
     DirectX::SimpleMath::Matrix sideWindowLowerMatrix;
     DirectX::SimpleMath::Matrix localSideWindowLowerMatrix;
+    DirectX::SimpleMath::Matrix sideWindowBottomMatrix;
+    DirectX::SimpleMath::Matrix localSideWindowBottomMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    sideWindowEyeShape;
     DirectX::SimpleMath::Matrix sideWindowEyeMatrix;
@@ -498,6 +500,35 @@ struct HeliModel
     DirectX::SimpleMath::Matrix localMainRotorBladeMatrix2;
     DirectX::SimpleMath::Matrix mainRotorBladeTranslationMatrix2;
 
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeInteriorShape;
+    DirectX::SimpleMath::Matrix mainRotorBladeInteriorMatrix1;
+    DirectX::SimpleMath::Matrix mainRotorBladeInteriorTranslationMatrix1;
+    DirectX::SimpleMath::Matrix localMainRotorBladeInteriorMatrix1;
+    DirectX::SimpleMath::Matrix mainRotorBladeInteriorMatrix2;
+    DirectX::SimpleMath::Matrix localMainRotorBladeInteriorMatrix2;
+    DirectX::SimpleMath::Matrix mainRotorBladeInteriorTranslationMatrix2;
+
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeStripe1Shape;
+    DirectX::SimpleMath::Matrix mainRotorBladeStripe1Matrix1;
+    DirectX::SimpleMath::Matrix mainRotorBladeStripe1Matrix2;
+    //DirectX::SimpleMath::Matrix mainRotorBladeTranslationStripe1Matrix1;
+    DirectX::SimpleMath::Matrix localMainRotorBladeStripe1Matrix1;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorArmStripe1Shape;
+    DirectX::SimpleMath::Matrix mainRotorArmStripe1Matrix1;
+    DirectX::SimpleMath::Matrix mainRotorArmStripe1Matrix2;
+    DirectX::SimpleMath::Matrix localMainRotorArmStripe1Matrix1;
+
+    DirectX::SimpleMath::Matrix mainRotorStripe1Matrix;
+    DirectX::SimpleMath::Matrix localMainRotorStripe1Matrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeEdgeStripe1Shape;
+    DirectX::SimpleMath::Matrix mainRotorBladeEdgeStripe1Matrix1;
+    DirectX::SimpleMath::Matrix mainRotorBladeEdgeStripe1Matrix2;
+    DirectX::SimpleMath::Matrix localMainRotorEdgeBladeStripe1Matrix1;
+
+
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeEdgeShape;
     DirectX::SimpleMath::Matrix mainRotorBladeEdgeMatrix1;
     DirectX::SimpleMath::Matrix mainRotorBladeEdgeTranslationMatrix1;
@@ -505,6 +536,27 @@ struct HeliModel
     DirectX::SimpleMath::Matrix mainRotorBladeEdgeMatrix2;
     DirectX::SimpleMath::Matrix mainRotorBladeEdgeTranslationMatrix2;
     DirectX::SimpleMath::Matrix localMainRotorEdgeBladeMatrix2;
+
+
+    // main rotor stripe 2
+    DirectX::SimpleMath::Matrix localMainRotorStripe2Matrix;
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeStripe2Shape;
+    DirectX::SimpleMath::Matrix mainRotorBladeStripe2Matrix1;
+    DirectX::SimpleMath::Matrix mainRotorBladeStripe2Matrix2;
+    DirectX::SimpleMath::Matrix localMainRotorBladeStripe2Matrix1;
+    DirectX::SimpleMath::Matrix localMainRotorBladeStripe2Matrix2;
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeEdgeStripe2Shape;
+    DirectX::SimpleMath::Matrix localMainRotorEdgeStripe2Matrix1;
+    DirectX::SimpleMath::Matrix localMainRotorEdgeStripe2Matrix2;
+    DirectX::SimpleMath::Matrix mainRotorEdgeStripe2Matrix1;
+    DirectX::SimpleMath::Matrix mainRotorEdgeStripe2Matrix2;
+    std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorArmStripe2Shape;
+    DirectX::SimpleMath::Matrix mainRotorArmStripe2Matrix1;
+    DirectX::SimpleMath::Matrix mainRotorArmStripe2Matrix2;
+    DirectX::SimpleMath::Matrix localMainRotorArmStripe2Matrix1;
+    DirectX::SimpleMath::Matrix localMainRotorArmStripe2Matrix2;
+    //
+
 
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeEndCapShape;
     DirectX::SimpleMath::Matrix mainRotorBladeEndCapMatrix1;
@@ -529,6 +581,8 @@ struct HeliModel
     DirectX::SimpleMath::Matrix mainRotorArmEndCapMatrix2;
     DirectX::SimpleMath::Matrix mainRotorArmEndCapTranslationMatrix2;
     DirectX::SimpleMath::Matrix localMainRotorArmEndCapMatrix2;
+
+
 
 
     std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorAxelShape;
@@ -580,6 +634,38 @@ struct HeliModel
     DirectX::SimpleMath::Matrix tailRotorBladeEdgeEndCapMatrix2;
     DirectX::SimpleMath::Matrix tailRotorBladeEdgeEndCapTranslationMatrix2;
     DirectX::SimpleMath::Matrix localTailRotorBladeEdgeEndCapMatrix2;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorBladeInteriorShape;
+    DirectX::SimpleMath::Matrix tailRotorBladeInteriorMatrix1;
+    DirectX::SimpleMath::Matrix tailRotorBladeInteriorTranslationMatrix1;
+    DirectX::SimpleMath::Matrix localTailRotorBladeInteriorMatrix1;
+    DirectX::SimpleMath::Matrix tailRotorBladeInteriorMatrix2;
+    DirectX::SimpleMath::Matrix localTailRotorBladeInteriorMatrix2;
+    DirectX::SimpleMath::Matrix tailRotorBladeInteriorTranslationMatrix2;
+
+
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorArmStripe1Shape;
+    DirectX::SimpleMath::Matrix tailRotorArmStripe1Matrix1;
+    DirectX::SimpleMath::Matrix tailRotorArmStripe1TranslationMatrix1;
+    DirectX::SimpleMath::Matrix localTailRotorArmStripe1Matrix1;
+    DirectX::SimpleMath::Matrix tailRotorArmStripe1Matrix2;
+    DirectX::SimpleMath::Matrix localTailRotorArmStripe1Matrix2;
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorBladeStripe1Shape;
+    DirectX::SimpleMath::Matrix tailRotorBladeStripe1Matrix1;
+    DirectX::SimpleMath::Matrix localTailRotorBladeStripe1Matrix1;
+    DirectX::SimpleMath::Matrix tailRotorBladeStripe1Matrix2;
+    DirectX::SimpleMath::Matrix localTailRotorBladeStripe1Matrix2;
+
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorEdgeStripe1Shape;
+    DirectX::SimpleMath::Matrix tailRotorEdgeStripe1Matrix1;
+    DirectX::SimpleMath::Matrix localTailRotorEdgeStripe1Matrix1;
+    DirectX::SimpleMath::Matrix tailRotorEdgeStripe1Matrix2;
+    DirectX::SimpleMath::Matrix localTailRotorEdgeStripe1Matrix2;
+
+    DirectX::SimpleMath::Matrix tailRotorTranslationMatrix1;
+    DirectX::SimpleMath::Matrix tailRotorTranslationMatrix2;
 };
 
 class Vehicle
