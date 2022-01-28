@@ -445,10 +445,10 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     // wing jet rear housing left
     const float wingJetRearHousingDiameter = wingJetCenterSize.y * 0.45f;
     const float wingJetRearHousingHeight = wingJetCenterSize.x * 0.8f;
-    m_heliModel.wingJetRearHousingShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), wingJetRearHousingHeight, wingJetRearHousingDiameter, m_heliModel.circleTessellationVal1);
+    m_heliModel.wingJetRearHousingShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), wingJetRearHousingHeight, wingJetRearHousingDiameter, m_heliModel.circleTessellationVal2);
     const float wingJetExhaustDiameter = wingJetRearHousingDiameter * 0.9f;
     const float wingJetExhaustHeight = wingJetRearHousingHeight + 0.01f;
-    m_heliModel.wingJetExhaustShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), wingJetExhaustHeight, wingJetExhaustDiameter, m_heliModel.circleTessellationVal1);
+    m_heliModel.wingJetExhaustShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), wingJetExhaustHeight, wingJetExhaustDiameter, m_heliModel.circleTessellationVal2);
     const float wingJetRearHousingOffsetX = -1.7f;
     const float wingJetRearHousingOffsetY = 0.1f;
     const float wingJetRearHousingOffsetZ = -0.0f;
@@ -1714,8 +1714,10 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     const float lengthMainRotor = 7.4f;
     const float widthMainRotor = 0.80f;       
     const float initialRPMMainRotor = 0.0f;
-    const float maxPitchAngleMainRotor = Utility::ToRadians(45.0f);
-    const float maxInputPitchAngleMainRotor = Utility::ToRadians(45.0f);
+    //const float maxPitchAngleMainRotor = Utility::ToRadians(45.0f);
+    //const float maxInputPitchAngleMainRotor = Utility::ToRadians(45.0f);
+    const float maxPitchAngleMainRotor = Utility::ToRadians(20.0f);
+    const float maxInputPitchAngleMainRotor = Utility::ToRadians(15.0f);
     const float minInputPitchAngleMainRotor = Utility::ToRadians(0.0f);
     const float minPitchAngleMainRotor = Utility::ToRadians(0.0f);
     const float neutralAngleMainRotor = Utility::ToRadians(0.0f);
@@ -1743,6 +1745,7 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     {
         aHeliData.mainRotor.bladeVec[i].pitchAngle = initialPitchAngleMainRotor;
         aHeliData.mainRotor.bladeVec[i].cyclicAngle = 0.0f;
+        aHeliData.mainRotor.bladeVec[i].liftForcePerSecond = 0.0f;
         aHeliData.mainRotor.bladeVec[i].liftMag = 0.0f;
         aHeliData.mainRotor.bladeVec[i].liftNorm = DirectX::SimpleMath::Vector3::Zero;
         aHeliData.mainRotor.bladeVec[i].rotationAngle = static_cast<float>(i) * angleBetweetnBladesMainRotor;
@@ -1788,6 +1791,7 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     {
         aHeliData.tailRotor.bladeVec[i].pitchAngle = initialPitchAngleTailRotor;
         aHeliData.tailRotor.bladeVec[i].cyclicAngle = 0.0f;
+        aHeliData.tailRotor.bladeVec[i].liftForcePerSecond = 0.0f;
         aHeliData.tailRotor.bladeVec[i].liftMag = 0.0f;
         aHeliData.tailRotor.bladeVec[i].liftNorm = DirectX::SimpleMath::Vector3::Zero;
         aHeliData.tailRotor.bladeVec[i].rotationAngle = static_cast<float>(i) * angleBetweetnBladesTailRotor;
@@ -1803,7 +1807,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.mainRotorRPM = 0.0f;
 
     m_heli.numEqns = 6;
-    m_heli.mass = 1760.0f;
+    m_heli.mass = 250.0f;
     m_heli.area = 1.94f;
     m_heli.airDensity = 1.2f; // ToDo : pull air density from environment data
     m_heli.dragCoefficient = 0.31f;
@@ -1834,7 +1838,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.q.mainRotorForceNormal = DirectX::SimpleMath::Vector3::UnitY;
     m_heli.q.mainRotorForceMagnitude = 15.0f;
     m_heli.q.position = DirectX::SimpleMath::Vector3::Zero;
-    
+
     m_heli.q.tailRotorForceNormal = -m_heli.right;
     m_heli.q.tailRotorForceMagnitude = 0.0f;
     
@@ -2071,7 +2075,7 @@ void Vehicle::InputYawPedal(const float aYawInput)
 
 void Vehicle::Jump()
 {
-    const float jumpHeight = 100.0f;
+    const float jumpHeight = 1000.0f;
     //m_heli.q.velocity.y += jumpHeight;
     m_heli.q.position.y += jumpHeight;
 }
@@ -2274,7 +2278,9 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
 
     DirectX::SimpleMath::Vector3 rotorForce = aQ->mainRotorForceNormal * aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput;
     rotorForce = UpdateRotorForceRunge();
-    rotorForce *= aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput;
+    //rotorForce *= aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput;
+    rotorForce *= (m_heli.mainRotor.bladeVec[0].liftForcePerSecond + m_heli.mainRotor.bladeVec[1].liftForcePerSecond) / m_heli.mass;
+    
     newQ.mainRotorForceNormal = rotorForce;
     newQ.mainRotorForceNormal.Normalize();
     newQ.mainRotorForceMagnitude = aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput;
@@ -2289,7 +2295,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
     //  ensures there won't be a divide by zero later on
     //  if all of the velocity components are zero.
     float v = sqrt(newQ.velocity.Length() * newQ.velocity.Length()) + 1.0e-8f;
-
+    DebugPushUILineDecimalNumber("v : ", v, "");
     //  Compute the total drag force.
     float airDensity = aHeli->airDensity;
     float dragCoefficient = aHeli->dragCoefficient;
@@ -2311,6 +2317,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
     velocityNorm.Normalize();
 
     DirectX::SimpleMath::Vector3 airResistance = velocityNorm * (static_cast<float>(aTimeDelta) * (-frontDragResistance / mass));
+    DebugPushUILineDecimalNumber("airResistance.Length() : ", airResistance.Length(), "");
     DebugPushTestLine(m_heli.q.position, airResistance, 10.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f));
     if (m_heli.isVelocityBackwards == true)
     {
@@ -2327,7 +2334,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
         terrainNormalForce = DirectX::SimpleMath::Vector3::Zero;
 
         //velocityUpdate = aQ->velocity + static_cast<float>(aQScale) * aDeltaQ->velocity;
-        velocityUpdate = m_heli.gravity * static_cast<float>(aTimeDelta);
+        velocityUpdate += (m_heli.gravity) * static_cast<float>(aTimeDelta);
         //velocityUpdate =  (m_heli.gravity.Length() * m_heli.mass) * -DirectX::SimpleMath::Vector3::UnitY * static_cast<float>(aTimeDelta);
         velocityUpdate += rotorForce * static_cast<float>(aTimeDelta);
         
@@ -2340,6 +2347,10 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
         UpdatePendulumMotion(pendTorque, velocityUpdate, static_cast<float>(aTimeDelta));
         velocityUpdate += airResistance * static_cast<float>(aTimeDelta);
         bodyTorqueUpdate = UpdateBodyTorqueTestRunge(pendTorque, static_cast<float>(aTimeDelta));
+
+
+
+
         //bodyTorqueUpdate.axis = DirectX::SimpleMath::Vector3::Zero;
         //bodyTorqueUpdate.magnitude = 0.0f;
     }
@@ -2409,11 +2420,11 @@ void Vehicle::RungeKutta4(struct HeliData* aHeli, double aTimeDelta)
     const float stopTolerance = 0.1;
     if (q.velocity.Length() < stopTolerance && velocityUpdate == DirectX::SimpleMath::Vector3::Zero)
     {
-        q.velocity = DirectX::SimpleMath::Vector3::Zero;
+        //q.velocity = DirectX::SimpleMath::Vector3::Zero;
     }
     else
     {
-        q.velocity += velocityUpdate;
+        //q.velocity += velocityUpdate;
     }
 
     q.velocity += velocityUpdate;
@@ -2483,10 +2494,25 @@ void Vehicle::UpdateBladeLiftForce(const float aTimeStep)
     float surface = m_heli.mainRotor.length * m_heli.mainRotor.width;
     float y = m_heli.mainRotor.width;
     const float omega = (m_heli.mainRotor.rpm * 0.10472f) * aTimeStep; // 0.10472 is conversion of RPM to rads per second
-
+    const float omega2 = (m_heli.mainRotor.rpm * 0.10472f);
     float lift = .5f * rho * omega * omega * Cl * y;
-    lift *= 2.0f;
+   
+    m_heli.mainRotor.bladeVec[0].liftMag = lift;
+    m_heli.mainRotor.bladeVec[0].liftForcePerSecond = .5f * rho * omega2 * omega2 * Cl * y;
+    Cl = CalculateLiftCoefficient(m_heli.mainRotor.bladeVec[1].pitchAngle);
+    lift = .5f * rho * omega * omega * Cl * y;
+    m_heli.mainRotor.bladeVec[1].liftMag = lift;
+    m_heli.mainRotor.bladeVec[1].liftForcePerSecond = .5f * rho * omega2 * omega2 * Cl * y;
     DebugPushUILineDecimalNumber("lift : ", lift, "");
+    DebugPushUILineDecimalNumber("lift Time Mod  : ", lift / aTimeStep, "");
+
+    lift = .5f * rho * omega2 * omega2 * Cl * y;
+    DebugPushUILineDecimalNumber("lift Time Mod2 : ", lift, "");
+    DebugPushUILineDecimalNumber("total lift     : ", m_heli.mainRotor.bladeVec[0].liftForcePerSecond + m_heli.mainRotor.bladeVec[1].liftForcePerSecond, "");
+    DebugPushUILineDecimalNumber("CL : ", Cl, "");
+
+    DebugPushUILineDecimalNumber("m_heli.mainRotor.bladeVec[0].pitchAngle : ", Utility::ToDegrees(m_heli.mainRotor.bladeVec[0].pitchAngle), "");
+
     // L = .5 * rho * omega^2 * Cl * y integral(r1 -> r2)  r^2 * dr    
 }
 
@@ -3452,7 +3478,14 @@ void Vehicle::UpdateRotorPitch(HeliData& aHeliData, const double aTimer)
             DirectX::SimpleMath::Matrix::CreateRotationY(aHeliData.mainRotor.rotorRotation + (static_cast<float>(i) * aHeliData.mainRotor.angleBetweenBlades)));
 
         const float pitchAng = Utility::GetAngleBetweenVectors(aHeliData.controlInput.cyclicStick, rotorDir) - Utility::ToRadians(90.0f);
-        aHeliData.mainRotor.bladeVec[i].pitchAngle = mainRotorPitch + pitchAng;
+        if (mainRotorPitch + pitchAng > 0.0f)
+        {
+            aHeliData.mainRotor.bladeVec[i].pitchAngle = mainRotorPitch + pitchAng;
+        }
+        else
+        {
+            aHeliData.mainRotor.bladeVec[i].pitchAngle = 0.0f;
+        }
     }
     float tailRotorPitch = aHeliData.tailRotor.neutralAngle + (aHeliData.controlInput.yawPedalInput * (aHeliData.tailRotor.pitchAngleMax * .5f));
     for (unsigned int i = 0; i < aHeliData.tailRotor.bladeVec.size(); ++i)
@@ -3463,7 +3496,7 @@ void Vehicle::UpdateRotorPitch(HeliData& aHeliData, const double aTimer)
 
 void Vehicle::UpdateRotorSpin(HeliData& aHeliData, const double aTimer)
 {
-    const float rpmMax = 400.0f;
+    const float rpmMax = 700.0f;
     const float rpmMin = 0.0f;
     const float prevRPM = aHeliData.mainRotor.rpm;
     const float rpmThrottleSet = aHeliData.controlInput.throttleInput * rpmMax;
@@ -3472,7 +3505,8 @@ void Vehicle::UpdateRotorSpin(HeliData& aHeliData, const double aTimer)
     float rpmDelta;
     if (currentTorqueCurvePos < 0.333f)
     {
-        const float revDeltaRate = 1.9f;
+        //const float revDeltaRate = 1.9f;
+        const float revDeltaRate = 10.9f;
         rpmDelta = revDeltaRate * currentTorqueCurvePos;
     }
     else if (currentTorqueCurvePos < 0.666f)
@@ -3623,11 +3657,12 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     
     DebugPushUILineDecimalNumber("Altitude : ", m_heli.q.position.y - m_heli.terrainHightAtPos, "");
     
-    
+    //m_heli.isVehicleAirborne = true;
     //if (m_heli.q.position.y - m_heli.terrainHightAtPos > 0.1)
     if (m_heli.landingGearPos.y - m_heli.terrainHightAtPos > 0.1)
     {
         m_heli.isVehicleAirborne = true;
+        m_testTimer += aTimeDelta;
     }
     else
     {
@@ -3635,19 +3670,21 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
         {
             LandVehicle();
             m_heli.isVehicleLanding = true;
+            m_testTimer2 = m_testTimer;
+            m_testTimer = 0.0f;
         }
         m_heli.isVehicleAirborne = false;
         m_heli.q.position.y = m_heli.terrainHightAtPos - m_heli.localLandingGearPos.y;
-        int testBrea = 0;
     }
-    
+    //m_heli.isVehicleAirborne = true;
     UpdateTerrainNorm();   
     
+    
     RungeKutta4(&m_heli, aTimeDelta);
-
     UpdateAlignmentTorqueTest();
-
+    
     UpdateRotorData(m_heli, aTimeDelta);
+    
 
     if (m_heli.forward.Dot(m_heli.q.velocity) < 0.0)
     {
@@ -3659,12 +3696,13 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     }
 
     m_heli.speed = m_heli.q.velocity.Length();
+    
     UpdateModel();
-
     InputDecay(aTimeDelta);
 
     m_heli.testAccel = (m_heli.q.velocity.Length() - prevVelocity.Length()) / static_cast<float>(aTimeDelta);
-    
+    m_heli.testAccelVec = (m_heli.q.velocity - prevVelocity) / static_cast<float>(aTimeDelta);
+
     UpdateResistance();
 
     m_heli.q.bodyTorqueForce.axis = DirectX::SimpleMath::Vector3::Zero;
@@ -3694,9 +3732,10 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     DebugPushTestLine(m_testPos3, -DirectX::SimpleMath::Vector3::UnitZ, 3.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
     */
 
-    //m_heli.landingGear.angleCurrent = cos(m_rotorTimerTest) - Utility::ToRadians(45.0f);
-    DebugPushUILineDecimalNumber("m_heli.landingGear.angleCurrent : ", Utility::ToDegrees(m_heli.landingGear.angleCurrent), "");
 
+    DebugPushUILineDecimalNumber("RPM : ", m_heli.mainRotor.rpm, "");
+    DebugPushUILineDecimalNumber("m_testTimer : ", m_testTimer, "");
+    DebugPushUILineDecimalNumber("m_testTimer2 : ", m_testTimer2, "");
     if (m_heli.landingGear.currentState == LandingGear::LandingGearState::LANDINGGEARSTATE_ASCENDING || m_heli.landingGear.currentState == LandingGear::LandingGearState::LANDINGGEARSTATE_DESCENDING)
     {
         UpdateLandingGear(m_heli.landingGear, aTimeDelta);

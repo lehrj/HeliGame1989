@@ -30,6 +30,8 @@ void Lighting::UpdateLighting(std::shared_ptr<DirectX::NormalMapEffect> aEffect,
     const float timeStamp = static_cast<float>(aTimer);
 
     aEffect->EnableDefaultLighting();
+
+
     if (m_currentLightingState == LightingState::LIGHTINGSTATE_JI)
     {
         auto ilights = dynamic_cast<DirectX::IEffectLights*>(aEffect.get());
@@ -369,9 +371,9 @@ void Lighting::UpdateLighting(std::shared_ptr<DirectX::NormalMapEffect> aEffect,
         if (ilights)
         {
             ilights->EnableDefaultLighting();
-            ilights->SetLightEnabled(0, true);
-            ilights->SetLightEnabled(1, true);
-            ilights->SetLightEnabled(2, true);
+            ilights->SetLightEnabled(0, false);
+            ilights->SetLightEnabled(1, false);
+            ilights->SetLightEnabled(2, false);
 
             
             const float yaw = cosf(-timeStamp * 1.2f);
@@ -393,13 +395,15 @@ void Lighting::UpdateLighting(std::shared_ptr<DirectX::NormalMapEffect> aEffect,
             light.Normalize();
             light0 = light;
 
-            light0 = DirectX::SimpleMath::Vector3::UnitY;
-            light1 = DirectX::SimpleMath::Vector3::UnitY;
-            light2 = DirectX::SimpleMath::Vector3::UnitY;
+            light0 = DirectX::SimpleMath::Vector3::UnitX;
+            light1 = DirectX::SimpleMath::Vector3::UnitX;
+            light2 = DirectX::SimpleMath::Vector3::UnitX;
 
             ilights->SetLightDirection(0, light0);
             ilights->SetLightDirection(1, light1);
             ilights->SetLightDirection(2, light2);
+
+            ilights->SetAmbientLightColor(DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
             m_lightPos0 = light0;
             m_lightPos1 = light1;
             m_lightPos2 = light2;

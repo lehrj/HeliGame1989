@@ -2713,6 +2713,7 @@ void Game::Render()
     */
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     auto ilights = dynamic_cast<DirectX::IEffectLights*>(m_effect.get());
     if (ilights)
     {
@@ -2741,11 +2742,12 @@ void Game::Render()
 
         light.Normalize();
         light0 = light;
-        /*
-        light0 = -DirectX::SimpleMath::Vector3::UnitY;
-        light1 = -DirectX::SimpleMath::Vector3::UnitY;
-        light2 = -DirectX::SimpleMath::Vector3::UnitY;
-        */
+        
+        light0 = -DirectX::SimpleMath::Vector3::UnitX;
+        light1 = -DirectX::SimpleMath::Vector3::UnitX;
+        light2 = -DirectX::SimpleMath::Vector3::UnitX;
+        
+    
         ilights->SetLightDirection(0, light0);
         ilights->SetLightDirection(1, light1);
         ilights->SetLightDirection(2, light2);
@@ -2753,7 +2755,7 @@ void Game::Render()
         m_lightPos1 = light1;
         m_lightPos2 = light2;
     }
-
+    
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     m_effect->Apply(m_d3dContext.Get());
@@ -2837,7 +2839,7 @@ void Game::Render()
 // Start testing draws
 
     //m_effect2->EnableDefaultLighting();
-
+    /*
     auto ilights2 = dynamic_cast<DirectX::IEffectLights*>(m_effect2.get());
     if (ilights2)
     {
@@ -2863,7 +2865,7 @@ void Game::Render()
         ilights2->SetLightDirection(1, light2);
         ilights2->SetLightDirection(2, light2);
     }
-
+    */
     m_effect2->Apply(m_d3dContext.Get());
 
 
@@ -3002,16 +3004,18 @@ void Game::Update(DX::StepTimer const& aTimer)
         }
     }
 
+
+
+    
+    m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
+    UpdateInput(aTimer);
+    m_camera->UpdateCamera(aTimer);
+
     m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
     DirectX::SimpleMath::Matrix viewMatrix = m_camera->GetViewMatrix();
     m_effect->SetView(viewMatrix);
     m_effect2->SetView(viewMatrix);
     m_effect3->SetView(viewMatrix);
-
-
-    m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
-    UpdateInput(aTimer);
-    m_camera->UpdateCamera(aTimer);
 }
 
 void Game::UpdateInput(DX::StepTimer const& aTimer)

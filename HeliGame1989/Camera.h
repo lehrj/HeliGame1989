@@ -17,7 +17,7 @@ enum class CameraState
     CAMERASTATE_FOLLOWVEHICLE,
     CAMERASTATE_SPRINGCAMERA,
     CAMERASTATE_SPINCAMERA,
-
+    CAMERASTATE_TESTCAMERA01,
 };
 
 // spring camera target
@@ -112,6 +112,7 @@ private:
     void InitializeViewMatrix(); //Pavel
 
     void UpdateChaseCamera();
+    void UpdateChaseCameraTest01();
 
     void UpdateProjectionMatrix();
     void UpdateOrthoganalMatrix();
@@ -133,7 +134,7 @@ private:
     int                             m_clientHeight;
 
     const float                     m_nearPlane = 0.3f;
-    const float                     m_farPlane = 5500.0f;
+    const float                     m_farPlane = 255000.0f;
 
     DirectX::SimpleMath::Matrix     m_viewMatrix;
     DirectX::SimpleMath::Matrix     m_projectionMatrix;
@@ -180,6 +181,7 @@ private:
     DirectX::SimpleMath::Vector3 m_followCamTarget = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_followCamUp = DirectX::SimpleMath::Vector3::UnitY;
     DirectX::SimpleMath::Vector3 m_followCamPosOffset = DirectX::SimpleMath::Vector3(-1.0, 1.0, 0.0);
+    DirectX::SimpleMath::Vector3 m_followCamPosOffsetTest = DirectX::SimpleMath::Vector3(-15.0, 0.0, 0.0);
     DirectX::SimpleMath::Vector3 m_followCamTargOffset = DirectX::SimpleMath::Vector3(0.0, 0.0, 0.0);
     float                       m_followCamDistance = 1.0;
 

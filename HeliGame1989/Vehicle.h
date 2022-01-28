@@ -114,7 +114,8 @@ struct Rotor
     struct RotorBlade
     {
         float pitchAngle;
-        float cyclicAngle;        
+        float cyclicAngle;   
+        float liftForcePerSecond;
         float liftMag;
         DirectX::SimpleMath::Vector3 liftNorm;
         float rotationAngle;
@@ -174,6 +175,7 @@ struct HeliData
     float   terrainHightAtPos;
 
     float   testAccel = 0.0;
+    DirectX::SimpleMath::Vector3 testAccelVec = DirectX::SimpleMath::Vector3::Zero;
 
     ControlInput  controlInput;
     Engine        engine;
@@ -202,7 +204,7 @@ struct HeliModel
     DirectX::SimpleMath::Vector4 testColor3;
 
     // tessellation values for rounded shapes
-    const int circleTessellationVal1 = 32;
+    const int circleTessellationVal1 = 8;
     const int circleTessellationVal2 = 32;
 
     // part shape and local positions
@@ -508,7 +510,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix localMainRotorBladeInteriorMatrix2;
     DirectX::SimpleMath::Matrix mainRotorBladeInteriorTranslationMatrix2;
 
-
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeStripe1Shape;
     DirectX::SimpleMath::Matrix mainRotorBladeStripe1Matrix1;
     DirectX::SimpleMath::Matrix mainRotorBladeStripe1Matrix2;
@@ -528,7 +529,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix mainRotorBladeEdgeStripe1Matrix2;
     DirectX::SimpleMath::Matrix localMainRotorEdgeBladeStripe1Matrix1;
 
-
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeEdgeShape;
     DirectX::SimpleMath::Matrix mainRotorBladeEdgeMatrix1;
     DirectX::SimpleMath::Matrix mainRotorBladeEdgeTranslationMatrix1;
@@ -536,7 +536,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix mainRotorBladeEdgeMatrix2;
     DirectX::SimpleMath::Matrix mainRotorBladeEdgeTranslationMatrix2;
     DirectX::SimpleMath::Matrix localMainRotorEdgeBladeMatrix2;
-
 
     // main rotor stripe 2
     DirectX::SimpleMath::Matrix localMainRotorStripe2Matrix;
@@ -556,7 +555,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix localMainRotorArmStripe2Matrix1;
     DirectX::SimpleMath::Matrix localMainRotorArmStripe2Matrix2;
     //
-
 
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeEndCapShape;
     DirectX::SimpleMath::Matrix mainRotorBladeEndCapMatrix1;
@@ -581,9 +579,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix mainRotorArmEndCapMatrix2;
     DirectX::SimpleMath::Matrix mainRotorArmEndCapTranslationMatrix2;
     DirectX::SimpleMath::Matrix localMainRotorArmEndCapMatrix2;
-
-
-
 
     std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorAxelShape;
     DirectX::SimpleMath::Matrix tailRotorAxelMatrix;
@@ -682,7 +677,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix tailRotorEdgeStripe2Matrix2;
     DirectX::SimpleMath::Matrix localTailRotorEdgeStripe2Matrix2;
 
-
     DirectX::SimpleMath::Matrix tailRotorTranslationMatrix1;
     DirectX::SimpleMath::Matrix tailRotorTranslationMatrix2;
 };
@@ -698,7 +692,10 @@ public:
     void DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj);
 
     float GetAccel() const { return m_heli.testAccel; };
+    DirectX::SimpleMath::Vector3 GetAccelVec() const { return m_heli.testAccelVec; };
+
     DirectX::SimpleMath::Vector3 GetPos() const { return m_heli.q.position; };
+    //DirectX::SimpleMath::Vector3 GetPos() const { return m_prevPos; };
     float GetSpeed() { return m_heli.speed; };
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
@@ -793,6 +790,8 @@ private:
     float m_rotorTimerTest = 0.0f;
     float m_rotorTimerTest2 = 0.0f;
     float m_testFPS = 0.0f;
+    float m_testTimer = 0.0f;
+    float m_testTimer2 = 0.0f;
 
     float testYawInput = 0.0f;
     float testPitchInput = 0.0f;
