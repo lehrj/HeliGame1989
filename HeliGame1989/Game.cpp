@@ -3005,12 +3005,12 @@ void Game::Update(DX::StepTimer const& aTimer)
     }
 
 
-
     
-    m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
     UpdateInput(aTimer);
+    m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
+    
     m_camera->UpdateCamera(aTimer);
-
+    
     m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
     DirectX::SimpleMath::Matrix viewMatrix = m_camera->GetViewMatrix();
     m_effect->SetView(viewMatrix);

@@ -17,7 +17,8 @@ enum class CameraState
     CAMERASTATE_FOLLOWVEHICLE,
     CAMERASTATE_SPRINGCAMERA,
     CAMERASTATE_SPINCAMERA,
-    CAMERASTATE_TESTCAMERA01,
+    CAMERASTATE_TESTCAMERA01, 
+    CAMERASTATE_TESTCAMERA02,
 };
 
 // spring camera target
@@ -113,6 +114,8 @@ private:
 
     void UpdateChaseCamera();
     void UpdateChaseCameraTest01();
+    void UpdateChaseCameraTest02();
+    void UpdateChaseCameraTest03();
 
     void UpdateProjectionMatrix();
     void UpdateOrthoganalMatrix();

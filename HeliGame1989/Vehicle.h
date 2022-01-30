@@ -172,6 +172,7 @@ struct HeliData
     DirectX::SimpleMath::Vector3 right;
     DirectX::SimpleMath::Matrix alignment;
     DirectX::SimpleMath::Matrix cameraOrientation;
+    DirectX::SimpleMath::Matrix cameraOrientationPrevious;
     float   terrainHightAtPos;
 
     float   testAccel = 0.0;
@@ -700,6 +701,7 @@ public:
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
     DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.cameraOrientation; };
+    //DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.cameraOrientationPrevious; };
 
     DirectX::SimpleMath::Vector3 GetVelocity() const { return m_heli.q.velocity; };
   
@@ -734,7 +736,7 @@ private:
     void DebugPushUILineWholeNumber(std::string aString1, int aVal, std::string aString2);
     void DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor);
     void DebugPushTestLineBetweenPoints(DirectX::SimpleMath::Vector3 aPoint1, DirectX::SimpleMath::Vector3 aPoint2, DirectX::SimpleMath::Vector4 aColor);
-   
+    void DebugPushTestLinePositionIndicator(const DirectX::SimpleMath::Vector3 aPoint, const float aLineLength, const float aOffset, const DirectX::SimpleMath::Vector4 aColor);
     void InitializeEngine(Engine& aEngine);
     void InitializeFlightControls(ControlInput& aInput);
     void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData);
