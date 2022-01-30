@@ -694,7 +694,7 @@ public:
 
     float GetAccel() const { return m_heli.testAccel; };
     DirectX::SimpleMath::Vector3 GetAccelVec() const { return m_heli.testAccelVec; };
-
+    DirectX::SimpleMath::Vector3 GetFollowPos() const;
     DirectX::SimpleMath::Vector3 GetPos() const { return m_heli.q.position; };
     //DirectX::SimpleMath::Vector3 GetPos() const { return m_prevPos; };
     float GetSpeed() { return m_heli.speed; };
@@ -755,7 +755,7 @@ private:
 
     Utility::Torque UpdateBodyTorqueTest(const float aTimeStep);
     Utility::Torque UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorque, const float aTimeStep);
-
+    void UpdateAlignmentCamera();
     void UpdateCyclicStick(ControlInput& aInput);
     void UpdateLandingGear(struct LandingGear& aLandingGear, const double aTimeDelta);
     void UpdateModel();

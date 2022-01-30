@@ -25,7 +25,7 @@ enum class CameraState
 struct Target
 {
     DirectX::SimpleMath::Vector3 position = DirectX::SimpleMath::Vector3::Zero;
-    DirectX::SimpleMath::Vector3 forward = DirectX::SimpleMath::Vector3::UnitX;
+    DirectX::SimpleMath::Vector3 forward = -DirectX::SimpleMath::Vector3::UnitX;
     DirectX::SimpleMath::Vector3 up = DirectX::SimpleMath::Vector3::UnitY;
 };
 
@@ -116,6 +116,7 @@ private:
     void UpdateChaseCameraTest01();
     void UpdateChaseCameraTest02();
     void UpdateChaseCameraTest03();
+    void UpdateChaseCameraTest04();
 
     void UpdateProjectionMatrix();
     void UpdateOrthoganalMatrix();
