@@ -17,14 +17,14 @@ struct ControlInput
     const float collectiveInputRate = 1.0f;
 
     DirectX::SimpleMath::Vector3 cyclicStick;
-    const float cyclicDecayRate = 0.8f;
+    const float cyclicDecayRate = 0.3f;
     float       cyclicInputPitch;
     bool        cyclicInputPitchIsPressed;
     float       cyclicInputRoll;
     bool        cyclicInputRollIsPressed;
     const float cyclicInputMax = Utility::ToRadians(20.0f);
     const float cyclicInputMin = -Utility::ToRadians(20.0f);
-    const float cyclicInputRate = 1.0f;
+    const float cyclicInputRate = 0.2f;
 
     float       throttleInput;
     const float throttleInputMin = 0.0f;
@@ -33,10 +33,10 @@ struct ControlInput
 
     bool        yawPedalIsPressed;
     float       yawPedalInput;
-    const float yawPedalDecayRate = 0.5f;
+    const float yawPedalDecayRate = 0.2f;
     const float yawPedalInputMax = 1.0f;
     const float yawPedalInputMin = -1.0f;
-    const float yawPedalInputRate = 1.0f;
+    const float yawPedalInputRate = 0.2f;
 };
 
 struct Engine
@@ -130,10 +130,6 @@ struct Rotor
     BladeType bladeType;
 };
 
-
-
-
-
 struct HeliData
 {
     // rotor data
@@ -159,6 +155,7 @@ struct HeliData
     float   dragCoefficient;
     const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
     float   mass;
+    float   massTest = 2000.0f;
     Motion  q;
     float   totalResistance;
     //
@@ -771,6 +768,8 @@ private:
     void UpdateRotorSpin(HeliData& aHeliData, const double aTimer);
 
     void UpdateTerrainNorm();
+
+    float WindVaningVal(const HeliData& aHeliData, const float aTimeStep);
 
     Environment const*              m_environment;
     HeliData                        m_heli;
