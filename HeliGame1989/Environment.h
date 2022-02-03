@@ -186,7 +186,8 @@ private:
     const float                        m_minMaxWind = 667.0;   // highest know wind speed on Neptune
 
     std::vector<DirectX::VertexPositionNormal> m_heightMap;
-    
+    std::vector<DirectX::VertexPositionNormal> m_heightMapStartScreen;
+
     int                                 m_terrainHeight = 0;
     int                                 m_terrainLength = 0;
     int                                 m_terrainWidth = 0;

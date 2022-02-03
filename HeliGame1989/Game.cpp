@@ -41,7 +41,13 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
 
+    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+    m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+    m_lighting->SetLightingNormColorVertex2(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+    m_lighting->SetLightingColorVertex3(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+
     m_currentUiState = UiState::UISTATE_SWING;
     InitializeWorldGrid();
 }
@@ -1629,10 +1635,15 @@ void Game::DrawStartScreen()
         ilights->SetLightDirection(0, testLight0);
         ilights->SetLightDirection(1, testLight1);
         ilights->SetLightDirection(2, testLight2);
+        
     }
     m_effect->Apply(m_d3dContext.Get());
 
     m_batch->DrawQuad(vertTopLeft, vertTopRight, vertBottomRight, vertBottomLeft);
+
+    m_batch->End();
+    m_batch->Begin();
+
 }
 
 void Game::DrawTeaserScreen()
@@ -1743,7 +1754,7 @@ void Game::DrawUIIntroScreen()
 
         if (timeStamp < (fadeInStart1 * .3))  // fade in
         {
-            AudioPlaySFX(XACT_WAVEBANK_AUDIOBANK::XACT_WAVEBANK_SOUNDS_COINSFX);
+            //AudioPlaySFX(XACT_WAVEBANK_AUDIOBANK::XACT_WAVEBANK_SOUNDS_COINSFX);
             float colorIntensity = (static_cast<float>(timeStamp) - 0.0f) / (fadeInStart1 * .3f);
             fadeColor.f[0] = colorIntensity;
             fadeColor.f[1] = colorIntensity;
@@ -1752,7 +1763,7 @@ void Game::DrawUIIntroScreen()
         }
         else if (timeStamp > (fadeInStart1 * .8)) // fade out
         {
-            AudioPlaySFX(XACT_WAVEBANK_AUDIOBANK::XACT_WAVEBANK_SOUNDS_KNIGHTRIDERMUSIC);
+            //AudioPlaySFX(XACT_WAVEBANK_AUDIOBANK::XACT_WAVEBANK_SOUNDS_KNIGHTRIDERMUSIC);
             float colorIntensity = (fadeInStart1 - static_cast<float>(timeStamp)) / (fadeInStart1 * .2f);
             fadeColor.f[0] = colorIntensity;
             fadeColor.f[1] = colorIntensity;
@@ -2239,7 +2250,6 @@ bool Game::InitializeTerrainArray2()
         }
     }
 
-
     std::vector<DirectX::SimpleMath::Vector3> testNorms;
     testNorms.resize(m_terrainVertexCount2);
     std::vector<DirectX::SimpleMath::Vector3> testNorms2;
@@ -2252,10 +2262,6 @@ bool Game::InitializeTerrainArray2()
         testNorms[i] = m_terrainVertexArray2[i].normal;
         testNorms2[i] = m_terrainVertexArrayBase2[i].normal;
     }
-
-    int breakVal = 0;
-    ++breakVal;
-
 
     return true;
 }
@@ -3012,6 +3018,12 @@ void Game::Update(DX::StepTimer const& aTimer)
     m_camera->UpdateCamera(aTimer);
     
     m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
+
+    m_lighting->UpdateLightingNormColorTextureVertex(m_effect, aTimer.GetTotalSeconds());
+    m_lighting->UpdateLightingNormColorVertex2(m_effect2, aTimer.GetTotalSeconds());
+    m_lighting->UpdateLightingColorVertex3(m_effect3, aTimer.GetTotalSeconds());
+
+
     DirectX::SimpleMath::Matrix viewMatrix = m_camera->GetViewMatrix();
     m_effect->SetView(viewMatrix);
     m_effect2->SetView(viewMatrix);

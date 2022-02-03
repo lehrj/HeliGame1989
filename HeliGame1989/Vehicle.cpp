@@ -2600,7 +2600,7 @@ void Vehicle::UpdateBladeLiftForce(const float aTimeStep)
     float rho = m_heli.airDensity;
     float Cl = CalculateLiftCoefficient(angleOfAttack);
     float surface = m_heli.mainRotor.length * m_heli.mainRotor.width;
-    surface *= 0.5f;
+    surface *= 1.0f;
     float y = m_heli.mainRotor.width;
     const float omega = (m_heli.mainRotor.rpm * 0.10472f) * aTimeStep; // 0.10472 is conversion of RPM to rads per second
     const float omega2 = (m_heli.mainRotor.rpm * 0.10472f);

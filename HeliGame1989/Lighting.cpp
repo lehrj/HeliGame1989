@@ -12,6 +12,21 @@ void Lighting::SetLighting(LightingState aLightState)
     m_currentLightingState = aLightState;
 }
 
+void Lighting::SetLightingNormColorTextureVertex(LightingState aLightState)
+{
+    m_currentLightingStateNormColorTextureVertex = aLightState;
+}
+
+void Lighting::SetLightingNormColorVertex2(LightingState aLightState)
+{
+    m_currentLightingStateNormColorVertex2 = aLightState;
+}
+
+void Lighting::SetLightingColorVertex3(LightingState aLightState)
+{
+    m_currentLightingStateColorVertex3 = aLightState;
+}
+
 void Lighting::SetFogVals1(std::unique_ptr<DirectX::NormalMapEffect>  aEffect, const DirectX::SimpleMath::Vector3 aCamPos, const DirectX::SimpleMath::Vector3 aTargetPos, const float aDimmerVal)
 {
     const float fogStartStopGap = 1.0;
@@ -409,5 +424,26 @@ void Lighting::UpdateLighting(std::shared_ptr<DirectX::NormalMapEffect> aEffect,
             m_lightPos2 = light2;
         }
     }
+}
+
+void Lighting::UpdateLightingNormColorTextureVertex(std::shared_ptr<DirectX::NormalMapEffect> aEffect, const double aTimer)
+{
+    const float timeStamp = static_cast<float>(aTimer);
+
+    aEffect->EnableDefaultLighting();
+}
+
+void Lighting::UpdateLightingNormColorVertex2(std::shared_ptr<DirectX::BasicEffect> aEffect, const double aTimer)
+{
+    const float timeStamp = static_cast<float>(aTimer);
+
+    aEffect->EnableDefaultLighting();
+}
+
+void Lighting::UpdateLightingColorVertex3(std::shared_ptr<DirectX::BasicEffect> aEffect, const double aTimer)
+{
+    const float timeStamp = static_cast<float>(aTimer);
+
+    //aEffect->EnableDefaultLighting();
 }
 

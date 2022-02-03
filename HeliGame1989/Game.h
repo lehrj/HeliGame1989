@@ -126,8 +126,8 @@ private:
 
     std::unique_ptr<DirectX::CommonStates>          m_states;
     std::shared_ptr<DirectX::NormalMapEffect>       m_effect;
-    std::unique_ptr<DirectX::BasicEffect>           m_effect2;
-    std::unique_ptr<DirectX::BasicEffect>           m_effect3;
+    std::shared_ptr<DirectX::BasicEffect>           m_effect2;
+    std::shared_ptr<DirectX::BasicEffect>           m_effect3;
     std::unique_ptr<DirectX::PrimitiveBatch<VertexType>> m_batch;
     std::unique_ptr<DirectX::PrimitiveBatch<VertexType2>> m_batch2;
     std::unique_ptr<DirectX::PrimitiveBatch<VertexType3>> m_batch3;
