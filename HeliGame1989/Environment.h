@@ -75,10 +75,36 @@ struct Fixture
     float                           distanceToCamera;
 };
 
+
 enum class EnvironmentType
 {
-    ENIVRONMENTTYPE_STARTUP,
-    ENVIRONMENTTYPE_CLEANTEST,
+    ENIVRONMENTTYPE_STARTSCREEN,
+    ENVIRONMENTTYPE_GAMEPLAY,
+};
+
+struct HeightMap
+{
+    std::vector<DirectX::VertexPositionNormal> heightMap;
+    std::vector<DirectX::VertexPositionNormal> terrainModel;
+    float                         heightScale;
+
+    EnvironmentType              mapType;
+    float                        mapScale;
+    float                        mapXtransform;
+    float                        mapYtransform;
+    float                        mapZtransform;
+
+    int                          terrainHeight = 0;
+    int                          terrainLength = 0;
+    int                          terrainWidth = 0;
+};
+
+struct Terrain
+{
+    EnvironmentType               environType;
+    DirectX::VertexPositionNormalColor* terrainVertexArray;
+    DirectX::VertexPositionNormalColor* terrainVertexArrayBase;
+    int                           terrainVertexCount;
 };
 
 // Class to handle environment and gameplay world needs
@@ -117,7 +143,7 @@ public:
     DirectX::SimpleMath::Vector3 GetTerrainNormal(DirectX::SimpleMath::Vector3 aPos) const;
 
     std::vector<DirectX::VertexPositionColor> GetTerrainColorVertex();
-    std::vector<DirectX::VertexPositionNormalColor> GetTerrainPositionNormalColorVertex();
+    std::vector<DirectX::VertexPositionNormalColor> GetTerrainPositionNormalColorVertex(EnvironmentType aEnvironType);
 
     float GetWindDirection() const;
     DirectX::SimpleMath::Vector3 GetWindVector() const { return m_currentEnviron.wind; };
@@ -128,7 +154,7 @@ public:
     float GetWindZ() const { return m_currentEnviron.wind.z; };
     std::string GetWindZString(const int aEnvironmentIndex) const { return m_environs[aEnvironmentIndex].windZStr; };    
 
-    bool InitializeTerrain(EnvironmentType aEnviron);
+    bool InitializeTerrain(HeightMap& aMap, EnvironmentType aEnviron);
 
     void SortFixtureBucketByDistance();
     void UpdateEnvironment(const int aIndex);
@@ -140,20 +166,24 @@ private:
     void BuildFlagVertex(DirectX::SimpleMath::Vector3 aPos);
     void BuildHoleVertex(DirectX::SimpleMath::Vector3 aPos);
 
-    bool BuildTerrainModel();
-    bool CalculateTerrainNormals();
+    bool BuildTerrainModel(HeightMap& aMap);
+    bool CalculateTerrainNormals(HeightMap& aMap);
 
     void CreateDataStrings();
+    void InitializeHeightMapData();
+
     void LoadEnvironmentData();
     void LoadFixtureBucket();
     void LoadFixtureBucket12th();
 
-    bool LoadHeightMap(EnvironmentType aEnviron);
+    //bool LoadHeightMap(std::vector<DirectX::VertexPositionNormal>& aMap, EnvironmentType aEnviron);
+    bool LoadHeightMap(HeightMap& aMap, EnvironmentType aEnviron);
 
+ 
     void SetLandingHeight(float aLandingHeight);
     void SetLauchHeight(float aLaunchHeight);
 
-    void ScaleTerrain(EnvironmentType aEnviron);
+    void ScaleTerrain(HeightMap& aMap);
     
     Environ                             m_currentEnviron;
     std::vector<Environ>                m_environs;
@@ -211,6 +241,7 @@ private:
     const float                        m_mapYtransformGamePlay = 0.0f;
     const float                        m_mapZtransformGamePlay = -16.0f * m_mapScaleGamePlay;
 
-
+    HeightMap                          m_heightMapGamePlayData;
+    HeightMap                          m_heightMapStartScreenData;
 };
 

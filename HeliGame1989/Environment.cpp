@@ -9,11 +9,22 @@
 
 Environment::Environment()
 {
-    bool result = InitializeTerrain(EnvironmentType::ENVIRONMENTTYPE_CLEANTEST);
+    InitializeHeightMapData();
+    bool result = InitializeTerrain(m_heightMapGamePlayData, EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY);
     if (result == false)
     {
+        int testBreak = 0;
+        testBreak++;
         // ToDo: add error handling
     }
+    result = InitializeTerrain(m_heightMapStartScreenData, EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN);
+    if (result == false)
+    {
+        int testBreak = 0;
+        testBreak++;
+        // ToDo: add error handling
+    }
+
     LoadEnvironmentData();
     CreateDataStrings();
     const int startEnviron = 0;  // ToDo: add error checking 
@@ -67,56 +78,56 @@ void Environment::BuildHoleVertex(DirectX::SimpleMath::Vector3 aPos)
     }
 }
 
-bool Environment::BuildTerrainModel()
+bool Environment::BuildTerrainModel(HeightMap& aMap)
 {
-    m_terrainModel.clear();
-    m_terrainModel.resize((m_terrainHeight - 1) * (m_terrainWidth - 1) * 6);
-    if (m_terrainModel.size() < 1)
+    aMap.terrainModel.clear();
+    aMap.terrainModel.resize((aMap.terrainHeight - 1) * (aMap.terrainWidth - 1) * 6);
+    if (aMap.terrainModel.size() < 1)
     {
         return false;
     }
 
     int index = 0;
 
-    for (int j = 0; j < (m_terrainHeight - 1); ++j)
+    for (int j = 0; j < (aMap.terrainHeight - 1); ++j)
     {
-        for (int i = 0; i < (m_terrainWidth - 1); ++i)
+        for (int i = 0; i < (aMap.terrainWidth - 1); ++i)
         {
             // Get the indexes to the four points of the quad
-            int index1 = (m_terrainWidth * j) + i;          // Upper left.
-            int index2 = (m_terrainWidth * j) + (i + 1);      // Upper right.
-            int index3 = (m_terrainWidth * (j + 1)) + i;      // Bottom left.
-            int index4 = (m_terrainWidth * (j + 1)) + (i + 1);  // Bottom right.
+            int index1 = (aMap.terrainWidth * j) + i;          // Upper left.
+            int index2 = (aMap.terrainWidth * j) + (i + 1);      // Upper right.
+            int index3 = (aMap.terrainWidth * (j + 1)) + i;      // Bottom left.
+            int index4 = (aMap.terrainWidth * (j + 1)) + (i + 1);  // Bottom right.
 
             // Now create two triangles for that quad
             // Triangle 1 - Upper left
-            m_terrainModel[index].position = m_heightMap[index1].position;
-            m_terrainModel[index].normal = m_heightMap[index1].normal;
+            aMap.terrainModel[index].position = aMap.heightMap[index1].position;
+            aMap.terrainModel[index].normal = aMap.heightMap[index1].normal;
             ++index;
 
             // Triangle 1 - Upper right
-            m_terrainModel[index].position = m_heightMap[index2].position;
-            m_terrainModel[index].normal = m_heightMap[index2].normal;
+            aMap.terrainModel[index].position = aMap.heightMap[index2].position;
+            aMap.terrainModel[index].normal = aMap.heightMap[index2].normal;
             ++index;
 
             // Triangle 1 - Bottom left
-            m_terrainModel[index].position = m_heightMap[index3].position;
-            m_terrainModel[index].normal = m_heightMap[index3].normal;
+            aMap.terrainModel[index].position = aMap.heightMap[index3].position;
+            aMap.terrainModel[index].normal = aMap.heightMap[index3].normal;
             ++index;
 
             // Triangle 2 - Bottom left
-            m_terrainModel[index].position = m_heightMap[index3].position;
-            m_terrainModel[index].normal = m_heightMap[index3].normal;
+            aMap.terrainModel[index].position = aMap.heightMap[index3].position;
+            aMap.terrainModel[index].normal = aMap.heightMap[index3].normal;
             ++index;
 
             // Triangle 2 - Upper right.
-            m_terrainModel[index].position = m_heightMap[index2].position;
-            m_terrainModel[index].normal = m_heightMap[index2].normal;
+            aMap.terrainModel[index].position = aMap.heightMap[index2].position;
+            aMap.terrainModel[index].normal = aMap.heightMap[index2].normal;
             ++index;
 
             // Triangle 2 - Bottom right.
-            m_terrainModel[index].position = m_heightMap[index4].position;
-            m_terrainModel[index].normal = m_heightMap[index4].normal;
+            aMap.terrainModel[index].position = aMap.heightMap[index4].position;
+            aMap.terrainModel[index].normal = aMap.heightMap[index4].normal;
             ++index;
         }
     }
@@ -125,76 +136,76 @@ bool Environment::BuildTerrainModel()
     return true;
 }
 
-bool Environment::CalculateTerrainNormals()
+bool Environment::CalculateTerrainNormals(HeightMap& aMap)
 {
     std::vector<DirectX::SimpleMath::Vector3> normals;
     normals.clear();
-    normals.resize((m_terrainHeight - 1) * (m_terrainWidth - 1));
+    normals.resize((aMap.terrainHeight - 1) * (aMap.terrainWidth - 1));
     if (normals.size() < 1)
     {
         return false;
     }
 
-    for (int j = 0; j < (m_terrainHeight - 1); ++j)
+    for (int j = 0; j < (aMap.terrainHeight - 1); ++j)
     {
-        for (int i = 0; i < (m_terrainWidth - 1); ++i)
+        for (int i = 0; i < (aMap.terrainWidth - 1); ++i)
         {
-            int index1 = ((j + 1) * m_terrainWidth) + i;      // Bottom left vertex.
-            int index2 = ((j + 1) * m_terrainWidth) + (i + 1);  // Bottom right vertex.
-            int index3 = (j * m_terrainWidth) + i;          // Upper left vertex.
+            int index1 = ((j + 1) * aMap.terrainWidth) + i;      // Bottom left vertex.
+            int index2 = ((j + 1) * aMap.terrainWidth) + (i + 1);  // Bottom right vertex.
+            int index3 = (j * aMap.terrainWidth) + i;          // Upper left vertex.
 
             // Get three vertices from the face.
-            DirectX::SimpleMath::Vector3 vertex1 = m_heightMap[index1].position;
-            DirectX::SimpleMath::Vector3 vertex2 = m_heightMap[index2].position;
-            DirectX::SimpleMath::Vector3 vertex3 = m_heightMap[index3].position;
+            DirectX::SimpleMath::Vector3 vertex1 = aMap.heightMap[index1].position;
+            DirectX::SimpleMath::Vector3 vertex2 = aMap.heightMap[index2].position;
+            DirectX::SimpleMath::Vector3 vertex3 = aMap.heightMap[index3].position;
 
             // Calculate the two vectors for this face.
             DirectX::SimpleMath::Vector3 vector1 = vertex2 - vertex1;
             DirectX::SimpleMath::Vector3 vector2 = vertex3 - vertex1;
 
 
-            int index = (j * (m_terrainWidth - 1)) + i;
+            int index = (j * (aMap.terrainWidth - 1)) + i;
             normals[index] = DirectX::XMVector3Cross(vector1, vector2);
             normals[index].Normalize();
         }
     }
 
     // Now go through all the vertices and take a sum of the face normals that touch this vertex.
-    for (int j = 0; j < m_terrainHeight; j++)
+    for (int j = 0; j < aMap.terrainHeight; j++)
     {
-        for (int i = 0; i < m_terrainWidth; i++)
+        for (int i = 0; i < aMap.terrainWidth; i++)
         {
             DirectX::SimpleMath::Vector3 sum = DirectX::SimpleMath::Vector3::Zero;
 
             // Bottom left face.
             if (((i - 1) >= 0) && ((j - 1) >= 0))
             {
-                int index = ((j - 1) * (m_terrainWidth - 1)) + (i - 1);
+                int index = ((j - 1) * (aMap.terrainWidth - 1)) + (i - 1);
                 sum += normals[index];
             }
             // Bottom right face.
-            if ((i < (m_terrainWidth - 1)) && ((j - 1) >= 0))
+            if ((i < (aMap.terrainWidth - 1)) && ((j - 1) >= 0))
             {
-                int index = ((j - 1) * (m_terrainWidth - 1)) + i;
+                int index = ((j - 1) * (aMap.terrainWidth - 1)) + i;
                 sum += normals[index];
             }
             // Upper left face.
-            if (((i - 1) >= 0) && (j < (m_terrainHeight - 1)))
+            if (((i - 1) >= 0) && (j < (aMap.terrainHeight - 1)))
             {
-                int index = (j * (m_terrainWidth - 1)) + (i - 1);
+                int index = (j * (aMap.terrainWidth - 1)) + (i - 1);
                 sum += normals[index];
             }
             // Upper right face.
-            if ((i < (m_terrainWidth - 1)) && (j < (m_terrainHeight - 1)))
+            if ((i < (aMap.terrainWidth - 1)) && (j < (aMap.terrainHeight - 1)))
             {
-                int index = (j * (m_terrainWidth - 1)) + i;
+                int index = (j * (aMap.terrainWidth - 1)) + i;
                 sum += normals[index];
             }
 
-            int index = (j * m_terrainWidth) + i;
+            int index = (j * aMap.terrainWidth) + i;
 
             sum.Normalize();
-            m_heightMap[index].normal = sum;
+            aMap.heightMap[index].normal = sum;
         }
     }
 
@@ -361,13 +372,14 @@ float Environment::GetTerrainHeightAtPos(DirectX::XMFLOAT3 aPos) const
 
     unsigned int i = 0;
 
-    for (i; i < m_terrainModel.size(); ++i)
+    //m_heightMapGamePlayData.terrainModel.size();
+    for (i; i < m_heightMapGamePlayData.terrainModel.size(); ++i)
     {
-        DirectX::XMFLOAT3 vertex1 = m_terrainModel[i].position;
+        DirectX::XMFLOAT3 vertex1 = m_heightMapGamePlayData.terrainModel[i].position;
         ++i;
-        DirectX::XMFLOAT3 vertex2 = m_terrainModel[i].position;
+        DirectX::XMFLOAT3 vertex2 = m_heightMapGamePlayData.terrainModel[i].position;
         ++i;
-        DirectX::XMFLOAT3 vertex3 = m_terrainModel[i].position;
+        DirectX::XMFLOAT3 vertex3 = m_heightMapGamePlayData.terrainModel[i].position;
 
         foundHeight = CheckTerrainTriangleHeight(aPos, vertex1, vertex2, vertex3);
         if (foundHeight == true)
@@ -474,13 +486,13 @@ DirectX::SimpleMath::Vector3 Environment::GetTerrainNormal(DirectX::SimpleMath::
     bool foundHeight = false;
     unsigned int i = 0;
 
-    for (i; i < m_terrainModel.size(); ++i)
+    for (i; i < m_heightMapGamePlayData.terrainModel.size(); ++i)
     {
-        DirectX::XMFLOAT3 vertex1 = m_terrainModel[i].position;
+        DirectX::XMFLOAT3 vertex1 = m_heightMapGamePlayData.terrainModel[i].position;
         ++i;
-        DirectX::XMFLOAT3 vertex2 = m_terrainModel[i].position;
+        DirectX::XMFLOAT3 vertex2 = m_heightMapGamePlayData.terrainModel[i].position;
         ++i;
-        DirectX::XMFLOAT3 vertex3 = m_terrainModel[i].position;
+        DirectX::XMFLOAT3 vertex3 = m_heightMapGamePlayData.terrainModel[i].position;
 
         DirectX::SimpleMath::Vector3 pos = aPos;
         /*
@@ -492,9 +504,9 @@ DirectX::SimpleMath::Vector3 Environment::GetTerrainNormal(DirectX::SimpleMath::
         foundHeight = CheckTerrainTriangleHeight(aPos, vertex1, vertex2, vertex3);
         if (foundHeight)
         {
-            DirectX::SimpleMath::Vector3 p3 = m_terrainModel[i - 2].position;
-            DirectX::SimpleMath::Vector3 p2 = m_terrainModel[i - 1].position;
-            DirectX::SimpleMath::Vector3 p1 = m_terrainModel[i].position;
+            DirectX::SimpleMath::Vector3 p3 = m_heightMapGamePlayData.terrainModel[i - 2].position;
+            DirectX::SimpleMath::Vector3 p2 = m_heightMapGamePlayData.terrainModel[i - 1].position;
+            DirectX::SimpleMath::Vector3 p1 = m_heightMapGamePlayData.terrainModel[i].position;
 
             DirectX::SimpleMath::Vector3 U = p2 - p1;
             DirectX::SimpleMath::Vector3 V = p3 - p1;
@@ -507,12 +519,52 @@ DirectX::SimpleMath::Vector3 Environment::GetTerrainNormal(DirectX::SimpleMath::
         }
     }
 
-
     return -DirectX::SimpleMath::Vector3::UnitX;
 }
 
-std::vector<DirectX::VertexPositionNormalColor> Environment::GetTerrainPositionNormalColorVertex()
+std::vector<DirectX::VertexPositionNormalColor> Environment::GetTerrainPositionNormalColorVertex(EnvironmentType aEnvironType)
 {
+    std::vector<DirectX::VertexPositionNormalColor> vertPosNormColor;
+    vertPosNormColor.clear();
+    if (aEnvironType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
+    {
+        vertPosNormColor.resize(m_heightMapStartScreenData.terrainModel.size());
+        DirectX::XMFLOAT4 terrainColor(1.0, 1.0, 1.0, 1.0); // ToDo: for testing, implement color control
+
+        for (unsigned int i = 0; i < vertPosNormColor.size(); ++i)
+        {
+            vertPosNormColor[i].position = m_heightMapStartScreenData.terrainModel[i].position;
+            vertPosNormColor[i].color = terrainColor;
+            vertPosNormColor[i].normal = m_heightMapStartScreenData.terrainModel[i].normal;
+        }
+    }
+    else
+    {
+        vertPosNormColor.resize(m_heightMapGamePlayData.terrainModel.size());
+        DirectX::XMFLOAT4 terrainColor(1.0, 1.0, 1.0, 1.0); // ToDo: for testing, implement color control
+
+        for (unsigned int i = 0; i < vertPosNormColor.size(); ++i)
+        {
+            vertPosNormColor[i].position = m_heightMapGamePlayData.terrainModel[i].position;
+            vertPosNormColor[i].color = terrainColor;
+            vertPosNormColor[i].normal = m_heightMapGamePlayData.terrainModel[i].normal;
+        }
+    }
+    return vertPosNormColor;
+    /*
+    vertPosNormColor.resize(m_heightMapGamePlayData.terrainModel.size());
+    DirectX::XMFLOAT4 terrainColor(1.0, 1.0, 1.0, 1.0); // ToDo: for testing, implement color control
+
+    for (unsigned int i = 0; i < vertPosNormColor.size(); ++i)
+    {
+        vertPosNormColor[i].position = m_heightMapGamePlayData.terrainModel[i].position;
+        vertPosNormColor[i].color = terrainColor;
+        vertPosNormColor[i].normal = m_heightMapGamePlayData.terrainModel[i].normal;
+    }
+    return vertPosNormColor;
+    */
+    
+    /*
     std::vector<DirectX::VertexPositionNormalColor> vertPosNormColor;
     vertPosNormColor.clear();
     vertPosNormColor.resize(m_terrainModel.size());
@@ -526,6 +578,7 @@ std::vector<DirectX::VertexPositionNormalColor> Environment::GetTerrainPositionN
     }
 
     return vertPosNormColor;
+    */
 }
 
 // While this could be done once per environment update, future updates could have moment to moment wind changes
@@ -542,30 +595,64 @@ float Environment::GetWindDirection() const
     return direction;
 }
 
-bool Environment::InitializeTerrain(EnvironmentType aEnviron)
+bool Environment::InitializeTerrain(HeightMap& aMap, EnvironmentType aEnviron)
 {
-    bool result = LoadHeightMap(aEnviron);
-    if (!result)
-    {
-        return false;
-    }
-    
-    result = CalculateTerrainNormals();
+    bool result = LoadHeightMap(aMap, aEnviron);
     if (!result)
     {
         return false;
     }
 
-    result = BuildTerrainModel();
+    result = CalculateTerrainNormals(aMap);
     if (!result)
     {
         return false;
     }
 
-    ScaleTerrain(aEnviron);
+    result = BuildTerrainModel(aMap);
+    if (!result)
+    {
+        return false;
+    }
+
+    ScaleTerrain(aMap);
     
 
     return true;
+}
+
+void Environment::InitializeHeightMapData()
+{
+    // initialize game play map
+    m_heightMapGamePlayData.heightScale = 0.009f;
+    m_heightMapGamePlayData.mapScale = 1000.30f;
+    m_heightMapGamePlayData.mapXtransform = -16.0f * m_heightMapGamePlayData.mapScale;
+    m_heightMapGamePlayData.mapYtransform = 0.0f;
+    m_heightMapGamePlayData.mapZtransform = -16.0f * m_heightMapGamePlayData.mapScale;
+    
+    m_heightMapGamePlayData.mapType = EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY;
+    m_heightMapGamePlayData.terrainHeight = 0;
+    m_heightMapGamePlayData.terrainLength = 0;
+    m_heightMapGamePlayData.terrainWidth = 0;
+    
+    m_heightMapGamePlayData.heightMap.clear();
+    m_heightMapGamePlayData.terrainModel.clear();
+
+    // initialize start screen map
+    m_heightMapStartScreenData.heightScale = 0.007f;
+    m_heightMapStartScreenData.mapScale = 0.2f;
+    m_heightMapStartScreenData.mapXtransform = 2.101f;
+    m_heightMapStartScreenData.mapYtransform = 0.02f;
+    m_heightMapStartScreenData.mapZtransform = -0.02f;
+
+    m_heightMapStartScreenData.mapType = EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN;
+    m_heightMapStartScreenData.terrainHeight = 0;
+    m_heightMapStartScreenData.terrainLength = 0;
+    m_heightMapStartScreenData.terrainWidth = 0;
+
+    m_heightMapStartScreenData.heightMap.clear();
+    m_heightMapStartScreenData.terrainModel.clear();
+
 }
 
 void Environment::LoadEnvironmentData()
@@ -1067,15 +1154,15 @@ void Environment::LoadFixtureBucket12th()
     m_fixtureBucket.push_back(fixt);
 }
 
-bool Environment::LoadHeightMap(EnvironmentType aEnviron)
+bool Environment::LoadHeightMap(HeightMap& aMap, EnvironmentType aEnviron)
 {
     FILE* filePtr;
     const char* filename;
-    if (aEnviron == EnvironmentType::ENIVRONMENTTYPE_STARTUP)
+    if (aMap.mapType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
     {
         filename = "../HeliGame1989/Art/HeightMaps/heightmapStartScreen.bmp";
     }
-    if (aEnviron == EnvironmentType::ENVIRONMENTTYPE_CLEANTEST)
+    else if (aMap.mapType == EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY)
     {
         filename = "../HeliGame1989/Art/HeightMaps/heightmapCleanTest.bmp";
     }
@@ -1108,11 +1195,11 @@ bool Environment::LoadHeightMap(EnvironmentType aEnviron)
     }
 
     // Save the dimensions of the terrain.
-    m_terrainWidth = bitmapInfoHeader.biWidth;
-    m_terrainHeight = bitmapInfoHeader.biHeight;
+    aMap.terrainWidth = bitmapInfoHeader.biWidth;
+    aMap.terrainHeight = bitmapInfoHeader.biHeight;
 
     // Calculate the size of the bitmap image data.
-    unsigned int imageSize = m_terrainWidth * m_terrainHeight * 3 + m_terrainWidth;
+    unsigned int imageSize = aMap.terrainWidth * aMap.terrainHeight * 3 + aMap.terrainWidth;
 
     // Allocate memory for the bitmap image data.
     unsigned char* bitmapImage = new unsigned char[imageSize];
@@ -1124,7 +1211,7 @@ bool Environment::LoadHeightMap(EnvironmentType aEnviron)
     // Move to the beginning of the bitmap data.
     fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
 
-    UINT pitch = m_terrainWidth * 3;
+    UINT pitch = aMap.terrainWidth * 3;
     UINT excessPitch = 0;
     while (float(pitch / 4) != float(pitch) / 4.0)
     {
@@ -1133,7 +1220,7 @@ bool Environment::LoadHeightMap(EnvironmentType aEnviron)
     }
 
     // Read in the bitmap image data.
-    count = fread(bitmapImage, 1, pitch * m_terrainHeight, filePtr);
+    count = fread(bitmapImage, 1, pitch * aMap.terrainHeight, filePtr);
     if (count != imageSize)
     {
         return false;
@@ -1154,8 +1241,10 @@ bool Environment::LoadHeightMap(EnvironmentType aEnviron)
     }
 
     // Create the structure to hold the height map data.
-    m_heightMap.clear();
-    m_heightMap.resize(m_terrainWidth * m_terrainHeight);
+    //m_heightMap.clear();
+    //m_heightMap.resize(m_terrainWidth * m_terrainHeight);
+    aMap.heightMap.clear();
+    aMap.heightMap.resize(aMap.terrainWidth * aMap.terrainHeight);
 
     // Initialize the position in the image data buffer.
     int k = 0;
@@ -1163,18 +1252,18 @@ bool Environment::LoadHeightMap(EnvironmentType aEnviron)
     unsigned char height;
 
     // Read the image data into the height map.
-    for (int j = 0; j < m_terrainWidth; j++)
+    for (int j = 0; j < aMap.terrainWidth; j++)
     {
-        for (int i = 0; i < m_terrainHeight; i++)
+        for (int i = 0; i < aMap.terrainHeight; i++)
         {
             height = bitmapImage[k];
 
             // To read values in backwards since bitmap read in is fliped
-            index = (m_terrainWidth * (m_terrainHeight - 1 - j)) + i;
+            index = (aMap.terrainWidth * (aMap.terrainHeight - 1 - j)) + i;
 
-            m_heightMap[index].position.x = (float)j;
-            m_heightMap[index].position.y = (float)height * m_heightScale; // scale height during input
-            m_heightMap[index].position.z = (float)i;
+            aMap.heightMap[index].position.x = (float)j;
+            aMap.heightMap[index].position.y = (float)height * aMap.heightScale; // scale height during input
+            aMap.heightMap[index].position.z = (float)i;
 
             k += 3;
         }
@@ -1188,47 +1277,62 @@ bool Environment::LoadHeightMap(EnvironmentType aEnviron)
     return true;
 }
 
-void Environment::ScaleTerrain(EnvironmentType aEnviron)
+void Environment::ScaleTerrain(HeightMap& aMap)
 {
     float scale = 1.0;
     float xTransform = 0.0;
     float yTransform = 0.0;
     float zTransform = 0.0;
-    if (aEnviron == EnvironmentType::ENIVRONMENTTYPE_STARTUP)
+    if (aMap.mapType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
+    {
+        scale = aMap.mapScale;
+        xTransform = aMap.mapXtransform;
+        yTransform = aMap.mapYtransform;
+        zTransform = aMap.mapZtransform;
+    }
+    else if (aMap.mapType == EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY)
+    {
+        scale = aMap.mapScale;
+        xTransform = aMap.mapXtransform;
+        yTransform = aMap.mapYtransform;
+        zTransform = aMap.mapZtransform;
+    }
+    /*
+    if (aMap.mapType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
     {
         scale = m_mapScaleStartScreen;
         xTransform = m_mapXtransformStartScreen;
         yTransform = m_mapYtransformStartScreen;
         zTransform = m_mapZtransformStartScreen;
     }
-    else if (aEnviron == EnvironmentType::ENVIRONMENTTYPE_CLEANTEST)
+    else if (aMap.mapType == EnvironmentType::ENVIRONMENTTYPE_CLEANTEST)
     {
         scale = m_mapScaleGamePlay;
         xTransform = m_mapXtransformGamePlay;
         yTransform = m_mapYtransformGamePlay;
         zTransform = m_mapZtransformGamePlay;
     }
-
-    for (unsigned int i = 0; i < m_heightMap.size(); ++i)
+    */
+    for (unsigned int i = 0; i < aMap.heightMap.size(); ++i)
     {
-        m_heightMap[i].position.x *= scale;
-        m_heightMap[i].position.y *= scale;
-        m_heightMap[i].position.z *= scale;
+        aMap.heightMap[i].position.x *= scale;
+        aMap.heightMap[i].position.y *= scale;
+        aMap.heightMap[i].position.z *= scale;
 
-        m_heightMap[i].position.x += xTransform;
-        m_heightMap[i].position.y += yTransform;
-        m_heightMap[i].position.z += zTransform;
+        aMap.heightMap[i].position.x += xTransform;
+        aMap.heightMap[i].position.y += yTransform;
+        aMap.heightMap[i].position.z += zTransform;
     }
 
-    for (unsigned int i = 0; i < m_terrainModel.size(); ++i)
+    for (unsigned int i = 0; i < aMap.terrainModel.size(); ++i)
     {
-        m_terrainModel[i].position.x *= scale;
-        m_terrainModel[i].position.y *= scale;
-        m_terrainModel[i].position.z *= scale;
+        aMap.terrainModel[i].position.x *= scale;
+        aMap.terrainModel[i].position.y *= scale;
+        aMap.terrainModel[i].position.z *= scale;
 
-        m_terrainModel[i].position.x += xTransform;
-        m_terrainModel[i].position.y += yTransform;
-        m_terrainModel[i].position.z += zTransform;
+        aMap.terrainModel[i].position.x += xTransform;
+        aMap.terrainModel[i].position.y += yTransform;
+        aMap.terrainModel[i].position.z += zTransform;
     }
 }
 

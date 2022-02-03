@@ -13,6 +13,7 @@
 #include "sounds.h"
 #include "Vehicle.h"
 #include <sstream>
+
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
 class Game
@@ -71,6 +72,7 @@ private:
     void DrawTeaserScreen();
     void DrawTerrain();
     void DrawTerrain2();
+    void DrawTerrainNew(Terrain& aTerrain);
     void DrawTerrainNormals();
     void DrawTimer();
     void DrawUIIntroScreen();
@@ -81,6 +83,9 @@ private:
     void InitializeDebugWorldGrid();
     bool InitializeTerrainArray();
     bool InitializeTerrainArray2();
+
+    bool InitializeTerrainArrayNew(Terrain& aTerrain);
+
     void InitializeWorldGrid();
     void OnDeviceLost();
     void Present();
@@ -304,6 +309,25 @@ private:
     DirectX::VertexPositionNormalColor* m_terrainVertexArrayBase2;
     int                                  m_terrainVertexCount2;
 
+    /*
+    struct Terrain
+    {
+        DirectX::VertexPositionColor* terrainVertexArray;
+        DirectX::VertexPositionColor* terrainVertexArrayBase;
+        int                           terrainVertexCount;
+    };
+    */
+    Terrain m_terrainGamePlay;
+    Terrain m_terrainStartScreen;
+    /*
+    DirectX::VertexPositionNormalColor* m_terrainVertexArrayGamePlay;
+    DirectX::VertexPositionNormalColor* m_terrainVertexArrayBaseGamePlay;
+    int                                  m_terrainVertexCountGamePlay;
+
+    DirectX::VertexPositionNormalColor* m_terrainVertexArrayStartScreen;
+    DirectX::VertexPositionNormalColor* m_terrainVertexArrayBaseStartScreen;
+    int                                  m_terrainVertexCountStartScreen;
+    */
 
     float                               m_debugValue1 = 0.0;
     float                               m_debugValue2 = 0.0;
