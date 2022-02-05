@@ -298,36 +298,15 @@ private:
 
     // for height map
     std::vector<DirectX::VertexPositionColor>   m_terrainVector;
-
     DirectX::VertexPositionColor* m_terrainVertexArray;
     DirectX::VertexPositionColor* m_terrainVertexArrayBase;
     int                                         m_terrainVertexCount;
-
     std::vector<DirectX::VertexPositionNormalColor>   m_terrainVector2;
-
     DirectX::VertexPositionNormalColor* m_terrainVertexArray2;
     DirectX::VertexPositionNormalColor* m_terrainVertexArrayBase2;
     int                                  m_terrainVertexCount2;
-
-    /*
-    struct Terrain
-    {
-        DirectX::VertexPositionColor* terrainVertexArray;
-        DirectX::VertexPositionColor* terrainVertexArrayBase;
-        int                           terrainVertexCount;
-    };
-    */
     Terrain m_terrainGamePlay;
     Terrain m_terrainStartScreen;
-    /*
-    DirectX::VertexPositionNormalColor* m_terrainVertexArrayGamePlay;
-    DirectX::VertexPositionNormalColor* m_terrainVertexArrayBaseGamePlay;
-    int                                  m_terrainVertexCountGamePlay;
-
-    DirectX::VertexPositionNormalColor* m_terrainVertexArrayStartScreen;
-    DirectX::VertexPositionNormalColor* m_terrainVertexArrayBaseStartScreen;
-    int                                  m_terrainVertexCountStartScreen;
-    */
 
     float                               m_debugValue1 = 0.0;
     float                               m_debugValue2 = 0.0;
@@ -341,8 +320,8 @@ private:
     // start scene control variables
     const float                         m_fadeDuration = 5.0f;
     const float                         m_logoDisplayDuration = 7.5f;
-    const float                         m_logoDisplayGap = 2.0f;
-    const float                         m_startDelay = 4.0f;
+    const float                         m_logoDisplayGap = 0.2f;
+    const float                         m_startDelay = 0.2f;
 
     const float                         m_fogGap1 = 0.0;
     const float                         m_fogGap2 = 10.0;

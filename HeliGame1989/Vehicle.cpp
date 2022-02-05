@@ -3937,6 +3937,8 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     {
         UpdateLandingGear(m_heli.landingGear, aTimeDelta);
     }
+
+    m_debugUIVector.clear();
 }
 
 void Vehicle::DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor)

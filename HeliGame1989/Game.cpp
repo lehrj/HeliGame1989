@@ -41,7 +41,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
 
-    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
 
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
@@ -787,6 +787,8 @@ void Game::DrawGridForStartScreen()
     m_batch3->DrawLine(v4, v1);
 
     m_batch3->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, m_terrainVertexArray, m_terrainVertexCount);
+    //m_batch3->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, m_terrainStartScreen.terrainVertexArray, m_terrainStartScreen.terrainVertexCount);
+
 }
 
 void Game::DrawIntroScene()
@@ -2148,12 +2150,13 @@ void Game::Initialize(HWND window, int width, int height)
     // height map intit
     bool result;
     bool isInitSuccessTrue = true;
-    /*
+    
     result = InitializeTerrainArray();
     if (!result)
     {
         isInitSuccessTrue = false;
     }
+    /*
     result = InitializeTerrainArray2();
     if (!result)
     {
@@ -2856,7 +2859,7 @@ void Game::Render()
     */
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+    /*
     auto ilights = dynamic_cast<DirectX::IEffectLights*>(m_effect.get());
     if (ilights)
     {
@@ -2898,9 +2901,9 @@ void Game::Render()
         m_lightPos1 = light1;
         m_lightPos2 = light2;
     }
-    
+    */
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    //m_lighting->UpdateLighting(m_effect, m_timer.GetTotalSeconds());
     m_effect->Apply(m_d3dContext.Get());
 
     //auto sampler = m_states->LinearClamp();
@@ -3149,20 +3152,23 @@ void Game::Update(DX::StepTimer const& aTimer)
             m_retryAudio = true;
         }
     }
-
-
-    
+  
     UpdateInput(aTimer);
     m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
     
     m_camera->UpdateCamera(aTimer);
-    
+        
     m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
 
+    /*
     m_lighting->UpdateLightingNormColorTextureVertex(m_effect, aTimer.GetTotalSeconds());
     m_lighting->UpdateLightingNormColorVertex2(m_effect2, aTimer.GetTotalSeconds());
     m_lighting->UpdateLightingColorVertex3(m_effect3, aTimer.GetTotalSeconds());
-
+    */
+    m_proj = m_camera->GetProjectionMatrix();
+    m_effect->SetProjection(m_proj);
+    m_effect2->SetProjection(m_proj);
+    m_effect3->SetProjection(m_proj);
 
     DirectX::SimpleMath::Matrix viewMatrix = m_camera->GetViewMatrix();
     m_effect->SetView(viewMatrix);

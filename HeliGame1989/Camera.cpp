@@ -24,7 +24,9 @@ Camera::Camera(int aWidth, int aHeight)
 	m_homeYaw = 0.0f;
 
 	//m_cameraState = CameraState::CAMERASTATE_FOLLOWVEHICLE;
-	m_cameraState = CameraState::CAMERASTATE_TESTCAMERA01;
+	//m_cameraState = CameraState::CAMERASTATE_TESTCAMERA01;
+	m_cameraState = CameraState::CAMERASTATE_PRESWINGVIEW;
+
 	Target springTarget;
 	springTarget.forward = DirectX::SimpleMath::Vector3::UnitX;
 	springTarget.up = DirectX::SimpleMath::Vector3::UnitY;
@@ -408,6 +410,7 @@ void Camera::UpdateCamera(DX::StepTimer const& aTimer)
 	if (m_cameraState == CameraState::CAMERASTATE_PRESWINGVIEW)
 	{
 		// no update needed in current state
+		m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_position, m_target, m_up);
 	}
 	if (m_cameraState == CameraState::CAMERASTATE_TRANSITION)
 	{
@@ -489,7 +492,13 @@ void Camera::UpdateCamera(DX::StepTimer const& aTimer)
 	{
 		//m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_position, m_target, m_up);
 	}
+	DirectX::SimpleMath::Vector3 pos = m_position;
 
+	DirectX::SimpleMath::Vector3 targ = GetTargetPos();
+	UpdateOrthoganalMatrix();
+	UpdateProjectionMatrix();
+	//UpdateViewMatrix();
+	m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_position, m_target, m_up);
 
 }
 
