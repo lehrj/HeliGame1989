@@ -41,7 +41,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
 
-   // m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
 
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
@@ -703,11 +703,8 @@ void Game::DrawGridForStartScreen()
     DirectX::XMVECTORF32 gridColor = DirectX::Colors::LawnGreen;
     DirectX::XMVECTORF32 baseColor = DirectX::Colors::Black;
     DirectX::SimpleMath::Vector4 gridColor2(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);// = DirectX::Colors::LawnGreen;
-    if (m_terrainVertexCount > 0)
-    {
-        gridColor2 = m_terrainVertexArray[0].color;
-    }
-
+    gridColor2 = m_startScreenGridDimmerColor;
+    
     const float xBase = 1.1;
     const float yBase = 0.0;
     const float zBase = -4.0;
@@ -1533,7 +1530,7 @@ void Game::DrawStartScreen()
     bottomLeft += titleOrigin;
 
     uStart = 0.6927083333333333;
-    uStop = 1.0;
+    uStop = 0.989;
     vStart = 0.0;
     vStop = 0.0611111111111111;
 
@@ -2772,6 +2769,7 @@ void Game::SetFogVals3(const DirectX::SimpleMath::Vector3 aTargetPos, const floa
 
 void Game::SetTerrainGridDimmer(const float aDimmerVal)
 {
+    /*
     for (int i = 0; i < m_terrainVertexCount; ++i)
     {
         DirectX::SimpleMath::Vector4 dimmerColor(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);// = DirectX::Colors::LawnGreen;
@@ -2779,6 +2777,19 @@ void Game::SetTerrainGridDimmer(const float aDimmerVal)
         dimmerColor *= aDimmerVal;
         m_terrainVertexArray[i].color = dimmerColor;
     }
+    */
+    /*
+    for (int i = 0; i < m_terrainStartScreen.terrainVertexCount; ++i)
+    {
+        DirectX::SimpleMath::Vector4 dimmerColor(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);// = DirectX::Colors::LawnGreen;
+        //DirectX::SimpleMath::Vector4 dimmerColor = m_terrainVertexArray[i].color;
+        dimmerColor *= aDimmerVal;
+        m_terrainStartScreen.terrainVertexArray[i].color = dimmerColor;
+    }
+    */
+    DirectX::SimpleMath::Vector4 dimmerColor(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);// = DirectX::Colors::LawnGreen;
+    dimmerColor *= aDimmerVal;
+    m_startScreenGridDimmerColor = dimmerColor;
 }
 
 void Game::TestDraw()
@@ -2930,10 +2941,11 @@ void Game::Render()
     }
 
     //DrawDebugLines();
+    DrawStartScreen();
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
         //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
-        DrawStartScreen();
+        //DrawStartScreen();
         if (m_isInDebugMode == true)
         {
             //DrawCameraFocus();
@@ -2975,7 +2987,7 @@ void Game::Render()
     }
     if (m_currentGameState == GameState::GAMESTATE_TEASERSCREEN)
     {
-        DrawLightBar();
+        //DrawLightBar();
     }
 
     //m_effect2->EnableDefaultLighting();
@@ -3024,8 +3036,8 @@ void Game::Render()
 
     //DrawTerrainNormals();
     //DrawDebugNormalLines(m_vehicle->GetModelTestPos(), DirectX::Colors::Blue);
-    DrawDebugLinesVector();
-    DrawGridForStartScreen();
+    //DrawDebugLinesVector();
+    //DrawGridForStartScreen();
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
         DrawGridForStartScreen();
@@ -3143,7 +3155,7 @@ void Game::Update(DX::StepTimer const& aTimer)
             m_retryAudio = true;
         }
     }
-  
+    m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_BMW);
     UpdateInput(aTimer);
     m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
     

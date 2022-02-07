@@ -308,7 +308,7 @@ private:
     int                                  m_terrainVertexCount2;
     Terrain m_terrainGamePlay;
     Terrain m_terrainStartScreen;
-
+    DirectX::SimpleMath::Vector4        m_startScreenGridDimmerColor = DirectX::SimpleMath::Vector4(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);// = DirectX::Colors::LawnGreen;
     float                               m_debugValue1 = 0.0;
     float                               m_debugValue2 = 0.0;
     float                               m_debugValue3 = 0.0;
@@ -320,8 +320,8 @@ private:
 
     // start scene control variables
     const float                         m_fadeDuration = 5.0f;
-    const float                         m_logoDisplayDuration = 7.5f;
-    const float                         m_logoDisplayGap = 0.2f;
+    const float                         m_logoDisplayDuration = 12.5f;
+    const float                         m_logoDisplayGap = 1.0f;
     const float                         m_startDelay = 0.2f;
 
     const float                         m_fogGap1 = 0.0;
