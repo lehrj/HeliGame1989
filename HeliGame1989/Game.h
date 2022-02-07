@@ -249,6 +249,7 @@ private:
         GAMESTATE_COURSESELECT,
         GAMESTATE_ENVIRONTMENTSELECT,
         GAMESTATE_GAMEPLAY,
+        GAMESTATE_GAMEPLAYSTART,
         GAMESTATE_TEASERSCREEN
     };
     GameState                                   m_currentGameState;

@@ -41,7 +41,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
 
-    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+   // m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
 
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
@@ -666,7 +666,7 @@ void Game::DrawDebugVehicleData()
     std::string speedLine = "Speed    " + std::to_string(static_cast<int>(speed)) + " MPH";
     DirectX::SimpleMath::Vector2 speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
     textLinePos.x = speedLineOrigin.x + 20;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    //m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
     textLinePos.y += 30;
 
     // Draw Timer
@@ -708,12 +708,12 @@ void Game::DrawGridForStartScreen()
         gridColor2 = m_terrainVertexArray[0].color;
     }
 
-    const float xBase = 1.0;
-    const float yBase = -0.0;
+    const float xBase = 1.1;
+    const float yBase = 0.0;
     const float zBase = -4.0;
     const float xLength = 4.0;
     const float zSpacing = 0.2;
-    const int verticleLineCount = 80;
+    const int verticleLineCount = 70;
 
     const float zLength = zSpacing * verticleLineCount;
     const float xSpacing = 0.2;
@@ -780,12 +780,12 @@ void Game::DrawGridForStartScreen()
     v2 = DirectX::VertexPositionColor(ne, gridColor2);
     v3 = DirectX::VertexPositionColor(se, gridColor2);
     v4 = DirectX::VertexPositionColor(sw, gridColor2);
-
+    /*
     m_batch3->DrawLine(v1, v2);
     m_batch3->DrawLine(v2, v3);
     m_batch3->DrawLine(v3, v4);
     m_batch3->DrawLine(v4, v1);
-
+    */
     m_batch3->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, m_terrainVertexArray, m_terrainVertexCount);
     //m_batch3->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, m_terrainStartScreen.terrainVertexArray, m_terrainStartScreen.terrainVertexCount);
 
@@ -1018,7 +1018,7 @@ void Game::DrawIntroScene()
 
         m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEASERSCREEN);
         m_currentGameState = GameState::GAMESTATE_TEASERSCREEN;
-
+        m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
         m_effect->SetTexture(m_textureTeaser.Get());
         m_effect->SetNormalTexture(m_normalMapTeaser.Get());
         m_effect->SetSpecularTexture(m_specularTeaser.Get());
@@ -1711,9 +1711,7 @@ void Game::DrawTerrain2()
 void Game::DrawTerrainNew(Terrain& aTerrain)
 {
     m_batch2->Draw(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, aTerrain.terrainVertexArrayBase, aTerrain.terrainVertexCount);
-    //m_batch2->Draw(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, m_terrainVertexArrayBase2, m_terrainVertexCount2);
     m_batch2->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, aTerrain.terrainVertexArray, aTerrain.terrainVertexCount);
-    //m_batch2->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, m_terrainVertexArray2, m_terrainVertexCount2);
 }
 
 
@@ -2345,6 +2343,10 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     DirectX::XMFLOAT4 testGray = DirectX::XMFLOAT4(0.662745118f, 0.662745118f, 0.662745118f, 1.000000000f);
     DirectX::XMFLOAT4 testWhite = DirectX::XMFLOAT4(1.0, 1.0, 1.0, 1.0);
 
+    if (aTerrain.environType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
+    {
+        testWhite = baseColor;
+    }
     for (int i = 0; i < aTerrain.terrainVertexCount; ++i)
     {
         DirectX::SimpleMath::Vector3 flipNormal = vertexPC[i].normal;
@@ -2394,10 +2396,19 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     testNorms.resize(aTerrain.terrainVertexCount);
     std::vector<DirectX::SimpleMath::Vector3> testNorms2;
     testNorms2.resize(aTerrain.terrainVertexCount);
+    float gridLineOffSetY = 0.0f;
+    if (aTerrain.environType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
+    {
+        gridLineOffSetY = 0.001f;
+    }
+    else if (aTerrain.environType == EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY)
+    {
+        gridLineOffSetY = 0.03f;
+    }
     for (int i = 0; i < aTerrain.terrainVertexCount; ++i)
     {
         //aTerrain.terrainVertexArray2[i].normal = - DirectX::SimpleMath::Vector3::UnitY;
-        aTerrain.terrainVertexArray[i].position.y += 0.03;
+        aTerrain.terrainVertexArray[i].position.y += gridLineOffSetY;
         //aTerrain.terrainVertexArrayBase2[i].normal = - DirectX::SimpleMath::Vector3::UnitY;
         testNorms[i] = aTerrain.terrainVertexArray[i].normal;
         testNorms2[i] = aTerrain.terrainVertexArrayBase[i].normal;
@@ -2913,10 +2924,7 @@ void Game::Render()
 
     m_batch->Begin();
 
-    //TestDraw();
-    //DrawTeaserScreen();
-    //DrawStartScreen();
-    if (m_currentGameState == GameState::GAMESTATE_INTROSCREEN || m_currentGameState == GameState::GAMESTATE_STARTSCREEN || m_currentGameState == GameState::GAMESTATE_TEASERSCREEN)
+    if (m_currentGameState == GameState::GAMESTATE_INTROSCREEN || m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
         DrawIntroScene();
     }
@@ -2924,14 +2932,8 @@ void Game::Render()
     //DrawDebugLines();
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
-        //DrawIntroScene();
-        //DrawStartScreen();
-        //DrawShape();
-        m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
-
-        //DrawModel(DirectX::SimpleMath::Matrix aWorld, DirectX::SimpleMath::Matrix aView, DirectX::SimpleMath::Matrix aProj, const double aTimer)
-        //DrawWorldCubeTextured();
-
+        //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
+        DrawStartScreen();
         if (m_isInDebugMode == true)
         {
             //DrawCameraFocus();
@@ -2963,16 +2965,8 @@ void Game::Render()
 
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
-        //DrawLightBar();
-        //DrawCameraFocus();
-        //DrawLightFocus1();
-        //DrawLightFocus2();
-        //DrawLightFocus3();
-        //DrawWorld();
-        //DrawTerrain2();
         DrawTerrainNew(m_terrainGamePlay);
         DrawTerrainNew(m_terrainStartScreen);
-        //DrawWorldCube();
     }
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
@@ -2983,9 +2977,6 @@ void Game::Render()
     {
         DrawLightBar();
     }
-
-    //////////////////////////////////////////////////////////////////
-// Start testing draws
 
     //m_effect2->EnableDefaultLighting();
     /*
@@ -3034,7 +3025,7 @@ void Game::Render()
     //DrawTerrainNormals();
     //DrawDebugNormalLines(m_vehicle->GetModelTestPos(), DirectX::Colors::Blue);
     DrawDebugLinesVector();
-
+    DrawGridForStartScreen();
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
         DrawGridForStartScreen();
