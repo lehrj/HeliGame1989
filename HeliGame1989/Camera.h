@@ -86,7 +86,7 @@ public:
     void SetCameraEndPos(DirectX::SimpleMath::Vector3 aEndPos);   
     void SetCameraStartPos(DirectX::SimpleMath::Vector3 aStartPos);
     void SetSpinCameraStart();
-    void SetSpinCameraStartGamePlayStart();
+    void SetSpinCameraStartGamePlayStart(const float aTime);
     void SetTargetEndPos(DirectX::SimpleMath::Vector3 aEndPos);
     void SetTargetStartPos(DirectX::SimpleMath::Vector3 aStartPos);
     void SetTransitionSpeed(const float aSpeed);
@@ -228,6 +228,12 @@ private:
     DirectX::SimpleMath::Vector3 m_spinCamOffset = m_followCamPos - m_followCamTarget;
 
 
-
+    DirectX::SimpleMath::Vector3 m_spinCamStartPos;
+    DirectX::SimpleMath::Vector3 m_spinCamEndPos;
+    DirectX::SimpleMath::Vector3 m_spinCamAxis;
+    DirectX::SimpleMath::Vector3 m_spinCamAxisPos;
+    float                        m_spinCamTotalTime;
+    float                        m_spinCamTotalRotation;
+    float                        m_spinCamCurrentRotation;
 };
 

@@ -666,7 +666,27 @@ void Game::DrawDebugVehicleData()
     std::string speedLine = "Speed    " + std::to_string(static_cast<int>(speed)) + " MPH";
     DirectX::SimpleMath::Vector2 speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
     textLinePos.x = speedLineOrigin.x + 20;
-    //m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    textLinePos.y += 30;
+
+    DirectX::SimpleMath::Vector3 camPos = m_camera->GetPos();
+   
+    speedLine = "CameraPos x = " + std::to_string(camPos.x) + " ";
+    speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
+    textLinePos.x = speedLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    textLinePos.y += 30;
+
+    speedLine = "CameraPos y = " + std::to_string(camPos.y) + " ";
+    speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
+    textLinePos.x = speedLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    textLinePos.y += 30;
+
+    speedLine = "CameraPos z = " + std::to_string(camPos.z) + " ";
+    speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
+    textLinePos.x = speedLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
     textLinePos.y += 30;
 
     // Draw Timer
@@ -859,7 +879,7 @@ void Game::DrawGamePlayStart()
             if (m_camera->GetCameraState() != CameraState::CAMERASTATE_GAMEPLAYSTARTSPIN)
             {
                 m_camera->SetCameraState(CameraState::CAMERASTATE_GAMEPLAYSTARTSPIN);
-                m_camera->SetSpinCameraStartGamePlayStart();
+                m_camera->SetSpinCameraStartGamePlayStart(fadeOutStart - fadeInEnd);
             }
             DirectX::SimpleMath::Vector3 testCameraPos = m_camera->GetPos();
         }
@@ -875,6 +895,7 @@ void Game::DrawGamePlayStart()
             m_debugValue1 = colorIntensity;
             m_debugValue2 = fogStart;
             m_debugValue3 = fogEnd;
+            m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
         }
         else
         {
