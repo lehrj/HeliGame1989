@@ -1870,12 +1870,18 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.localCenterOfMass = m_heli.localMainRotorPos;
     m_heli.localCenterOfMass.y = m_heli.localTailRotorPos.y;  // putting CoM at right angle to tail rotor position to simplify flight model for now
     m_heli.centerOfMass = m_heli.localCenterOfMass;
+    /*
     m_heli.localLandingGearPos = DirectX::SimpleMath::Vector3::Zero;
     m_heli.localLandingGearPos.y -= 1.5f;
     m_heli.landingGearPos = m_heli.localLandingGearPos;
-
+    */
     DirectX::SimpleMath::Vector3 posShift(0.0f, 0.0f, 0.0f);
     posShift = - m_heli.localCenterOfMass;
+
+    m_heli.localLandingGearPos = DirectX::SimpleMath::Vector3::Zero;
+    m_heli.localLandingGearPos.y -= 0.869f;
+    m_heli.landingGearPos = m_heli.localLandingGearPos;
+
     RepositionModelCordinates(posShift, m_heliModel);
 }
 
@@ -2100,6 +2106,7 @@ void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos,
     m_testPos -= aPos;
     m_testPos2 -= aPos;
     m_testPos3 -= aPos;
+    //m_heli.localLandingGearPos += aPos;
 
     aModel.localNoseBodyMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
     aModel.localNoseConeMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(aPos);

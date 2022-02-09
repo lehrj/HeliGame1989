@@ -40,10 +40,10 @@ Game::Game() noexcept :
     }
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
-
+    m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
     //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
-
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+    m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
     m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     m_lighting->SetLightingNormColorVertex2(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     m_lighting->SetLightingColorVertex3(Lighting::LightingState::LIGHTINGSTATE_TEST01);
@@ -788,6 +788,105 @@ void Game::DrawGridForStartScreen()
 
 }
 
+void Game::DrawGamePlayStart()
+{
+    const float fogGap1 = 0.0f;
+    const float fogGap2 = 10.0f;
+    const float fadeDuration = 2.0;
+    const float fadeInStart = 2.0;
+    const float fadeInEnd = fadeInStart + fadeDuration;
+    const float fullViewDuration = 5.0f;
+    
+    const float fadeOutStart = fadeInEnd + fullViewDuration;
+    const float fadeOutEnd = fadeOutStart + fadeDuration;
+    //const float timeStamp = static_cast<float>(m_testTimer + m_debugStartTime);
+    const float timeStamp = static_cast<float>(m_testTimer);
+    /////////////////////////////////////
+    /// Render GamePlay Start Screen  ///
+    /////////////////////////////////////
+    if (timeStamp < fadeInStart)
+    {
+
+        // render nothing
+        DirectX::SimpleMath::Vector3 preZoomPos = m_startScreenCamZoomPos;
+        preZoomPos.y = 0.0;
+
+        m_camera->SetPos(m_gamePlayStartCamPos1);
+        m_camera->SetTargetPos(m_gamePlayStartCamTarg1);
+
+        m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+
+        m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
+
+        m_effect->SetFogStart(1.0);
+        m_effect->SetFogEnd(5.0);
+        m_effect->SetFogEnabled(false);
+
+        m_effect2->SetFogStart(1.0);
+        m_effect2->SetFogEnd(5.0);
+        m_effect2->SetFogEnabled(false);
+
+        m_effect3->SetFogStart(1.0);
+        m_effect3->SetFogEnd(5.0);
+        m_effect3->SetFogEnabled(false);
+
+    }
+    else if (timeStamp < fadeOutEnd)  // Render GamePlay Start Screen
+    {
+        if (timeStamp < fadeInEnd)  // fade in
+        {
+            float distance = DirectX::SimpleMath::Vector3::Distance(m_camera->GetPos(), m_gamePlayStartCamPos2);
+            float speed = distance / (fadeDuration);
+            
+            m_camera->SetTransitionSpeed(speed);
+            m_camera->SetCameraStartPos(m_camera->GetPos());
+            m_camera->SetCameraEndPos(m_gamePlayStartCamPos2);
+            m_camera->SetDestinationPos(m_gamePlayStartCamPos2);
+            m_camera->SetTargetStartPos(m_camera->GetTargetPos());
+            m_camera->SetTargetEndPos(m_gamePlayStartCamTarg2);
+            m_camera->SetCameraState(CameraState::CAMERASTATE_TRANSITION);
+ 
+            float colorIntensity = (timeStamp - fadeInStart) / (fadeDuration);
+            float fogStart = colorIntensity + fogGap1;
+            float fogEnd = colorIntensity + fogGap2;
+
+            m_debugValue1 = colorIntensity;
+            m_debugValue2 = fogStart;
+            m_debugValue3 = fogEnd;
+        }
+        else if (timeStamp < fadeOutStart)
+        {
+            if (m_camera->GetCameraState() != CameraState::CAMERASTATE_GAMEPLAYSTARTSPIN)
+            {
+                m_camera->SetCameraState(CameraState::CAMERASTATE_GAMEPLAYSTARTSPIN);
+                m_camera->SetSpinCameraStartGamePlayStart();
+            }
+            DirectX::SimpleMath::Vector3 testCameraPos = m_camera->GetPos();
+        }
+        else if (timeStamp > fadeOutStart && timeStamp < fadeOutEnd) // fade out
+        {
+            //m_camera->SetCameraState(CameraState::CAMERASTATE_SPINCAMERA);
+            DirectX::SimpleMath::Vector3 testCameraPos = m_camera->GetPos();
+
+            float colorIntensity = (fadeOutEnd - timeStamp) / (fadeDuration);
+            float fogStart = colorIntensity + fogGap1;
+            float fogEnd = colorIntensity + fogGap2;
+
+            m_debugValue1 = colorIntensity;
+            m_debugValue2 = fogStart;
+            m_debugValue3 = fogEnd;
+        }
+        else
+        {
+            m_effect2->SetFogEnabled(false);
+            m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
+        }
+    }
+    m_effect->SetFogEnabled(false);
+    m_effect2->SetFogEnabled(false);
+    m_effect3->SetFogEnabled(false);
+}
+
 void Game::DrawIntroScene()
 {
     DirectX::SimpleMath::Vector3 testFogTarget1(1.1, 0.0, 0.0);
@@ -1001,24 +1100,22 @@ void Game::DrawIntroScene()
             //m_effect->SetFogEnabled(false);
         }
     }
-    /////////////////////////////
-    /// Render Teaser Screen  ///
-    /////////////////////////////
+    /////////////////////////////////////
+    /// Render GamePlay Start Screen  ///
+    /////////////////////////////////////
     else if (timeStamp < fadeInStart4)
     {
         // render nothing
         DirectX::SimpleMath::Vector3 preZoomPos = m_startScreenCamZoomPos;
         preZoomPos.y = 0.0;
 
-        m_camera->SetPos(preZoomPos);
-        m_camera->SetTargetPos(m_teaserCamTarg);
+        m_camera->SetPos(m_gamePlayStartCamPos1);
+        m_camera->SetTargetPos(m_gamePlayStartCamTarg1);
 
-        m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEASERSCREEN);
-        m_currentGameState = GameState::GAMESTATE_TEASERSCREEN;
-        m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
-        m_effect->SetTexture(m_textureTeaser.Get());
-        m_effect->SetNormalTexture(m_normalMapTeaser.Get());
-        m_effect->SetSpecularTexture(m_specularTeaser.Get());
+        m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+
+        m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
+
 
         m_effect->SetFogStart(1.0);
         m_effect->SetFogEnd(5.0);
@@ -1027,7 +1124,7 @@ void Game::DrawIntroScene()
         m_effect2->SetFogEnabled(false);
         m_effect3->SetFogEnabled(false);
     }
-    else if (timeStamp < fadeOutEnd4)  // Render Teaser Screen
+    else if (timeStamp < fadeOutEnd4)  // Render GamePlay Start Screen
     {
         if (timeStamp < fadeInEnd4)  // fade in
         {
@@ -1505,6 +1602,34 @@ void Game::DrawStartScreen()
     vertBottomRight = VertexPositionNormalColorTexture(bottomRight, vertexNormal, vertexColor, DirectX::SimpleMath::Vector2(uStop, vStop));
     vertBottomLeft = VertexPositionNormalColorTexture(bottomLeft, vertexNormal, vertexColor, DirectX::SimpleMath::Vector2(uStart, vStop));
 
+    // testing moon lighting    
+    auto moonLight = dynamic_cast<IEffectLights*>(m_effect.get());
+    if (moonLight)
+    {
+        moonLight->SetLightEnabled(0, true);
+        moonLight->SetLightEnabled(1, true);
+        moonLight->SetLightEnabled(2, true);
+
+        roll = time * 1.1f;
+
+        auto quat = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(-roll, 0.0, 0.0);
+        DirectX::SimpleMath::Vector3 axis = -DirectX::SimpleMath::Vector3::UnitZ;
+
+        DirectX::SimpleMath::Vector3 light0 = XMVector3Rotate(axis, quat);
+        DirectX::SimpleMath::Vector3 light1 = XMVector3Rotate(axis, quat);
+        DirectX::SimpleMath::Vector3 light2 = XMVector3Rotate(axis, quat);
+
+        float val = 0.1;
+        DirectX::SimpleMath::Vector4 test(val, val, val, 1.0);
+        m_effect->SetAmbientLightColor(test);
+       
+        moonLight->SetLightDirection(0, light0);
+        moonLight->SetLightDirection(1, light1);
+        moonLight->SetLightDirection(2, light2);
+    }
+    
+    m_effect->Apply(m_d3dContext.Get());
+    // end moon lighting
     m_batch->DrawQuad(vertTopLeft, vertTopRight, vertBottomRight, vertBottomLeft);
 
     m_batch->End();
@@ -2941,16 +3066,21 @@ void Game::Render()
     }
 
     //DrawDebugLines();
-    DrawStartScreen();
+    //DrawStartScreen();
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
-        //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
+        m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
         //DrawStartScreen();
         if (m_isInDebugMode == true)
         {
             //DrawCameraFocus();
             //DrawDebugLines();
         }
+    }
+    if (m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
+    {
+        DrawGamePlayStart();
+        m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
     }
     m_batch->End();
 
@@ -2975,6 +3105,10 @@ void Game::Render()
     //DrawLightFocus3();
     //DrawWorld(); 
 
+    if (m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
+    {
+        DrawTerrainNew(m_terrainGamePlay);
+    }
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
         DrawTerrainNew(m_terrainGamePlay);

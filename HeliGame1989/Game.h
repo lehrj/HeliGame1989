@@ -60,6 +60,7 @@ private:
     void DrawDebugNormalLines(const DirectX::SimpleMath::Vector3 aPos, const DirectX::XMVECTORF32 aColor);
     void DrawDebugLinesVector();
     void DrawGridForStartScreen();
+    void DrawGamePlayStart();
     void DrawIntroScene();
     void DrawLightBar();
     void DrawLightFocus2();
@@ -308,7 +309,7 @@ private:
     int                                  m_terrainVertexCount2;
     Terrain m_terrainGamePlay;
     Terrain m_terrainStartScreen;
-    DirectX::SimpleMath::Vector4        m_startScreenGridDimmerColor = DirectX::SimpleMath::Vector4(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);// = DirectX::Colors::LawnGreen;
+    DirectX::SimpleMath::Vector4        m_startScreenGridDimmerColor = DirectX::SimpleMath::Vector4(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);
     float                               m_debugValue1 = 0.0;
     float                               m_debugValue2 = 0.0;
     float                               m_debugValue3 = 0.0;
@@ -320,7 +321,7 @@ private:
 
     // start scene control variables
     const float                         m_fadeDuration = 5.0f;
-    const float                         m_logoDisplayDuration = 12.5f;
+    const float                         m_logoDisplayDuration = 7.5f;
     const float                         m_logoDisplayGap = 1.0f;
     const float                         m_startDelay = 0.2f;
 
@@ -343,6 +344,12 @@ private:
 
     DirectX::SimpleMath::Vector3        m_teaserCamPos = DirectX::SimpleMath::Vector3(m_teaserScreenDistance - 1.0f, 0.0, 0.0);
     DirectX::SimpleMath::Vector3        m_teaserCamTarg = DirectX::SimpleMath::Vector3(m_teaserScreenDistance, 0.0, 0.0);
+    
+    DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos1 = DirectX::SimpleMath::Vector3(22.0f, 1.0, 0.0);
+    DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg1 = DirectX::SimpleMath::Vector3(0.0, 2.0, 0.0);
+
+    DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos2 = DirectX::SimpleMath::Vector3(12.0f, 1.0, 0.0);
+    DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg2 = DirectX::SimpleMath::Vector3(0.0, 2.0, 0.0);
 
     DirectX::SimpleMath::Vector3        m_testNorm = DirectX::SimpleMath::Vector3::UnitZ;
 

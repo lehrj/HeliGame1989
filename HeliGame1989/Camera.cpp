@@ -414,9 +414,6 @@ void Camera::UpdateCamera(DX::StepTimer const& aTimer)
 	}
 	if (m_cameraState == CameraState::CAMERASTATE_TRANSITION)
 	{
-		DirectX::SimpleMath::Vector3 testPos = m_position;
-		DirectX::SimpleMath::Vector3 testDestPos = m_destinationPosition;
-
 		if (IsCameraAtDestination() == false)
 		{
 			UpdateTransitionCamera(aTimer);
@@ -426,6 +423,7 @@ void Camera::UpdateCamera(DX::StepTimer const& aTimer)
 			m_cameraState = CameraState::CAMERASTATE_SWINGVIEW;
 			m_isCameraAtDestination = false;
 		}
+		m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_position, m_target, m_up);
 	}
 	if (m_cameraState == CameraState::CAMERASTATE_RESET)
 	{
@@ -488,6 +486,11 @@ void Camera::UpdateCamera(DX::StepTimer const& aTimer)
 		UpdateSpringCamera(aTimer);
 		m_viewMatrix = m_springCameraMatrix;
 	}
+	if (m_cameraState == CameraState::CAMERASTATE_GAMEPLAYSTARTSPIN)
+	{
+		UpdateSpinCameraGamePlayStart(aTimer);
+		m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_followCamPos, m_followCamTarget, m_up);
+	}
 	else
 	{
 		//m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_position, m_target, m_up);
@@ -498,7 +501,7 @@ void Camera::UpdateCamera(DX::StepTimer const& aTimer)
 	UpdateOrthoganalMatrix();
 	UpdateProjectionMatrix();
 	//UpdateViewMatrix();
-	m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_position, m_target, m_up);
+	//m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_position, m_target, m_up);
 
 }
 
@@ -564,6 +567,39 @@ void Camera::UpdateSpinCamera(DX::StepTimer const& aTimer)
 		ComputeSpringMatrix();
 		m_cameraState = CameraState::CAMERASTATE_SPRINGCAMERA;
 	}
+}
+
+void Camera::UpdateSpinCameraGamePlayStart(DX::StepTimer const& aTimer)
+{
+	const float timeDelta = static_cast<float>(aTimer.GetElapsedSeconds());
+	m_cameraSpin += m_cameraSpinSpeed * timeDelta;
+	m_cameraSpinPitch -= m_cameraSpinPitchSpeed * timeDelta;
+	DirectX::SimpleMath::Vector3 newCamPos = m_spinCamOffset;
+	DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateRotationY(m_cameraSpin);
+	DirectX::SimpleMath::Quaternion rotQuat = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(m_cameraSpin, m_cameraSpinPitch, 0.0);
+	newCamPos = DirectX::SimpleMath::Vector3::Transform(newCamPos, rotQuat);
+	newCamPos += m_vehicleFocus->GetPos();
+	m_followCamPos = newCamPos;
+	m_followCamTarget = m_vehicleFocus->GetPos();
+
+	if (m_cameraSpin >= m_cameraSpinRotationAmount)
+	{
+		m_cameraSpin = 0.0;
+		m_springTarget.position = m_followCamTarget;
+		m_actualPosition = newCamPos;
+		ComputeSpringMatrix();
+		m_cameraState = CameraState::CAMERASTATE_SPRINGCAMERA;
+	}
+}
+
+void Camera::SetSpinCameraStartGamePlayStart()
+{
+	float yaw = Utility::ToRadians(90.0);
+	float pitch = Utility::ToRadians(10.0);
+	DirectX::SimpleMath::Quaternion quatRot = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(yaw, 0.0, pitch);
+
+	m_followCamPos = DirectX::SimpleMath::Vector3::Transform(m_followCamPos, quatRot);
+	m_spinCamOffset = m_followCamPos - m_followCamTarget;
 }
 
 void Camera::UpdateTransitionCamera(DX::StepTimer const& aTimer)
