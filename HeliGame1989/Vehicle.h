@@ -692,6 +692,7 @@ public:
     float GetAccel() const { return m_heli.testAccel; };
     DirectX::SimpleMath::Vector3 GetAccelVec() const { return m_heli.testAccelVec; };
     DirectX::SimpleMath::Vector3 GetFollowPos() const;
+    DirectX::SimpleMath::Vector3 GetForward() const { return m_heli.forward; };
     DirectX::SimpleMath::Vector3 GetPos() const { return m_heli.q.position; };
     //DirectX::SimpleMath::Vector3 GetPos() const { return m_prevPos; };
     float GetSpeed() { return m_heli.speed; };

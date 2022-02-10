@@ -121,7 +121,7 @@ private:
     void UpdateChaseCameraTest02();
     void UpdateChaseCameraTest03();
     void UpdateChaseCameraTest04();
-
+    void UpdateChaseCameraTest05();
     void UpdateProjectionMatrix();
     void UpdateOrthoganalMatrix();
     void UpdateSpinCamera(DX::StepTimer const& aTimer);

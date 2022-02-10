@@ -2707,7 +2707,8 @@ void Vehicle::UpdateAlignmentCamera()
     //DebugPushUILineDecimalNumber("roll : ", Utility::ToDegrees(roll), "");
     
     //DirectX::SimpleMath::Matrix alignMat = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(yaw, pitch, roll);
-    DirectX::SimpleMath::Matrix alignMat = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(yaw, 0.0f, pitch);
+    //DirectX::SimpleMath::Matrix alignMat = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(yaw, 0.0f, pitch);
+    DirectX::SimpleMath::Matrix alignMat = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(yaw, 0.0f, 0.0f);
     DirectX::SimpleMath::Vector3 testLine = DirectX::SimpleMath::Vector3::UnitX;
     testLine = DirectX::SimpleMath::Vector3::Transform(testLine, alignMat);
     //DebugPushTestLine(m_heli.q.position, DirectX::SimpleMath::Vector3::UnitX, 25.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));

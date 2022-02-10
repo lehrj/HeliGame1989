@@ -14,10 +14,12 @@ using Microsoft::WRL::ComPtr;
 
 Game::Game() noexcept :
     m_window(nullptr),
-    m_outputWidth(800),
-    m_outputHeight(600),
+    m_outputWidth(1600),
+    m_outputHeight(900),
     m_featureLevel(D3D_FEATURE_LEVEL_9_1)
 {
+    m_outputWidth = m_outputWidthDefault;
+    m_outputHeight = m_outputHeightDefault;
     //srand(time(NULL));
     srand(0);
     m_environment = new Environment();
@@ -41,12 +43,12 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
-    m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
-    m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
-    m_lighting->SetLightingNormColorVertex2(Lighting::LightingState::LIGHTINGSTATE_TEST01);
-    m_lighting->SetLightingColorVertex3(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+    //m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+    //m_lighting->SetLightingNormColorVertex2(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+    //m_lighting->SetLightingColorVertex3(Lighting::LightingState::LIGHTINGSTATE_TEST01);
 
     m_currentUiState = UiState::UISTATE_SWING;
     InitializeWorldGrid();
@@ -805,7 +807,6 @@ void Game::DrawGridForStartScreen()
     */
     m_batch3->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, m_terrainVertexArray, m_terrainVertexCount);
     //m_batch3->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, m_terrainStartScreen.terrainVertexArray, m_terrainStartScreen.terrainVertexCount);
-
 }
 
 void Game::DrawGamePlayStart()
@@ -814,19 +815,18 @@ void Game::DrawGamePlayStart()
     const float fogGap2 = 10.0f;
     const float fadeDuration = 2.0;
     const float fadeInStart = 2.0;
-    const float fadeInEnd = fadeInStart + fadeDuration;
+    const float fadeInEnd = fadeInStart + fadeDuration + 6.0f;
     const float fullViewDuration = 5.0f;
     
     const float fadeOutStart = fadeInEnd + fullViewDuration;
     const float fadeOutEnd = fadeOutStart + fadeDuration;
     //const float timeStamp = static_cast<float>(m_testTimer + m_debugStartTime);
-    const float timeStamp = static_cast<float>(m_testTimer);
+    const float timeStamp = static_cast<float>(m_testTimer) - m_gamePlayStartOffSetTimer;
     /////////////////////////////////////
     /// Render GamePlay Start Screen  ///
     /////////////////////////////////////
     if (timeStamp < fadeInStart)
     {
-
         // render nothing
         DirectX::SimpleMath::Vector3 preZoomPos = m_startScreenCamZoomPos;
         preZoomPos.y = 0.0;
@@ -838,17 +838,17 @@ void Game::DrawGamePlayStart()
 
         m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
 
-        m_effect->SetFogStart(1.0);
+        m_effect->SetFogStart(-1.0);
         m_effect->SetFogEnd(5.0);
-        m_effect->SetFogEnabled(false);
+        m_effect->SetFogEnabled(true);
 
-        m_effect2->SetFogStart(1.0);
+        m_effect2->SetFogStart(-1.0);
         m_effect2->SetFogEnd(5.0);
-        m_effect2->SetFogEnabled(false);
+        m_effect2->SetFogEnabled(true);
 
-        m_effect3->SetFogStart(1.0);
+        m_effect3->SetFogStart(-1.0);
         m_effect3->SetFogEnd(5.0);
-        m_effect3->SetFogEnabled(false);
+        m_effect3->SetFogEnabled(true);
 
     }
     else if (timeStamp < fadeOutEnd)  // Render GamePlay Start Screen
@@ -944,6 +944,8 @@ void Game::DrawIntroScene()
     const float fadeOutEnd2 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration;
     const float fadeOutEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration;
     const float fadeOutEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration;
+
+    m_gamePlayStartOffSetTimer = fadeOutEnd4;
 
     if (timeStamp < fadeInStart1)
     {
@@ -1135,7 +1137,7 @@ void Game::DrawIntroScene()
 
         m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
 
-        m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
+        //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
 
 
         m_effect->SetFogStart(1.0);
@@ -1149,9 +1151,12 @@ void Game::DrawIntroScene()
     {
         if (timeStamp < fadeInEnd4)  // fade in
         {
+            m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
+            m_camera->SetPos(m_gamePlayStartCamPos1);
+            m_camera->SetTargetPos(m_gamePlayStartCamTarg1);
             float distance = DirectX::SimpleMath::Vector3::Distance(m_camera->GetPos(), m_teaserCamPos);
             float speed = distance / (fadeInEnd4 - fadeInStart4);
-
+            /*
             m_camera->SetTransitionSpeed(speed);
             m_camera->SetCameraStartPos(m_camera->GetPos());
             m_camera->SetCameraEndPos(m_teaserCamPos);
@@ -1159,7 +1164,7 @@ void Game::DrawIntroScene()
             m_camera->SetTargetStartPos(m_startScreenZCamZoomTarg);
             m_camera->SetTargetEndPos(m_teaserCamTarg);
             m_camera->SetCameraState(CameraState::CAMERASTATE_TRANSITION);
-
+            */
             float colorIntensity = (timeStamp - fadeInStart4) / (fadeDuration);
             float fogStart = colorIntensity + fogGap1;
             float fogEnd = colorIntensity + fogGap2;
@@ -1201,7 +1206,7 @@ void Game::DrawIntroScene()
     }
     else if (m_currentGameState == GameState::GAMESTATE_TEASERSCREEN)
     {
-        DrawTeaserScreen();
+        //DrawTeaserScreen();
     }
 }
 
@@ -2252,8 +2257,10 @@ void Game::DrawWorldCubeTextured()
 void Game::GetDefaultSize(int& width, int& height) const noexcept
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
-    width = 1600;
-    height = 900;
+    //width = 1600;
+    //height = 900;
+    width = m_outputWidthDefault;
+    height = m_outputHeightDefault;
 }
 
 // Initialize the Direct3D resources required to run.
