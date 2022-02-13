@@ -2087,10 +2087,10 @@ void Vehicle::Jump()
 {
     DirectX::SimpleMath::Vector3 jumpVec(50.0f, 0.0f, 0.0f);
     jumpVec = DirectX::SimpleMath::Vector3::Transform(jumpVec, DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(45.0f)));
-    m_heli.q.velocity += jumpVec;
+    //m_heli.q.velocity += jumpVec;
     const float jumpHeight = 1000.0f;
     //m_heli.q.velocity.y += 50.0f;
-    //m_heli.q.position.y += jumpHeight;
+    m_heli.q.position.y += jumpHeight;
 }
 
 void Vehicle::LandVehicle()
@@ -3946,7 +3946,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
         UpdateLandingGear(m_heli.landingGear, aTimeDelta);
     }
 
-    m_debugUIVector.clear();
+    //m_debugUIVector.clear();
 }
 
 void Vehicle::DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor)

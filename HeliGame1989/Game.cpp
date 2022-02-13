@@ -42,8 +42,8 @@ Game::Game() noexcept :
     }
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
-    m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
+    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
     //m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
@@ -3509,35 +3509,83 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     }
     if (kb.D)
     {
-        m_camera->UpdatePos(0.0f + static_cast<float>(aTimer.GetElapsedSeconds()), 0.0f, 0.0f);
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        {
+            m_vehicle->InputYawPedal(static_cast<float>(aTimer.GetElapsedSeconds()));
+        }
+        if (m_camera->GetCameraState() == CameraState::CAMERASTATE_FIRSTPERSON)
+        {
+            m_camera->UpdatePos(0.0f + static_cast<float>(aTimer.GetElapsedSeconds()), 0.0f, 0.0f);
+        }
     }
     if (kb.S)
     {
-        m_camera->UpdatePos(0.0f, 0.0f, 0.0f - static_cast<float>(aTimer.GetElapsedSeconds()));
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        {
+            m_vehicle->InputCollective(static_cast<float>(-aTimer.GetElapsedSeconds()));
+        }
+        if (m_camera->GetCameraState() == CameraState::CAMERASTATE_FIRSTPERSON)
+        {
+            m_camera->UpdatePos(0.0f, 0.0f, 0.0f - static_cast<float>(aTimer.GetElapsedSeconds()));
+        }
     }
     if (kb.A)
     {
-        m_camera->UpdatePos(0.0f - static_cast<float>(aTimer.GetElapsedSeconds()), 0.0f, 0.0f);
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        {
+            m_vehicle->InputYawPedal(static_cast<float>(-aTimer.GetElapsedSeconds()));
+        }
+        if (m_camera->GetCameraState() == CameraState::CAMERASTATE_FIRSTPERSON)
+        {
+            m_camera->UpdatePos(0.0f - static_cast<float>(aTimer.GetElapsedSeconds()), 0.0f, 0.0f);
+        }
     }
     if (kb.W)
     {
-        m_camera->UpdatePos(0.0f, 0.0f, 0.0f + static_cast<float>(aTimer.GetElapsedSeconds()));
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        {
+            m_vehicle->InputCollective(static_cast<float>(aTimer.GetElapsedSeconds()));
+        }
+        if (m_camera->GetCameraState() == CameraState::CAMERASTATE_FIRSTPERSON)
+        {
+            m_camera->UpdatePos(0.0f, 0.0f, 0.0f + static_cast<float>(aTimer.GetElapsedSeconds()));
+        }
     }
     if (kb.Q)
     {
-        m_camera->UpdatePitchYaw(0.0f, 0.0f + static_cast<float>(aTimer.GetElapsedSeconds()));
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        {
+            m_vehicle->InputThrottle(static_cast<float>(-aTimer.GetElapsedSeconds()));
+        }
+        if (m_camera->GetCameraState() == CameraState::CAMERASTATE_FIRSTPERSON)
+        {
+            m_camera->UpdatePitchYaw(0.0f, 0.0f + static_cast<float>(aTimer.GetElapsedSeconds()));
+        }
     }
     if (kb.E)
     {
-        m_camera->UpdatePitchYaw(0.0f, 0.0f - static_cast<float>(aTimer.GetElapsedSeconds()));
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        {
+            m_vehicle->InputThrottle(static_cast<float>(aTimer.GetElapsedSeconds()));
+        }
+        if (m_camera->GetCameraState() == CameraState::CAMERASTATE_FIRSTPERSON)
+        {
+            m_camera->UpdatePitchYaw(0.0f, 0.0f - static_cast<float>(aTimer.GetElapsedSeconds()));
+        }
     }
     if (kb.F)
     {
-        m_camera->UpdatePos(0.0f, 0.0f + static_cast<float>(aTimer.GetElapsedSeconds()), 0.0f);
+        if (m_camera->GetCameraState() == CameraState::CAMERASTATE_FIRSTPERSON)
+        {
+            m_camera->UpdatePos(0.0f, 0.0f + static_cast<float>(aTimer.GetElapsedSeconds()), 0.0f);
+        }
     }
     if (kb.C)
     {
-        m_camera->UpdatePos(0.0f, 0.0f - static_cast<float>(aTimer.GetElapsedSeconds()), 0.0f);
+        if (m_camera->GetCameraState() == CameraState::CAMERASTATE_FIRSTPERSON)
+        {
+            m_camera->UpdatePos(0.0f, 0.0f - static_cast<float>(aTimer.GetElapsedSeconds()), 0.0f);
+        }
     }
     if (m_kbStateTracker.pressed.D1)
     {

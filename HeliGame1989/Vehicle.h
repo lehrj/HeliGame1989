@@ -56,7 +56,7 @@ struct Engine
 struct LandingGear
 {
     const float angleAtDown = Utility::ToRadians(-110.0f);
-    const float angleAtUp = Utility::ToRadians(5.0f);  
+    const float angleAtUp = Utility::ToRadians(15.0f);  
     float angleCurrent = angleAtDown;
     const float angleDelta = Utility::ToRadians(30.0f);
 
