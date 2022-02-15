@@ -14,6 +14,7 @@
 #include "Vehicle.h"
 #include <sstream>
 
+
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
 class Game
@@ -359,6 +360,5 @@ private:
     float                               m_terrainColorDimmer = 0.0;
 
     const double                         m_debugStartTime = -5.0;
-
 
 };

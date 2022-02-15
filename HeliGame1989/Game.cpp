@@ -16,12 +16,14 @@ Game::Game() noexcept :
     m_window(nullptr),
     m_outputWidth(1600),
     m_outputHeight(900),
+
     m_featureLevel(D3D_FEATURE_LEVEL_9_1)
 {
     m_outputWidth = m_outputWidthDefault;
     m_outputHeight = m_outputHeightDefault;
     //srand(time(NULL));
     srand(0);
+
     m_environment = new Environment();
 
     m_camera = new Camera(m_outputWidth, m_outputHeight);
@@ -202,8 +204,10 @@ void Game::CreateDevice()
     DX::ThrowIfFailed(context.As(&m_d3dContext));
 
     DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/Textures/blankTexture.jpg", nullptr, m_texture.ReleaseAndGetAddressOf()));
-    DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/NormalMaps/normBMW2.png", nullptr, m_normalMap.ReleaseAndGetAddressOf()));
-    DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/SpecularMaps/specularJI.png", nullptr, m_specular.ReleaseAndGetAddressOf()));
+    DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/NormalMaps/blankNormal.jpg", nullptr, m_normalMap.ReleaseAndGetAddressOf()));
+    DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/SpecularMaps/blankSpecular.jpg", nullptr, m_specular.ReleaseAndGetAddressOf()));
+    //DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/NormalMaps/normBMW2.png", nullptr, m_normalMap.ReleaseAndGetAddressOf()));
+    //DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/SpecularMaps/specularJI.png", nullptr, m_specular.ReleaseAndGetAddressOf()));
     // test textures
     DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/Textures/TestOP.png", nullptr, m_textureTest.ReleaseAndGetAddressOf()));
     DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/NormalMaps/TestOP.png", nullptr, m_normalMapTest.ReleaseAndGetAddressOf()));
@@ -246,6 +250,7 @@ void Game::CreateDevice()
     m_effect->SetFogEnd(4.0);
 
     m_effect2 = std::make_unique<BasicEffect>(m_d3dDevice.Get());
+    //m_effect2->SetTextureEnabled(false);
     m_effect2->SetVertexColorEnabled(true);
     m_effect2->EnableDefaultLighting();
     m_effect2->SetLightDiffuseColor(0, Colors::Gray);
@@ -271,13 +276,16 @@ void Game::CreateDevice()
     DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType3::InputElements, VertexType3::InputElementCount, shaderByteCode3, byteCodeLength3, m_inputLayout.ReleaseAndGetAddressOf()));
     m_batch3 = std::make_unique<PrimitiveBatch<VertexType3>>(m_d3dContext.Get());
 
-    m_shape = GeometricPrimitive::CreateSphere(m_d3dContext.Get());
+    m_shape = GeometricPrimitive::CreateCube(m_d3dContext.Get());
+    //m_shape->CreateInputLayout(m_effect2.get(), m_inputLayout.ReleaseAndGetAddressOf());
 
+    
     CD3D11_RASTERIZER_DESC rastDesc(D3D11_FILL_SOLID, D3D11_CULL_NONE, FALSE,
         D3D11_DEFAULT_DEPTH_BIAS, D3D11_DEFAULT_DEPTH_BIAS_CLAMP,
         D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS, TRUE, FALSE, FALSE, TRUE);
-
-    /* // For multisampling rendering
+    
+     // For multisampling rendering
+    /*
     CD3D11_RASTERIZER_DESC rastDesc(D3D11_FILL_SOLID, D3D11_CULL_NONE, FALSE,
         D3D11_DEFAULT_DEPTH_BIAS, D3D11_DEFAULT_DEPTH_BIAS_CLAMP,
         D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS, TRUE, FALSE, TRUE, TRUE); // Multisampling
@@ -367,6 +375,7 @@ void Game::CreateDevice()
     logoJI->GetDesc(&logoJIDesc);
     m_jiLogoOrigin.x = float(logoJIDesc.Width / 2);
     m_jiLogoOrigin.y = float(logoJIDesc.Height / 2);
+
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -2330,6 +2339,7 @@ void Game::Initialize(HWND window, int width, int height)
         errorBreak++;
     }
     m_vehicle->InitializeVehicle(m_d3dContext);
+    //m_vehicle->InitializeVehicle(m_d3dContext, m_effect2, m_inputLayout);
     // testing new terrain map
     m_terrainVector.clear();
 }
@@ -2478,7 +2488,7 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     aTerrain.terrainVertexArrayBase = new DirectX::VertexPositionNormalColor[aTerrain.terrainVertexCount];
 
     DirectX::XMFLOAT4 lineColor(.486274540f, .988235354f, 0.0, 1.0);
-    DirectX::XMFLOAT4 baseColor(0.0, 0.0, 0.0, 1.0);
+    DirectX::XMFLOAT4 baseColor(0.15, 0.15, 0.15, 1.0);
     DirectX::XMFLOAT4 baseColor2(1.0, 1.0, 1.0, 1.0);
 
     DirectX::XMFLOAT4 sandColor1(0.956862807f, 0.643137276f, 0.376470625f, 1.0);
@@ -2492,7 +2502,8 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     DirectX::XMFLOAT4 testBlue = DirectX::XMFLOAT4(0.000000000f, 0.000000000f, 1.0, 1.0);
     DirectX::XMFLOAT4 testGray = DirectX::XMFLOAT4(0.662745118f, 0.662745118f, 0.662745118f, 1.000000000f);
     DirectX::XMFLOAT4 testWhite = DirectX::XMFLOAT4(1.0, 1.0, 1.0, 1.0);
-
+    //baseColor = sandColor1;
+    testWhite = baseColor;
     if (aTerrain.environType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
     {
         testWhite = baseColor;
@@ -2553,7 +2564,7 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     }
     else if (aTerrain.environType == EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY)
     {
-        gridLineOffSetY = 0.03f;
+        gridLineOffSetY = 0.7f;
     }
     for (int i = 0; i < aTerrain.terrainVertexCount; ++i)
     {
@@ -3034,16 +3045,25 @@ void Game::Render()
     */
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /*
+    
+
+
+    //auto sampler = m_states->LinearClamp();
+    //m_d3dContext->PSSetSamplers(0, 1, &sampler);
+
+    m_d3dContext->IASetInputLayout(m_inputLayout.Get());
+
+    m_batch->Begin();
+
     auto ilights = dynamic_cast<DirectX::IEffectLights*>(m_effect.get());
     if (ilights)
     {
         double aTimer = m_timer.GetTotalSeconds();
         const float timeStamp = static_cast<float>(aTimer);
         ilights->EnableDefaultLighting();
-        ilights->SetLightEnabled(0, true);
-        ilights->SetLightEnabled(1, true);
-        ilights->SetLightEnabled(2, true);
+        ilights->SetLightEnabled(0, false);
+        ilights->SetLightEnabled(1, false);
+        ilights->SetLightEnabled(2, false);
         auto time = static_cast<float>(aTimer);
         float yaw = time * 1.1f;
         float roll = time * 1.1f;
@@ -3063,30 +3083,26 @@ void Game::Render()
 
         light.Normalize();
         light0 = light;
-        
-        light0 = -DirectX::SimpleMath::Vector3::UnitX;
-        light1 = -DirectX::SimpleMath::Vector3::UnitX;
-        light2 = -DirectX::SimpleMath::Vector3::UnitX;
-        
-    
+
+        light0 = -DirectX::SimpleMath::Vector3::UnitZ;
+        light1 = -DirectX::SimpleMath::Vector3::UnitZ;
+        light2 = -DirectX::SimpleMath::Vector3::UnitZ;
+
+
         ilights->SetLightDirection(0, light0);
         ilights->SetLightDirection(1, light1);
         ilights->SetLightDirection(2, light2);
         m_lightPos0 = light0;
         m_lightPos1 = light1;
         m_lightPos2 = light2;
+
+        ilights->SetAmbientLightColor(DirectX::Colors::White);
+
     }
-    */
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //m_lighting->UpdateLighting(m_effect, m_timer.GetTotalSeconds());
     m_effect->Apply(m_d3dContext.Get());
-
-    //auto sampler = m_states->LinearClamp();
-    //m_d3dContext->PSSetSamplers(0, 1, &sampler);
-
-    m_d3dContext->IASetInputLayout(m_inputLayout.Get());
-
-    m_batch->Begin();
 
     if (m_currentGameState == GameState::GAMESTATE_INTROSCREEN || m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
@@ -3108,7 +3124,7 @@ void Game::Render()
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
     {
         DrawGamePlayStart();
-        m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
+        //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj, m_effect, m_inputLayout);
     }
     m_batch->End();
 
@@ -3132,7 +3148,7 @@ void Game::Render()
     //DrawLightFocus2();
     //DrawLightFocus3();
     //DrawWorld(); 
-
+    
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
     {
         DrawTerrainNew(m_terrainGamePlay);
@@ -3153,13 +3169,13 @@ void Game::Render()
     }
 
     //m_effect2->EnableDefaultLighting();
-    /*
+    
     auto ilights2 = dynamic_cast<DirectX::IEffectLights*>(m_effect2.get());
     if (ilights2)
     {
-        ilights2->SetLightEnabled(0, true);
+        ilights2->SetLightEnabled(0, false);
         ilights2->SetLightEnabled(1, false);
-        ilights2->SetLightEnabled(2, true);
+        ilights2->SetLightEnabled(2, false);
 
         auto time = static_cast<float>(m_timer.GetTotalSeconds());
 
@@ -3178,10 +3194,11 @@ void Game::Render()
         ilights2->SetLightDirection(0, light2);
         ilights2->SetLightDirection(1, light2);
         ilights2->SetLightDirection(2, light2);
+        ilights2->EnableDefaultLighting();
     }
-    */
+    //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj, m_effect2, m_inputLayout);
     m_effect2->Apply(m_d3dContext.Get());
-
+    
 
     m_batch2->End();
 
@@ -3317,13 +3334,21 @@ void Game::Update(DX::StepTimer const& aTimer)
             m_retryAudio = true;
         }
     }
-    m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_BMW);
+
+    if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
+    {
+        m_effect->SetTexture(m_textureJI.Get());
+        m_effect->SetNormalTexture(m_normalMapJI.Get());
+        m_effect->SetSpecularTexture(m_specularJI.Get());
+    }
+
+    //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_BMW);
     UpdateInput(aTimer);
     m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
     
     m_camera->UpdateCamera(aTimer);
         
-    m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
+    //m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
 
     /*
     m_lighting->UpdateLightingNormColorTextureVertex(m_effect, aTimer.GetTotalSeconds());

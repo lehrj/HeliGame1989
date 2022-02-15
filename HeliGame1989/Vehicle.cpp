@@ -77,9 +77,22 @@ void Vehicle::DebugToggle()
     }
 }
 
+//void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
+//void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
 void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj)
 {
+    DirectX::SimpleMath::Matrix testMat = DirectX::SimpleMath::Matrix::Identity;
+    //testMat = DirectX::SimpleMath::Matrix::CreateWorld(DirectX::SimpleMath::Vector3(0.0f, 10.0f, 5.0f), DirectX::SimpleMath::Vector3::UnitX, DirectX::SimpleMath::Vector3::UnitY);
+    //aEffect->SetView(testMat);
+    //aEffect->SetProjection(testMat);
+    //aEffect->SetWorld(m_heliModel.bodyMatrix);
+    //aEffect->SetMatrices
+    //m_heliModel.bodyShape->
     m_heliModel.bodyShape->Draw(m_heliModel.bodyMatrix, aView, aProj, m_heliModel.bodyColor);
+    //m_heliModel.bodyShape->Draw(aEffect.get(), aInputLayout.Get());
+
+
+    
     m_heliModel.doorShape->Draw(m_heliModel.doorMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.mainWingShape->Draw(m_heliModel.mainWingMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.mainWingLeadingEdgeShape->Draw(m_heliModel.mainWingLeadingEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
@@ -275,6 +288,8 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     //  tail rotor edge stripe 2
     m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix1, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix2, aView, aProj, m_heliModel.bodyColor);
+
+
 }
 
 void Vehicle::InitializeEngine(Engine& aEngine)
@@ -305,12 +320,15 @@ void Vehicle::InitializeFlightControls(ControlInput& aInput)
     aInput.yawPedalIsPressed = false;
 }
 
+//void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
+//void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
 void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData)
 {
     // set model part colors
     m_heliModel.axelColor = DirectX::SimpleMath::Vector4(0.411764741f, 0.411764741f, 0.411764741f, 1.0f);
     m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.501960814f, 0.501960814f, 1.0f);
     m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.0f, 0.0f, 1.0f);
+    //m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     m_heliModel.exhaustColor = DirectX::SimpleMath::Vector4(0.8, 0.8f, 0.8f, 1.0f);
     m_heliModel.landingGearArmColor = DirectX::SimpleMath::Vector4(0.9f, 0.9f, 0.9f, 1.0f);
     m_heliModel.landingGearTireColor = DirectX::SimpleMath::Vector4(0.411764741f, 0.411764741f, 0.411764741f, 1.0f);
@@ -331,6 +349,11 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const DirectX::SimpleMath::Vector3 bodySize(5.0f, 3.0f, 3.0f);
     const DirectX::SimpleMath::Vector3 bodyTranslation(0.0f, bodySize.y * 0.5f, 0.0f);
     m_heliModel.bodyShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), bodySize);
+    //m_heliModel.bodyShape->CreateInputLayout(aEffect.get(), aInputLayout.ReleaseAndGetAddressOf());
+
+        //m_shape = GeometricPrimitive::CreateSphere(context);
+        //m_shape->CreateInputLayout(m_effect.get(), m_inputLayout.ReleaseAndGetAddressOf());
+
     m_heliModel.bodyMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.bodyMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(bodyTranslation);
     m_heliModel.localBodyMatrix = m_heliModel.bodyMatrix;
@@ -1798,6 +1821,9 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     }
 }
 
+
+//void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
+//void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
 void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
 {
     InitializeFlightControls(m_heli.controlInput);
@@ -1805,15 +1831,15 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     // helicopter data
 
     m_heli.mainRotorRPM = 0.0f;
-
+    m_heli.mainRotorMaxRPM = 500.0f;
     m_heli.numEqns = 6;
-    m_heli.mass = 2000.0f;
+    m_heli.mass = 1700.0f;
     m_heli.massTest = 2000.0f;
     //m_heli.area = 1.94f;
     m_heli.area = 14.67;
     m_heli.airDensity = 1.2f; // ToDo : pull air density from environment data
     m_heli.dragCoefficient = 0.31f;
-    //m_heli.dragCoefficient = 2.999f;
+
     m_heli.airResistance = 0.0f;
     m_heli.totalResistance = m_heli.airResistance;
     m_heli.time = 0.0;  
@@ -1861,6 +1887,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
 
     // set up rotor blades
     InitializeRotorBlades(m_heli);
+    //InitializeModel(aContext, m_heli, aEffect, aInputLayout);
     InitializeModel(aContext, m_heli);
     InitializeEngine(m_heli.engine);
 
@@ -3687,7 +3714,7 @@ void Vehicle::UpdateRotorPitch(HeliData& aHeliData, const double aTimer)
 
 void Vehicle::UpdateRotorSpin(HeliData& aHeliData, const double aTimer)
 {
-    const float rpmMax = 700.0f;
+    const float rpmMax = aHeliData.mainRotorMaxRPM;
     const float rpmMin = 0.0f;
     const float prevRPM = aHeliData.mainRotor.rpm;
     const float rpmThrottleSet = aHeliData.controlInput.throttleInput * rpmMax;
