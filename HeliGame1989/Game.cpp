@@ -45,7 +45,8 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
     //m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
@@ -822,8 +823,8 @@ void Game::DrawGamePlayStart()
 {
     const float fogGap1 = 0.0f;
     const float fogGap2 = 10.0f;
-    const float fadeDuration = 2.0;
-    const float fadeInStart = 2.0;
+    const float fadeDuration = 14.0;
+    const float fadeInStart = 0.0;
     const float fadeInEnd = fadeInStart + fadeDuration + 6.0f;
     const float fullViewDuration = 5.0f;
     
@@ -937,22 +938,22 @@ void Game::DrawIntroScene()
     const float fadeInStart1 = startDelay;
     const float fadeInStart2 = startDelay + logoDisplayDuration + logoDisplayGap;
     const float fadeInStart3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap;
-    const float fadeInStart4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap;
+    const float fadeInStart4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + m_startScreenTimerMod;
 
     const float fadeInEnd1 = startDelay + fadeDuration;
     const float fadeInEnd2 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration;
     const float fadeInEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration + logoDisplayDuration + logoDisplayGap;
-    const float fadeInEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap;
+    const float fadeInEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + m_startScreenTimerMod;
 
     const float fadeOutStart1 = startDelay + logoDisplayDuration - fadeDuration;
     const float fadeOutStart2 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration;
-    const float fadeOutStart3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration;
-    const float fadeOutStart4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration;
+    const float fadeOutStart3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration + m_startScreenTimerMod;
+    const float fadeOutStart4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration + m_startScreenTimerMod;
 
     const float fadeOutEnd1 = startDelay + logoDisplayDuration;
     const float fadeOutEnd2 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration;
-    const float fadeOutEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration;
-    const float fadeOutEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration;
+    const float fadeOutEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + m_startScreenTimerMod;
+    const float fadeOutEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + m_startScreenTimerMod;
 
     m_gamePlayStartOffSetTimer = fadeOutEnd4;
 
@@ -1197,6 +1198,7 @@ void Game::DrawIntroScene()
         else
         {
             m_effect2->SetFogEnabled(false);
+            //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
         }
     }
 
@@ -1919,8 +1921,8 @@ void Game::DrawUIIntroScreen()
     float fadeOutEnd2 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration;
 
     const float fadeInStart3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap;
-    const float fadeInEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration + logoDisplayDuration + logoDisplayGap;
-    const float fadeOutStart3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration;
+    const float fadeInEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration + logoDisplayDuration + logoDisplayGap + m_startScreenTimerMod;
+    const float fadeOutStart3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration + m_startScreenTimerMod;
     const float fadeOutEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration;
 
     DirectX::XMVECTORF32 fadeColor = DirectX::Colors::White;
@@ -1949,7 +1951,7 @@ void Game::DrawUIIntroScreen()
             fadeColor.f[0] = colorIntensity;
             fadeColor.f[1] = colorIntensity;
             fadeColor.f[2] = colorIntensity;
-            m_titleFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, fadeColor, 0.f, textLineOrigin);
+            //m_titleFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, fadeColor, 0.f, textLineOrigin);
         }
         else if (timeStamp > (fadeInStart1 * .8)) // fade out
         {
@@ -1958,11 +1960,11 @@ void Game::DrawUIIntroScreen()
             fadeColor.f[0] = colorIntensity;
             fadeColor.f[1] = colorIntensity;
             fadeColor.f[2] = colorIntensity;
-            m_titleFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, fadeColor, 0.f, textLineOrigin);
+            //m_titleFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, fadeColor, 0.f, textLineOrigin);
         }
         else // display at full intesity
         {
-            m_titleFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, fadeColor, 0.f, textLineOrigin);
+            //m_titleFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, fadeColor, 0.f, textLineOrigin);
         }
     }
     else if (timeStamp < fadeOutEnd1)
@@ -2560,7 +2562,7 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     float gridLineOffSetY = 0.0f;
     if (aTerrain.environType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
     {
-        gridLineOffSetY = 0.001f;
+        gridLineOffSetY = 0.003f;
     }
     else if (aTerrain.environType == EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY)
     {
@@ -3054,7 +3056,7 @@ void Game::Render()
     m_d3dContext->IASetInputLayout(m_inputLayout.Get());
 
     m_batch->Begin();
-
+    /*
     auto ilights = dynamic_cast<DirectX::IEffectLights*>(m_effect.get());
     if (ilights)
     {
@@ -3102,8 +3104,9 @@ void Game::Render()
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //m_lighting->UpdateLighting(m_effect, m_timer.GetTotalSeconds());
+    */
     m_effect->Apply(m_d3dContext.Get());
-
+    
     if (m_currentGameState == GameState::GAMESTATE_INTROSCREEN || m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
         DrawIntroScene();
@@ -3124,7 +3127,7 @@ void Game::Render()
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
     {
         DrawGamePlayStart();
-        //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj, m_effect, m_inputLayout);
+        m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
     }
     m_batch->End();
 
@@ -3133,7 +3136,6 @@ void Game::Render()
     m_effect2->GetVertexShaderBytecode(&shaderByteCode2, &byteCodeLength2);
     DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType2::InputElements, VertexType2::InputElementCount, shaderByteCode2, byteCodeLength2, m_inputLayout.ReleaseAndGetAddressOf()));
     m_batch2 = std::make_unique<PrimitiveBatch<VertexType2>>(m_d3dContext.Get());
-
 
     //m_effect2->SetWorld(m_world);
     m_effect2->Apply(m_d3dContext.Get());
@@ -3348,7 +3350,7 @@ void Game::Update(DX::StepTimer const& aTimer)
     
     m_camera->UpdateCamera(aTimer);
         
-    //m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
+    m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
 
     /*
     m_lighting->UpdateLightingNormColorTextureVertex(m_effect, aTimer.GetTotalSeconds());
