@@ -1821,7 +1821,6 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     }
 }
 
-
 //void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
 //void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
 void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
@@ -3973,7 +3972,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
         UpdateLandingGear(m_heli.landingGear, aTimeDelta);
     }
 
-    //m_debugUIVector.clear();
+    m_debugUIVector.clear();
 }
 
 void Vehicle::DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor)

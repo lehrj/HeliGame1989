@@ -323,9 +323,15 @@ private:
     double                              m_testTimerOffset = 0.0;
 
     // start scene control variables
+    /*
     const float                         m_fadeDuration = 4.0f;
     const float                         m_logoDisplayDuration = 9.5f;
     const float                         m_logoDisplayGap = 1.0f;
+    const float                         m_startDelay = 0.2f;
+    */
+    const float                         m_fadeDuration = 0.2f;
+    const float                         m_logoDisplayDuration = 0.5f;
+    const float                         m_logoDisplayGap = 0.2f;
     const float                         m_startDelay = 0.2f;
 
     const float                         m_fogGap1 = 0.0;
@@ -348,19 +354,24 @@ private:
     DirectX::SimpleMath::Vector3        m_teaserCamPos = DirectX::SimpleMath::Vector3(m_teaserScreenDistance - 1.0f, 0.0, 0.0);
     DirectX::SimpleMath::Vector3        m_teaserCamTarg = DirectX::SimpleMath::Vector3(m_teaserScreenDistance, 0.0, 0.0);
     
+    /*
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos1 = DirectX::SimpleMath::Vector3(8.0f, 1.0, 0.0);
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg1 = DirectX::SimpleMath::Vector3(0.0, -4.5, 0.0);
-
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos2 = DirectX::SimpleMath::Vector3(12.0f, 1.0, 0.0);
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg2 = DirectX::SimpleMath::Vector3(0.0, 3.5, 0.0);
+    */
+    DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos1 = DirectX::SimpleMath::Vector3(8.0f, 1.0, 0.0);
+    DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg1 = DirectX::SimpleMath::Vector3(0.0, -4.5, 0.0);
+    DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos2 = DirectX::SimpleMath::Vector3(14.0f, 1.0, 0.0);
+    DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg2 = DirectX::SimpleMath::Vector3(0.0, 3.54265475, 0.0);
     float                               m_gamePlayStartOffSetTimer = 0.0f;
 
     DirectX::SimpleMath::Vector3        m_testNorm = DirectX::SimpleMath::Vector3::UnitZ;
 
     float                               m_terrainColorDimmer = 0.0;
 
-    const double                         m_debugStartTime = -5.0;
-
+    //const double                         m_debugStartTime = -5.0;
+    const double                         m_debugStartTime = 0.0;
     const float                         m_startScreenTimerMod = 0.0f;
     const float                         m_startScreenTimerMod2 = 0.0f;
 };

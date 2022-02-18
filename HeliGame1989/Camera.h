@@ -232,6 +232,7 @@ private:
     DirectX::SimpleMath::Vector3 m_spinCamEndPos;
     DirectX::SimpleMath::Vector3 m_spinCamAxis;
     DirectX::SimpleMath::Vector3 m_spinCamAxisPos;
+    DirectX::SimpleMath::Vector3 m_spinStartTarget;
     float                        m_spinCamTotalTime;
     float                        m_spinCamTotalRotation;
     float                        m_spinCamCurrentRotation;

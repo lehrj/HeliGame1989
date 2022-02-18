@@ -490,7 +490,7 @@ void Camera::UpdateCamera(DX::StepTimer const& aTimer)
 	else if (m_cameraState == CameraState::CAMERASTATE_GAMEPLAYSTARTSPIN)
 	{
 		UpdateSpinCameraGamePlayStart(aTimer);
-		m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_followCamPos, m_followCamTarget, m_up);
+		//m_viewMatrix = DirectX::SimpleMath::Matrix::CreateLookAt(m_followCamPos, m_followCamTarget, m_up);
 	}
 	else
 	{
@@ -583,6 +583,35 @@ void Camera::UpdateSpinCameraGamePlayStart(DX::StepTimer const& aTimer)
 		localCamPos = DirectX::SimpleMath::Vector3::Transform(localCamPos, quatRot);
 		localCamPos += m_spinCamAxisPos;
 		m_position = localCamPos;
+		//m_target = DirectX::SimpleMath::Vector3(0.0, 3.54265475, 0.0);
+
+		//
+		DirectX::SimpleMath::Vector3 targetStartPos = m_target;
+		targetStartPos = m_spinStartTarget;
+		DirectX::SimpleMath::Vector3 targetEndPos = m_vehicleFocus->GetPos() + m_followCamTargOffset;
+		//targetEndPos = DirectX::SimpleMath::Vector3(0.0f, 3.49501753, 0.0f);
+		float targetDistance = DirectX::SimpleMath::Vector3::Distance(targetStartPos, targetEndPos);
+		DirectX::SimpleMath::Vector3 targetDirection = targetEndPos - targetStartPos;
+		targetDirection.Normalize();
+
+		double elapsedTime = double(aTimer.GetElapsedSeconds());
+		float cameraSpeed = targetDistance / m_spinCamTotalTime;
+
+		//float targetDistance = (targetEndPos - targetStartPos).Length();
+		float targetSpeed;
+		if (abs(targetDistance > 0.0)) // prevent divide by zero if camera position doesn't change
+		{
+			targetSpeed = cameraSpeed * (targetDistance / targetDistance);
+		}
+		else
+		{
+			targetSpeed = cameraSpeed;
+		}
+		//targetSpeed = cameraSpeed * (targetDistance / targetDistance);
+		if (targetDistance > 0.0f)
+		{
+			m_target += targetDirection * targetSpeed * static_cast<float>(elapsedTime);
+		}
 	}
 	else
 	{
@@ -598,9 +627,12 @@ void Camera::UpdateSpinCameraGamePlayStart(DX::StepTimer const& aTimer)
 
 void Camera::SetSpinCameraStartGamePlayStart(const float aTime)
 {
+	m_spinStartTarget = m_target;
 	m_spinCamStartPos = m_position;
 	m_spinCamEndPos = m_followCamPos;
 	m_spinCamEndPos.y += 3.0f;
+	m_spinCamEndPos = DirectX::SimpleMath::Vector3(-16.9999580, 6.51245356, -0.0163976531);
+	m_spinCamEndPos = DirectX::SimpleMath::Vector3(-17.0, 7.044, 0.0);
 	m_spinCamAxisPos = m_spinCamEndPos + m_spinCamStartPos;
 	//m_spinCamAxisPos = m_spinCamStartPos + m_spinCamEndPos;
 	m_spinCamAxisPos *= 0.5f;

@@ -626,9 +626,9 @@ void Environment::InitializeHeightMapData()
     // initialize game play map
     m_heightMapGamePlayData.heightScale = 0.009f;
     m_heightMapGamePlayData.mapScale = 1000.30f;
-    m_heightMapGamePlayData.mapXtransform = -16.0f * m_heightMapGamePlayData.mapScale + 0.0f;
+    m_heightMapGamePlayData.mapXtransform = -16.0f * m_heightMapGamePlayData.mapScale + -500.0f;
     m_heightMapGamePlayData.mapYtransform = 0.5f;
-    m_heightMapGamePlayData.mapZtransform = -16.0f * m_heightMapGamePlayData.mapScale;
+    m_heightMapGamePlayData.mapZtransform = -16.0f * m_heightMapGamePlayData.mapScale + 500.0f;
     
     m_heightMapGamePlayData.mapType = EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY;
     m_heightMapGamePlayData.terrainHeight = 0;
