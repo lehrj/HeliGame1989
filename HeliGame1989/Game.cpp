@@ -832,6 +832,9 @@ void Game::DrawGamePlayStart()
     const float fadeOutEnd = fadeOutStart + fadeDuration;
     //const float timeStamp = static_cast<float>(m_testTimer + m_debugStartTime);
     const float timeStamp = static_cast<float>(m_testTimer) - m_gamePlayStartOffSetTimer;
+
+
+
     /////////////////////////////////////
     /// Render GamePlay Start Screen  ///
     /////////////////////////////////////
@@ -2490,7 +2493,7 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     aTerrain.terrainVertexArrayBase = new DirectX::VertexPositionNormalColor[aTerrain.terrainVertexCount];
 
     DirectX::XMFLOAT4 lineColor(.486274540f, .988235354f, 0.0, 1.0);
-    DirectX::XMFLOAT4 baseColor(0.15, 0.15, 0.15, 1.0);
+    DirectX::XMFLOAT4 baseColor(0.01, 0.01, 0.01, 1.0);
     DirectX::XMFLOAT4 baseColor2(1.0, 1.0, 1.0, 1.0);
 
     DirectX::XMFLOAT4 sandColor1(0.956862807f, 0.643137276f, 0.376470625f, 1.0);
@@ -3137,6 +3140,7 @@ void Game::Render()
     DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType2::InputElements, VertexType2::InputElementCount, shaderByteCode2, byteCodeLength2, m_inputLayout.ReleaseAndGetAddressOf()));
     m_batch2 = std::make_unique<PrimitiveBatch<VertexType2>>(m_d3dContext.Get());
 
+
     //m_effect2->SetWorld(m_world);
     m_effect2->Apply(m_d3dContext.Get());
 
@@ -3189,7 +3193,7 @@ void Game::Render()
 
         auto light2 = XMVector3Rotate(DirectX::SimpleMath::Vector3::UnitX, quat);
 
-        light2 = -DirectX::SimpleMath::Vector3::UnitY;
+        light2 = DirectX::SimpleMath::Vector3::UnitY;
 
         //light2 = m_lightPos1;
         //light2 = DirectX::SimpleMath::Vector3::UnitY;
@@ -3197,7 +3201,16 @@ void Game::Render()
         ilights2->SetLightDirection(1, light2);
         ilights2->SetLightDirection(2, light2);
         ilights2->EnableDefaultLighting();
+
+
+        
     }
+    /*
+    m_effect2->SetFogEnabled(true);
+    m_effect2->SetFogStart(0.5f);
+    m_effect2->SetFogColor(DirectX::Colors::Red);
+    m_effect2->SetFogEnd(10.0f);
+    */
     //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj, m_effect2, m_inputLayout);
     m_effect2->Apply(m_d3dContext.Get());
     
@@ -3536,7 +3549,7 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     }
     if (kb.D)
     {
-        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE || m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
         {
             m_vehicle->InputYawPedal(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
@@ -3547,7 +3560,7 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     }
     if (kb.S)
     {
-        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE || m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
         {
             m_vehicle->InputCollective(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
@@ -3558,7 +3571,7 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     }
     if (kb.A)
     {
-        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE || m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
         {
             m_vehicle->InputYawPedal(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
@@ -3569,7 +3582,7 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     }
     if (kb.W)
     {
-        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE || m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
         {
             m_vehicle->InputCollective(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
@@ -3580,7 +3593,7 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     }
     if (kb.Q)
     {
-        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE || m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
         {
             m_vehicle->InputThrottle(static_cast<float>(-aTimer.GetElapsedSeconds()));
         }
@@ -3591,7 +3604,7 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     }
     if (kb.E)
     {
-        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE)
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY && m_camera->GetCameraState() == CameraState::CAMERASTATE_FOLLOWVEHICLE || m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
         {
             m_vehicle->InputThrottle(static_cast<float>(aTimer.GetElapsedSeconds()));
         }
