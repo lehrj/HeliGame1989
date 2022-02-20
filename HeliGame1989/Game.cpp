@@ -45,10 +45,10 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
-    //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
-    m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
+    m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
+    //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
     //m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLightingNormColorVertex2(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLightingColorVertex3(Lighting::LightingState::LIGHTINGSTATE_TEST01);
@@ -1397,6 +1397,57 @@ void Game::DrawLightFocus3()
     m_batch2->DrawLine(origin, zOffset2);
 }
 
+void Game::DrawLoadScreen()
+{
+    DirectX::SimpleMath::Vector3 camPos = m_camera->GetPos();
+    DirectX::SimpleMath::Vector3 targPos = m_camera->GetTargetPos();
+    DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateLookAt(camPos, -targPos, m_camera->GetUp());
+    rotMat = m_camera->GetViewMatrix();
+    rotMat = m_camera->GetProjectionMatrix();
+    DirectX::SimpleMath::Vector3 targDir = camPos - targPos;
+    targDir *= 0.5f;
+    targPos = camPos + targDir;
+    
+    //targPos = DirectX::SimpleMath::Vector3::Transform(targPos, rotMat);
+
+    //const DirectX::SimpleMath::Vector3 vertexColor(1.000000000f, 1.000000000f, 1.000000000f);// = DirectX::Colors::White;
+    DirectX::SimpleMath::Vector4 vertexColor(1.000000000f, 1.000000000f, 1.000000000f, 0.001f);
+
+    const float height = 2.5f;
+    const float width = 4.888888888f;
+    const float distance = 10.1f;
+
+    DirectX::SimpleMath::Vector3 topLeft(distance, height, -width);
+    DirectX::SimpleMath::Vector3 topRight(distance, height, width);
+    DirectX::SimpleMath::Vector3 bottomRight(distance, -height, width);
+    DirectX::SimpleMath::Vector3 bottomLeft(distance, -height, -width);
+
+    topLeft = DirectX::SimpleMath::Vector3::Transform(topLeft, rotMat);
+    topRight = DirectX::SimpleMath::Vector3::Transform(topRight, rotMat);
+    bottomRight = DirectX::SimpleMath::Vector3::Transform(bottomRight, rotMat);
+    bottomLeft = DirectX::SimpleMath::Vector3::Transform(bottomLeft, rotMat);
+
+    //camPos = DirectX::SimpleMath::Vector3::UnitX;
+    topLeft += camPos;
+    topRight += camPos;
+    bottomRight += camPos;
+    bottomLeft += camPos;
+
+    /*
+    topLeft += targPos;
+    topRight += targPos;
+    bottomRight += targPos;
+    bottomLeft += targPos;
+    */
+    const DirectX::SimpleMath::Vector3 vertexNormal = DirectX::SimpleMath::Vector3::Zero;
+    VertexPositionNormalColor vertTopLeft(topLeft, vertexNormal, vertexColor);
+    VertexPositionNormalColor vertTopRight(topRight, vertexNormal, vertexColor);
+    VertexPositionNormalColor vertBottomRight(bottomRight, vertexNormal, vertexColor);
+    VertexPositionNormalColor vertBottomLeft(bottomLeft, vertexNormal, vertexColor);
+
+    m_batch2->DrawQuad(vertTopLeft, vertTopRight, vertBottomRight, vertBottomLeft);
+}
+
 void Game::DrawLogoScreen()
 {
     const DirectX::SimpleMath::Vector3 vertexNormal = -DirectX::SimpleMath::Vector3::UnitX;
@@ -2495,7 +2546,7 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     DirectX::XMFLOAT4 lineColor(.486274540f, .988235354f, 0.0, 1.0);
     DirectX::XMFLOAT4 baseColor(0.01, 0.01, 0.01, 1.0);
     DirectX::XMFLOAT4 baseColor2(1.0, 1.0, 1.0, 1.0);
-
+    baseColor = baseColor2;
     DirectX::XMFLOAT4 sandColor1(0.956862807f, 0.643137276f, 0.376470625f, 1.0);
     DirectX::XMFLOAT4 sandColor2(0.960784376f, 0.960784376f, 0.862745166f, 1.0);
     DirectX::XMFLOAT4 greenColor1 = DirectX::XMFLOAT4(0.0, 0.501960814f, 0.0, 1.0);
@@ -3174,14 +3225,15 @@ void Game::Render()
         //DrawLightBar();
     }
 
+    DrawLoadScreen();
     //m_effect2->EnableDefaultLighting();
     
     auto ilights2 = dynamic_cast<DirectX::IEffectLights*>(m_effect2.get());
     if (ilights2)
     {
-        ilights2->SetLightEnabled(0, false);
-        ilights2->SetLightEnabled(1, false);
-        ilights2->SetLightEnabled(2, false);
+        ilights2->SetLightEnabled(0, true);
+        ilights2->SetLightEnabled(1, true);
+        ilights2->SetLightEnabled(2, true);
 
         auto time = static_cast<float>(m_timer.GetTotalSeconds());
 
@@ -3193,28 +3245,25 @@ void Game::Render()
 
         auto light2 = XMVector3Rotate(DirectX::SimpleMath::Vector3::UnitX, quat);
 
-        light2 = DirectX::SimpleMath::Vector3::UnitY;
+        light2 = DirectX::SimpleMath::Vector3::UnitZ;
 
         //light2 = m_lightPos1;
         //light2 = DirectX::SimpleMath::Vector3::UnitY;
         ilights2->SetLightDirection(0, light2);
         ilights2->SetLightDirection(1, light2);
         ilights2->SetLightDirection(2, light2);
-        ilights2->EnableDefaultLighting();
-
-
-        
+        ilights2->EnableDefaultLighting();   
     }
     /*
-    m_effect2->SetFogEnabled(true);
-    m_effect2->SetFogStart(0.5f);
-    m_effect2->SetFogColor(DirectX::Colors::Red);
-    m_effect2->SetFogEnd(10.0f);
+    m_effect2->SetFogEnabled(false);
+    m_effect2->SetFogStart(0.2f);
+    m_effect2->SetFogColor(DirectX::Colors::Black);
+    m_effect2->SetFogEnd(1.0f);
     */
+
     //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj, m_effect2, m_inputLayout);
     m_effect2->Apply(m_d3dContext.Get());
-    
-
+   
     m_batch2->End();
 
     void const* shaderByteCode3;
@@ -3227,7 +3276,7 @@ void Game::Render()
     m_effect3->Apply(m_d3dContext.Get());
 
     m_batch3->Begin();
-
+    
     //DrawTerrainNormals();
     //DrawDebugNormalLines(m_vehicle->GetModelTestPos(), DirectX::Colors::Blue);
     //DrawDebugLinesVector();

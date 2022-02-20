@@ -67,6 +67,7 @@ private:
     void DrawLightFocus2();
     void DrawLightFocus1();
     void DrawLightFocus3();
+    void DrawLoadScreen();
     void DrawLogoScreen();
     void DrawMenuEnvironmentSelect();
     void DrawMenuMain();
