@@ -99,6 +99,7 @@ private:
     void SetFogVals2(const DirectX::SimpleMath::Vector3 aTargetPos, const float aDimmerVal);
     void SetFogVals3(const DirectX::SimpleMath::Vector3 aTargetPos, const float aDimmerVal);
     void SetTerrainGridDimmer(const float aDimmerVal);
+    void TerrainDimmer();
 
     void DrawDebugValue();
     void DrawDebugVehicleData();
@@ -376,4 +377,8 @@ private:
     const double                         m_debugStartTime = 0.0;
     const float                         m_startScreenTimerMod = 0.0f;
     const float                         m_startScreenTimerMod2 = 0.0f;
+
+    float                               m_loadScreenTimerStart = 0.0f;
+
+    DirectX::XMFLOAT4 m_testColor;
 };

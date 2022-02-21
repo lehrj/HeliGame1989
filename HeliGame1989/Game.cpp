@@ -45,7 +45,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
@@ -821,6 +821,7 @@ void Game::DrawGridForStartScreen()
 
 void Game::DrawGamePlayStart()
 {
+    //TerrainDimmer();
     const float fogGap1 = 0.0f;
     const float fogGap2 = 10.0f;
     const float fadeDuration = 14.0;
@@ -833,7 +834,7 @@ void Game::DrawGamePlayStart()
     //const float timeStamp = static_cast<float>(m_testTimer + m_debugStartTime);
     const float timeStamp = static_cast<float>(m_testTimer) - m_gamePlayStartOffSetTimer;
 
-
+    m_loadScreenTimerStart += static_cast<float>(m_timer.GetElapsedSeconds());
 
     /////////////////////////////////////
     /// Render GamePlay Start Screen  ///
@@ -1405,17 +1406,24 @@ void Game::DrawLoadScreen()
     rotMat = m_camera->GetViewMatrix();
     rotMat = m_camera->GetProjectionMatrix();
     DirectX::SimpleMath::Vector3 targDir = camPos - targPos;
-    targDir *= 0.5f;
-    targPos = camPos + targDir;
+    //targDir *= 0.5f;
+    //targPos = camPos + targDir;
     
+    rotMat = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, targDir, m_camera->GetUp());
+    //rotMat = DirectX::SimpleMath::Matrix::CreateLookAt(targDir, DirectX::SimpleMath::Vector3::Zero, m_camera->GetUp());
+    //rotMat = DirectX::SimpleMath::Matrix::CreateWorld(targPos, -targDir, m_camera->GetUp());
+    rotMat = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(-90.0f));
     //targPos = DirectX::SimpleMath::Vector3::Transform(targPos, rotMat);
 
     //const DirectX::SimpleMath::Vector3 vertexColor(1.000000000f, 1.000000000f, 1.000000000f);// = DirectX::Colors::White;
-    DirectX::SimpleMath::Vector4 vertexColor(1.000000000f, 1.000000000f, 1.000000000f, 0.001f);
-
+    //DirectX::SimpleMath::Vector4 vertexColor(1.000000000f, 0.000000000f, 1.000000000f, 1.0f);
+    float screenColor = m_loadScreenTimerStart * 0.02f;
+    DirectX::SimpleMath::Vector4 vertexColor(screenColor, screenColor, screenColor, 1.0f);
+    vertexColor = m_testColor;
+    //vertexColor = DirectX::Colors::Red;
     const float height = 2.5f;
     const float width = 4.888888888f;
-    const float distance = 10.1f;
+    const float distance = 0.0f;
 
     DirectX::SimpleMath::Vector3 topLeft(distance, height, -width);
     DirectX::SimpleMath::Vector3 topRight(distance, height, width);
@@ -1427,25 +1435,42 @@ void Game::DrawLoadScreen()
     bottomRight = DirectX::SimpleMath::Vector3::Transform(bottomRight, rotMat);
     bottomLeft = DirectX::SimpleMath::Vector3::Transform(bottomLeft, rotMat);
 
+    DirectX::SimpleMath::Matrix rotMat2 = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(180.0f));
+
+    topLeft = DirectX::SimpleMath::Vector3::Transform(topLeft, rotMat2);
+    topRight = DirectX::SimpleMath::Vector3::Transform(topRight, rotMat2);
+    bottomRight = DirectX::SimpleMath::Vector3::Transform(bottomRight, rotMat2);
+    bottomLeft = DirectX::SimpleMath::Vector3::Transform(bottomLeft, rotMat2);
+
+    DirectX::SimpleMath::Vector3 transVec(8.0f, 0.7f, 0.0f);
+
+    topLeft += transVec;
+    topRight += transVec;
+    bottomRight += transVec;
+    bottomLeft += transVec;
+
     //camPos = DirectX::SimpleMath::Vector3::UnitX;
+    /*
     topLeft += camPos;
     topRight += camPos;
     bottomRight += camPos;
     bottomLeft += camPos;
-
+    */
     /*
     topLeft += targPos;
     topRight += targPos;
     bottomRight += targPos;
     bottomLeft += targPos;
     */
-    const DirectX::SimpleMath::Vector3 vertexNormal = DirectX::SimpleMath::Vector3::Zero;
+    const DirectX::SimpleMath::Vector3 vertexNormal = DirectX::SimpleMath::Vector3::UnitY;
     VertexPositionNormalColor vertTopLeft(topLeft, vertexNormal, vertexColor);
     VertexPositionNormalColor vertTopRight(topRight, vertexNormal, vertexColor);
     VertexPositionNormalColor vertBottomRight(bottomRight, vertexNormal, vertexColor);
     VertexPositionNormalColor vertBottomLeft(bottomLeft, vertexNormal, vertexColor);
 
-    m_batch2->DrawQuad(vertTopLeft, vertTopRight, vertBottomRight, vertBottomLeft);
+
+    //m_batch2->DrawQuad(vertTopLeft, vertTopRight, vertBottomRight, vertBottomLeft);
+    
 }
 
 void Game::DrawLogoScreen()
@@ -2530,6 +2555,18 @@ bool Game::InitializeTerrainArray2()
     return true;
 }
 
+void Game::TerrainDimmer()
+{
+    float dimmerVal = cos(m_timer.GetTotalSeconds());
+    dimmerVal = 0.5f;
+    DirectX::XMFLOAT4 updateColor(dimmerVal, dimmerVal, dimmerVal, 1.0f);
+
+    for (int i = 0; m_terrainGamePlay.terrainVertexCount; ++i)
+    {
+        m_terrainGamePlay.terrainVertexArrayBase[i].color = updateColor;
+    }
+}
+
 bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
 {
     std::vector<DirectX::VertexPositionNormalColor> vertexPC = m_environment->GetTerrainPositionNormalColorVertex(aTerrain.environType);
@@ -2544,9 +2581,11 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     aTerrain.terrainVertexArrayBase = new DirectX::VertexPositionNormalColor[aTerrain.terrainVertexCount];
 
     DirectX::XMFLOAT4 lineColor(.486274540f, .988235354f, 0.0, 1.0);
-    DirectX::XMFLOAT4 baseColor(0.01, 0.01, 0.01, 1.0);
+    //DirectX::XMFLOAT4 baseColor(0.01, 0.01, 0.01, 1.0);
+    DirectX::XMFLOAT4 baseColor(0.0, 0.0, 0.0, 1.0);
     DirectX::XMFLOAT4 baseColor2(1.0, 1.0, 1.0, 1.0);
-    baseColor = baseColor2;
+    //baseColor = baseColor2;
+    m_testColor = baseColor;
     DirectX::XMFLOAT4 sandColor1(0.956862807f, 0.643137276f, 0.376470625f, 1.0);
     DirectX::XMFLOAT4 sandColor2(0.960784376f, 0.960784376f, 0.862745166f, 1.0);
     DirectX::XMFLOAT4 greenColor1 = DirectX::XMFLOAT4(0.0, 0.501960814f, 0.0, 1.0);
@@ -3227,7 +3266,7 @@ void Game::Render()
 
     DrawLoadScreen();
     //m_effect2->EnableDefaultLighting();
-    
+    /*
     auto ilights2 = dynamic_cast<DirectX::IEffectLights*>(m_effect2.get());
     if (ilights2)
     {
@@ -3254,6 +3293,9 @@ void Game::Render()
         ilights2->SetLightDirection(2, light2);
         ilights2->EnableDefaultLighting();   
     }
+    */
+
+
     /*
     m_effect2->SetFogEnabled(false);
     m_effect2->SetFogStart(0.2f);
