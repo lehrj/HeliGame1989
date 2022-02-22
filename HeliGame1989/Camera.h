@@ -142,7 +142,7 @@ private:
     int                             m_clientWidth;
     int                             m_clientHeight;
 
-    const float                     m_nearPlane = 0.7f;
+    const float                     m_nearPlane = 0.3f;
     const float                     m_farPlane = 255000.0f;
 
     DirectX::SimpleMath::Matrix     m_viewMatrix;

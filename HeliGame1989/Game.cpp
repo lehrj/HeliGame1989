@@ -821,7 +821,7 @@ void Game::DrawGridForStartScreen()
 
 void Game::DrawGamePlayStart()
 {
-    //TerrainDimmer();
+    TerrainDimmer();
     const float fogGap1 = 0.0f;
     const float fogGap2 = 10.0f;
     const float fadeDuration = 14.0;
@@ -2558,13 +2558,29 @@ bool Game::InitializeTerrainArray2()
 void Game::TerrainDimmer()
 {
     float dimmerVal = cos(m_timer.GetTotalSeconds());
-    dimmerVal = 0.5f;
-    DirectX::XMFLOAT4 updateColor(dimmerVal, dimmerVal, dimmerVal, 1.0f);
-
-    for (int i = 0; m_terrainGamePlay.terrainVertexCount; ++i)
+    dimmerVal = m_loadScreenTimerStart * 0.02;
+    dimmerVal = 0.9f;
+    int total = 0;
+    if (dimmerVal < 1.1f)
     {
-        m_terrainGamePlay.terrainVertexArrayBase[i].color = updateColor;
+        DirectX::XMFLOAT4 updateColor(dimmerVal, dimmerVal, dimmerVal, 1.0f);
+        for (int i = 0; i < m_terrainGamePlay.terrainVertexCount; ++i)
+        {
+            m_terrainGamePlay.terrainVertexArrayBase[i].color = updateColor;
+            total = i;
+        }
+
+        DirectX::XMFLOAT4 testColor(1.0f, 0.0f, 0.0f, 1.0f);
+        int index = 3257;
+        int range = index + 186;
+        for (int i = index; i < range; ++i)
+        {
+            m_terrainGamePlay.terrainVertexArrayBase[i].color = testColor;
+        }
     }
+
+
+    int testVal = total;
 }
 
 bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
@@ -3264,7 +3280,8 @@ void Game::Render()
         //DrawLightBar();
     }
 
-    DrawLoadScreen();
+    //DrawLoadScreen();
+    
     //m_effect2->EnableDefaultLighting();
     /*
     auto ilights2 = dynamic_cast<DirectX::IEffectLights*>(m_effect2.get());

@@ -331,11 +331,12 @@ private:
     const float                         m_logoDisplayGap = 1.0f;
     const float                         m_startDelay = 0.2f;
     */
+    
     const float                         m_fadeDuration = 0.2f;
     const float                         m_logoDisplayDuration = 0.5f;
     const float                         m_logoDisplayGap = 0.2f;
     const float                         m_startDelay = 0.2f;
-
+    
     const float                         m_fogGap1 = 0.0;
     const float                         m_fogGap2 = 10.0;
 
