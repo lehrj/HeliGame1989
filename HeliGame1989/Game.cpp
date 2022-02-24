@@ -2559,9 +2559,9 @@ void Game::TerrainDimmer()
 {
     float dimmerVal = cos(m_timer.GetTotalSeconds());
     dimmerVal = m_loadScreenTimerStart * 0.02;
-    dimmerVal = 0.9f;
+    //dimmerVal = 0.9f;
     int total = 0;
-    if (dimmerVal < 1.1f)
+    if (dimmerVal <= 1.0f)
     {
         DirectX::XMFLOAT4 updateColor(dimmerVal, dimmerVal, dimmerVal, 1.0f);
         for (int i = 0; i < m_terrainGamePlay.terrainVertexCount; ++i)
@@ -2571,11 +2571,13 @@ void Game::TerrainDimmer()
         }
 
         DirectX::XMFLOAT4 testColor(1.0f, 0.0f, 0.0f, 1.0f);
-        int index = 3257;
-        int range = index + 186;
+        int index = 2970;
+        int range = index + 6;
         for (int i = index; i < range; ++i)
         {
-            m_terrainGamePlay.terrainVertexArrayBase[i].color = testColor;
+
+            m_terrainGamePlay.terrainVertexArrayBase[i].color = updateColor;
+            m_terrainGamePlay.terrainVertexArrayBase[i].normal.y = dimmerVal;
         }
     }
 
