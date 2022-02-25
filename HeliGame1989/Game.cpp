@@ -2559,7 +2559,6 @@ void Game::TerrainDimmer()
 {
     float dimmerVal = cos(m_timer.GetTotalSeconds());
     dimmerVal = m_loadScreenTimerStart * 0.02;
-    //dimmerVal = 0.9f;
     int total = 0;
     if (dimmerVal <= 1.0f)
     {
@@ -2580,9 +2579,6 @@ void Game::TerrainDimmer()
             m_terrainGamePlay.terrainVertexArrayBase[i].normal.y = dimmerVal;
         }
     }
-
-
-    int testVal = total;
 }
 
 bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
