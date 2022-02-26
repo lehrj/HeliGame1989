@@ -694,11 +694,15 @@ public:
 
     float GetAccel() const { return m_heli.testAccel; };
     DirectX::SimpleMath::Vector3 GetAccelVec() const { return m_heli.testAccelVec; };
+    float GetAirSpeed() { return m_heli.q.velocity.Length(); };
+    float GetAltitude() const { return m_heli.q.position.y - m_heli.terrainHightAtPos - 3.0f; };
+    float GetCollective() const { return m_heli.controlInput.collectiveInput; };
     DirectX::SimpleMath::Vector3 GetFollowPos() const;
     DirectX::SimpleMath::Vector3 GetForward() const { return m_heli.forward; };
     DirectX::SimpleMath::Vector3 GetPos() const { return m_heli.q.position; };
     //DirectX::SimpleMath::Vector3 GetPos() const { return m_prevPos; };
-    float GetSpeed() { return m_heli.speed; };
+    float GetRPM() const { return m_heli.mainRotor.rpm; };
+    float GetGroundSpeed() { return m_heli.speed; };
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
     DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.cameraOrientation; };

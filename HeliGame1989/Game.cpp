@@ -674,13 +674,43 @@ void Game::DrawDebugVehicleData()
     }
 
     // Draw speed with formatting
-    float speed = m_vehicle->GetSpeed() * 2.23694f;
-    std::string speedLine = "Speed    " + std::to_string(static_cast<int>(speed)) + " MPH";
+    float speed = m_vehicle->GetGroundSpeed() * 2.23694f;
+    std::string speedLine = "Ground Speed: " + std::to_string(static_cast<int>(speed)) + " MPH";
     DirectX::SimpleMath::Vector2 speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
     textLinePos.x = speedLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
     textLinePos.y += 30;
 
+    speed = m_vehicle->GetAirSpeed() * 2.23694f;
+    speedLine = "Air Speed: " + std::to_string(static_cast<int>(speed)) + " MPH";
+    speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
+    textLinePos.x = speedLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    textLinePos.y += 30;
+
+    
+    float rpm = m_vehicle->GetRPM() * 1.0f;
+    std::string rpmLine = "Rotor RPM: " + std::to_string(static_cast<int>(rpm)) + " ";
+    DirectX::SimpleMath::Vector2 rpmLineOrigin = m_bitwiseFont->MeasureString(rpmLine.c_str()) / 2.f;
+    textLinePos.x = rpmLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos, Colors::White, 0.f, rpmLineOrigin);
+    textLinePos.y += 30;
+    
+    float collective = m_vehicle->GetCollective() * 100.0f;
+    std::string collectiveLine = "Collective: " + std::to_string(static_cast<int>(collective)) + "% ";
+    DirectX::SimpleMath::Vector2 collectiveLineOrigin = m_bitwiseFont->MeasureString(collectiveLine.c_str()) / 2.f;
+    textLinePos.x = collectiveLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos, Colors::White, 0.f, collectiveLineOrigin);
+    textLinePos.y += 30;
+
+    float altitude = m_vehicle->GetAltitude();
+    std::string altitudeLine = "Altitude: " + std::to_string(static_cast<int>(altitude)) + "m ";
+    DirectX::SimpleMath::Vector2 altitudeLineOrigin = m_bitwiseFont->MeasureString(altitudeLine.c_str()) / 2.f;
+    textLinePos.x = altitudeLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos, Colors::White, 0.f, altitudeLineOrigin);
+    textLinePos.y += 30;
+
+    /*
     DirectX::SimpleMath::Vector3 camPos = m_camera->GetPos();
    
     speedLine = "CameraPos x = " + std::to_string(camPos.x) + " ";
@@ -700,15 +730,14 @@ void Game::DrawDebugVehicleData()
     textLinePos.x = speedLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
     textLinePos.y += 30;
-
-    // Draw Timer
-    /*
-    textLine = "Timer  " + std::to_string(m_timer.GetTotalSeconds());
-    textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
+    */
+    // Draw Timer  
+    std::string textLine = "Timer  " + std::to_string(m_timer.GetTotalSeconds());
+    DirectX::SimpleMath::Vector2 textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
     textLinePos.x = textLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
     textLinePos.y += 30;
-    */
+    
 
 }
 
@@ -826,10 +855,12 @@ void Game::DrawGamePlayStart()
     const float fogGap2 = 10.0f;
     const float fadeDuration = 14.0;
     const float fadeInStart = 0.0;
-    const float fadeInEnd = fadeInStart + fadeDuration + 6.0f;
+    const float fadeInEnd = fadeInStart + fadeDuration + 0.0f;
+    //float fadeInEnd = fadeInStart + fadeDuration + 0.0f;
     const float fullViewDuration = 5.0f;
     
     const float fadeOutStart = fadeInEnd + fullViewDuration;
+
     const float fadeOutEnd = fadeOutStart + fadeDuration;
     //const float timeStamp = static_cast<float>(m_testTimer + m_debugStartTime);
     const float timeStamp = static_cast<float>(m_testTimer) - m_gamePlayStartOffSetTimer;
@@ -942,22 +973,30 @@ void Game::DrawIntroScene()
     const float fadeInStart1 = startDelay;
     const float fadeInStart2 = startDelay + logoDisplayDuration + logoDisplayGap;
     const float fadeInStart3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap;
-    const float fadeInStart4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + m_startScreenTimerMod;
+    //const float fadeInStart4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + m_startScreenTimerMod;
 
     const float fadeInEnd1 = startDelay + fadeDuration;
     const float fadeInEnd2 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration;
     const float fadeInEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration + logoDisplayDuration + logoDisplayGap;
-    const float fadeInEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + m_startScreenTimerMod;
+    //const float fadeInEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + fadeDuration + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + m_startScreenTimerMod;
 
     const float fadeOutStart1 = startDelay + logoDisplayDuration - fadeDuration;
     const float fadeOutStart2 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration;
     const float fadeOutStart3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration + m_startScreenTimerMod;
-    const float fadeOutStart4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration + m_startScreenTimerMod;
+    //const float fadeOutStart4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration - fadeDuration + m_startScreenTimerMod;
 
     const float fadeOutEnd1 = startDelay + logoDisplayDuration;
     const float fadeOutEnd2 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration;
-    const float fadeOutEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + m_startScreenTimerMod;
-    const float fadeOutEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + m_startScreenTimerMod;
+    //const float fadeOutEnd3 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + m_startScreenTimerMod;
+    //const float fadeOutEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + m_startScreenTimerMod;
+
+    //float fadeOutStart3 = 0.0;
+    float fadeOutEnd3 = fadeOutStart3 + 3.0f;
+
+    float fadeInStart4 = fadeOutEnd3 + 0.3f;
+    float fadeInEnd4 = fadeInStart4 + 0.1f;
+    float fadeOutStart4 = fadeInEnd4 + 0.1f;
+    float fadeOutEnd4 = fadeOutStart4 + 0.1f;
 
     m_gamePlayStartOffSetTimer = fadeOutEnd4;
 
@@ -2562,10 +2601,11 @@ void Game::TerrainDimmer()
     int total = 0;
     if (dimmerVal <= 1.0f)
     {
-        DirectX::XMFLOAT4 updateColor(dimmerVal, dimmerVal, dimmerVal, 1.0f);
+        const float colorVal = dimmerVal * 0.1f;
+        DirectX::XMFLOAT4 updateColor(colorVal, colorVal, colorVal, 1.0f);
         for (int i = 0; i < m_terrainGamePlay.terrainVertexCount; ++i)
         {
-            m_terrainGamePlay.terrainVertexArrayBase[i].color = updateColor;
+            //m_terrainGamePlay.terrainVertexArrayBase[i].color = updateColor;
             total = i;
         }
 
@@ -3155,8 +3195,6 @@ void Game::Render()
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-
-
     //auto sampler = m_states->LinearClamp();
     //m_d3dContext->PSSetSamplers(0, 1, &sampler);
 
@@ -3266,7 +3304,7 @@ void Game::Render()
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
         DrawTerrainNew(m_terrainGamePlay);
-        DrawTerrainNew(m_terrainStartScreen);
+        //DrawTerrainNew(m_terrainStartScreen);
     }
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
