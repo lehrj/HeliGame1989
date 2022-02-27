@@ -222,30 +222,30 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.mainRotorBladeInteriorShape->Draw(m_heliModel.mainRotorBladeInteriorMatrix1, aView, aProj, m_heliModel.rotorColor);
     m_heliModel.mainRotorBladeInteriorShape->Draw(m_heliModel.mainRotorBladeInteriorMatrix2, aView, aProj, m_heliModel.rotorColor);
     // stripe 1
-    m_heliModel.mainRotorBladeStripe1Shape->Draw(m_heliModel.mainRotorBladeStripe1Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeStripe1Shape->Draw(m_heliModel.mainRotorBladeStripe1Matrix2, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeEdgeStripe1Shape->Draw(m_heliModel.mainRotorBladeEdgeStripe1Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeEdgeStripe1Shape->Draw(m_heliModel.mainRotorBladeEdgeStripe1Matrix2, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorArmStripe1Shape->Draw(m_heliModel.mainRotorArmStripe1Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorArmStripe1Shape->Draw(m_heliModel.mainRotorArmStripe1Matrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainRotorBladeStripe1Shape->Draw(m_heliModel.mainRotorBladeStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeStripe1Shape->Draw(m_heliModel.mainRotorBladeStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeStripe1Shape->Draw(m_heliModel.mainRotorBladeEdgeStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeStripe1Shape->Draw(m_heliModel.mainRotorBladeEdgeStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorArmStripe1Shape->Draw(m_heliModel.mainRotorArmStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorArmStripe1Shape->Draw(m_heliModel.mainRotorArmStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
     // stripe 2
-    m_heliModel.mainRotorArmStripe2Shape->Draw(m_heliModel.mainRotorArmStripe2Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorArmStripe2Shape->Draw(m_heliModel.mainRotorArmStripe2Matrix2, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeEdgeStripe2Shape->Draw(m_heliModel.mainRotorEdgeStripe2Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeEdgeStripe2Shape->Draw(m_heliModel.mainRotorEdgeStripe2Matrix2, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeStripe2Shape->Draw(m_heliModel.mainRotorBladeStripe2Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeStripe2Shape->Draw(m_heliModel.mainRotorBladeStripe2Matrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainRotorArmStripe2Shape->Draw(m_heliModel.mainRotorArmStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorArmStripe2Shape->Draw(m_heliModel.mainRotorArmStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeStripe2Shape->Draw(m_heliModel.mainRotorEdgeStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeStripe2Shape->Draw(m_heliModel.mainRotorEdgeStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeStripe2Shape->Draw(m_heliModel.mainRotorBladeStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeStripe2Shape->Draw(m_heliModel.mainRotorBladeStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
     m_heliModel.mainRotorBladeEdgeShape->Draw(m_heliModel.mainRotorBladeEdgeMatrix1, aView, aProj, m_heliModel.rotorColor);
     m_heliModel.mainRotorBladeEdgeShape->Draw(m_heliModel.mainRotorBladeEdgeMatrix2, aView, aProj, m_heliModel.rotorColor);
 
-    m_heliModel.mainRotorArmEndCapShape->Draw(m_heliModel.mainRotorArmEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorArmEndCapShape->Draw(m_heliModel.mainRotorArmEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeEndCapShape->Draw(m_heliModel.mainRotorBladeEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeEndCapShape->Draw(m_heliModel.mainRotorBladeEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(m_heliModel.mainRotorBladeEdgeEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(m_heliModel.mainRotorBladeEdgeEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainRotorArmEndCapShape->Draw(m_heliModel.mainRotorArmEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorArmEndCapShape->Draw(m_heliModel.mainRotorArmEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEndCapShape->Draw(m_heliModel.mainRotorBladeEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEndCapShape->Draw(m_heliModel.mainRotorBladeEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(m_heliModel.mainRotorBladeEdgeEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(m_heliModel.mainRotorBladeEdgeEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
     m_heliModel.tailRotorAxelShape->Draw(m_heliModel.tailRotorAxelMatrix, aView, aProj, m_heliModel.axelColor);
     m_heliModel.tailRotorHubShape->Draw(m_heliModel.tailRotorHubMatrix, aView, aProj, m_heliModel.axelColor);
@@ -255,39 +255,39 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.tailRotorBladeEdgeShape->Draw(m_heliModel.tailRotorBladeEdgeMatrix1, aView, aProj, m_heliModel.rotorColor);
     m_heliModel.tailRotorBladeEdgeShape->Draw(m_heliModel.tailRotorBladeEdgeMatrix2, aView, aProj, m_heliModel.rotorColor);
 
-    m_heliModel.tailRotorBladeEndCapShape->Draw(m_heliModel.tailRotorBladeEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorBladeEndCapShape->Draw(m_heliModel.tailRotorBladeEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorBladeEndCapShape->Draw(m_heliModel.tailRotorBladeEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeEndCapShape->Draw(m_heliModel.tailRotorBladeEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
-    m_heliModel.tailRotorArmEndCapShape->Draw(m_heliModel.tailRotorArmEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorArmEndCapShape->Draw(m_heliModel.tailRotorArmEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorArmEndCapShape->Draw(m_heliModel.tailRotorArmEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorArmEndCapShape->Draw(m_heliModel.tailRotorArmEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
-    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(m_heliModel.tailRotorBladeEdgeEndCapMatrix2, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(m_heliModel.tailRotorBladeEdgeEndCapMatrix1, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(m_heliModel.tailRotorBladeEdgeEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(m_heliModel.tailRotorBladeEdgeEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
 
     m_heliModel.tailRotorBladeInteriorShape->Draw(m_heliModel.tailRotorBladeInteriorMatrix1, aView, aProj, m_heliModel.rotorColor);
     m_heliModel.tailRotorBladeInteriorShape->Draw(m_heliModel.tailRotorBladeInteriorMatrix2, aView, aProj, m_heliModel.rotorColor);
 
     //  tail rotor arm stripe 1
-    m_heliModel.tailRotorArmStripe1Shape->Draw(m_heliModel.tailRotorArmStripe1Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorArmStripe1Shape->Draw(m_heliModel.tailRotorArmStripe1Matrix2, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorBladeStripe1Shape->Draw(m_heliModel.tailRotorBladeStripe1Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorBladeStripe1Shape->Draw(m_heliModel.tailRotorBladeStripe1Matrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorArmStripe1Shape->Draw(m_heliModel.tailRotorArmStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorArmStripe1Shape->Draw(m_heliModel.tailRotorArmStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeStripe1Shape->Draw(m_heliModel.tailRotorBladeStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeStripe1Shape->Draw(m_heliModel.tailRotorBladeStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
     //  tail rotor edge stripe 1
-    m_heliModel.tailRotorEdgeStripe1Shape->Draw(m_heliModel.tailRotorEdgeStripe1Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorEdgeStripe1Shape->Draw(m_heliModel.tailRotorEdgeStripe1Matrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorEdgeStripe1Shape->Draw(m_heliModel.tailRotorEdgeStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorEdgeStripe1Shape->Draw(m_heliModel.tailRotorEdgeStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
     //  tail rotor arm stripe 2
-    m_heliModel.tailRotorArmStripe2Shape->Draw(m_heliModel.tailRotorArmStripe2Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorArmStripe2Shape->Draw(m_heliModel.tailRotorArmStripe2Matrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorArmStripe2Shape->Draw(m_heliModel.tailRotorArmStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorArmStripe2Shape->Draw(m_heliModel.tailRotorArmStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
     //  tail rotor blade stripe 2
-    m_heliModel.tailRotorBladeStripe2Shape->Draw(m_heliModel.tailRotorBladeStripe2Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorBladeStripe2Shape->Draw(m_heliModel.tailRotorBladeStripe2Matrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorBladeStripe2Shape->Draw(m_heliModel.tailRotorBladeStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeStripe2Shape->Draw(m_heliModel.tailRotorBladeStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
     //  tail rotor edge stripe 2
-    m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix1, aView, aProj, m_heliModel.bodyColor);
-    m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix2, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
 
 
 }
@@ -324,25 +324,49 @@ void Vehicle::InitializeFlightControls(ControlInput& aInput)
 //void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
 void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData)
 {
+    DirectX::SimpleMath::Vector4 purple1 = DirectX::SimpleMath::Vector4(0.1411764705882353, 0.0901960784313725, 0.4509803921568627, 1.0f);
+    DirectX::SimpleMath::Vector4 purple2 = DirectX::SimpleMath::Vector4(0.1019607843137255, 0.0980392156862745, 0.3725490196078431, 1.0f);
+    DirectX::SimpleMath::Vector4 gold1 = DirectX::SimpleMath::Vector4(0.7333333333333333, 0.5764705882352941, 0.0784313725490196, 1.0f);
+    DirectX::SimpleMath::Vector4 orange1 = DirectX::SimpleMath::Vector4(0.8745098039215686, 0.2745098039215686, 0.003921568627451, 1.0f);
+    DirectX::SimpleMath::Vector4 badRed = DirectX::SimpleMath::Vector4(0.501960814f, 0.0f, 0.0f, 1.0f);
+    DirectX::SimpleMath::Vector4 marsRed = DirectX::SimpleMath::Vector4(0.6117647058823529, 0.1803921568627451, 0.207843137254902, 1.0f);
+
+
     // set model part colors
     m_heliModel.axelColor = DirectX::SimpleMath::Vector4(0.411764741f, 0.411764741f, 0.411764741f, 1.0f);
     m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.501960814f, 0.501960814f, 1.0f);
     m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.0f, 0.0f, 1.0f);
+    m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.1411764705882353, 0.0901960784313725, 0.4509803921568627, 1.0f);
+    m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(0.1019607843137255, 0.0980392156862745, 0.3725490196078431, 1.0f);
+
     //m_heliModel.bodyColor = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     m_heliModel.exhaustColor = DirectX::SimpleMath::Vector4(0.8, 0.8f, 0.8f, 1.0f);
     m_heliModel.landingGearArmColor = DirectX::SimpleMath::Vector4(0.9f, 0.9f, 0.9f, 1.0f);
     m_heliModel.landingGearTireColor = DirectX::SimpleMath::Vector4(0.411764741f, 0.411764741f, 0.411764741f, 1.0f);
     m_heliModel.landingGearWheelColor = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     m_heliModel.rotorColor = DirectX::SimpleMath::Vector4(0.827451050f, 0.827451050f, 0.827451050f, 1.0f);
+    m_heliModel.rotorStripeColor = DirectX::SimpleMath::Vector4(0.501960814f, 0.0f, 0.0f, 1.0f);
+    m_heliModel.rotorStripeColor = DirectX::SimpleMath::Vector4(0.7333333333333333, 0.5764705882352941, 0.0784313725490196, 1.0f);
+    m_heliModel.rotorStripeColor = DirectX::SimpleMath::Vector4(0.8745098039215686, 0.2745098039215686, 0.003921568627451, 1.0f);
+    //m_heliModel.bodyColor = m_heliModel.rotorStripeColor;
+    m_heliModel.rotorStripeColor = DirectX::SimpleMath::Vector4(0.1019607843137255, 0.0980392156862745, 0.3725490196078431, 1.0f);
+
+    m_heliModel.rotorStripeColor = orange1;
+    m_heliModel.bodyColor = purple1;
+    m_heliModel.bodyColor = DirectX::Colors::OrangeRed;
+    m_heliModel.bodyColor = purple1;
+
     m_heliModel.shadowColor = DirectX::SimpleMath::Vector4(0.0, 0.0f, 0.0f, 1.0f);
     m_heliModel.stripeColor0 = DirectX::SimpleMath::Vector4(0.8, 0.8f, 0.8f, 1.0f);
     m_heliModel.stripeColor1 = DirectX::SimpleMath::Vector4(0.0, 0.0f, 0.0f, 1.0f);
+    m_heliModel.stripeColor1 = orange1;
+
     m_heliModel.windshieldColor = DirectX::SimpleMath::Vector4(0.662745118f, 0.662745118f, 0.662745118f, 1.20f);
     m_heliModel.testColor1 = DirectX::SimpleMath::Vector4(1.0, 0.0f, 0.0f, 1.0f);
     m_heliModel.testColor2 = DirectX::SimpleMath::Vector4(1.0, 1.0f, 1.0f, 1.0f);
     m_heliModel.testColor3 = DirectX::SimpleMath::Vector4(0.0, 1.0f, 0.0f, 1.0f);
-    
-    const float zFightOffset = 0.0004f;
+
+    const float zFightOffset = 0.0007f;
 
     // set model shapes and local positions   
     // main body
@@ -3599,7 +3623,7 @@ void Vehicle::UpdatePendulumMotion(Utility::Torque& aTorque, DirectX::SimpleMath
         accelerationDirection *= accelerationMag * aTimeStep;
         accelerationDirection *= accelerationMag;
         //accelerationDirection *= accelerationMag;
-        accelerationDirection.y = 0.0f;
+        //accelerationDirection.y = 0.0f;
         aVelocity += accelerationDirection;
     }
 }

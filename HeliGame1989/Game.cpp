@@ -45,7 +45,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
@@ -701,6 +701,13 @@ void Game::DrawDebugVehicleData()
     DirectX::SimpleMath::Vector2 collectiveLineOrigin = m_bitwiseFont->MeasureString(collectiveLine.c_str()) / 2.f;
     textLinePos.x = collectiveLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos, Colors::White, 0.f, collectiveLineOrigin);
+    textLinePos.y += 30;
+
+    float throttle = m_vehicle->GetThrottle() * 100.0f;
+    std::string throttleLine = "Throttle: " + std::to_string(static_cast<int>(throttle)) + "% ";
+    DirectX::SimpleMath::Vector2 throttleLineOrigin = m_bitwiseFont->MeasureString(throttleLine.c_str()) / 2.f;
+    textLinePos.x = throttleLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos, Colors::White, 0.f, throttleLineOrigin);
     textLinePos.y += 30;
 
     float altitude = m_vehicle->GetAltitude();
@@ -3417,7 +3424,7 @@ void Game::Render()
     {
         //DrawTeaserScreen();
     }
-    DrawDebugVehicleData();
+    //DrawDebugVehicleData();
     m_spriteBatch->End();
 
     Present();

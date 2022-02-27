@@ -189,6 +189,7 @@ struct HeliModel
     DirectX::SimpleMath::Vector4 axelColor;
     DirectX::SimpleMath::Vector4 bodyColor;
     DirectX::SimpleMath::Vector4 rotorColor;
+    DirectX::SimpleMath::Vector4 rotorStripeColor;
     DirectX::SimpleMath::Vector4 stripeColor0;
     DirectX::SimpleMath::Vector4 stripeColor1;
     DirectX::SimpleMath::Vector4 landingGearTireColor;
@@ -637,8 +638,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix localTailRotorBladeInteriorMatrix2;
     DirectX::SimpleMath::Matrix tailRotorBladeInteriorTranslationMatrix2;
 
-
-
     std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorArmStripe1Shape;
     DirectX::SimpleMath::Matrix tailRotorArmStripe1Matrix1;
     DirectX::SimpleMath::Matrix tailRotorArmStripe1TranslationMatrix1;
@@ -650,7 +649,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix localTailRotorBladeStripe1Matrix1;
     DirectX::SimpleMath::Matrix tailRotorBladeStripe1Matrix2;
     DirectX::SimpleMath::Matrix localTailRotorBladeStripe1Matrix2;
-
 
     std::unique_ptr<DirectX::GeometricPrimitive>    tailRotorEdgeStripe1Shape;
     DirectX::SimpleMath::Matrix tailRotorEdgeStripe1Matrix1;
@@ -703,6 +701,7 @@ public:
     //DirectX::SimpleMath::Vector3 GetPos() const { return m_prevPos; };
     float GetRPM() const { return m_heli.mainRotor.rpm; };
     float GetGroundSpeed() { return m_heli.speed; };
+    float GetThrottle() { return m_heli.controlInput.throttleInput; };
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
     DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.cameraOrientation; };
