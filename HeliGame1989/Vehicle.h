@@ -190,6 +190,7 @@ struct HeliModel
     DirectX::SimpleMath::Vector4 bodyColor;
     DirectX::SimpleMath::Vector4 rotorColor;
     DirectX::SimpleMath::Vector4 rotorStripeColor;
+    DirectX::SimpleMath::Vector4 rotorStripeAltColor;
     DirectX::SimpleMath::Vector4 stripeColor0;
     DirectX::SimpleMath::Vector4 stripeColor1;
     DirectX::SimpleMath::Vector4 landingGearTireColor;
@@ -198,7 +199,8 @@ struct HeliModel
     DirectX::SimpleMath::Vector4 windshieldColor;
     DirectX::SimpleMath::Vector4 exhaustColor;
     DirectX::SimpleMath::Vector4 shadowColor;
-
+    DirectX::SimpleMath::Vector4 undersideColor;
+    DirectX::SimpleMath::Vector4 toothColor;
     DirectX::SimpleMath::Vector4 testColor1;
     DirectX::SimpleMath::Vector4 testColor2;
     DirectX::SimpleMath::Vector4 testColor3;
@@ -211,14 +213,20 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    noseConeShape;
     DirectX::SimpleMath::Matrix noseConeMatrix;
     DirectX::SimpleMath::Matrix localNoseConeMatrix;
+    DirectX::SimpleMath::Matrix noseConeBellyMatrix;
+    DirectX::SimpleMath::Matrix localNoseConeBellyMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    noseBodyShape;
     DirectX::SimpleMath::Matrix noseBodyMatrix;
     DirectX::SimpleMath::Matrix localNoseBodyMatrix;
+    DirectX::SimpleMath::Matrix noseBodyBellyMatrix;
+    DirectX::SimpleMath::Matrix localNoseBodyBellyMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    bodyShape;
     DirectX::SimpleMath::Matrix bodyMatrix;
     DirectX::SimpleMath::Matrix localBodyMatrix;
+    DirectX::SimpleMath::Matrix bodyBellyMatrix;
+    DirectX::SimpleMath::Matrix localBodyBellyMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    doorShape;
     DirectX::SimpleMath::Matrix doorMatrix;
@@ -268,9 +276,13 @@ struct HeliModel
     DirectX::SimpleMath::Matrix bodyRearMatrix;
     DirectX::SimpleMath::Matrix localBodyRearMatrix;
 
+    DirectX::SimpleMath::Matrix bodyRearBellyMatrix;
+    DirectX::SimpleMath::Matrix localBodyRearBellyMatrix;
+
     std::unique_ptr<DirectX::GeometricPrimitive>    noseCowlShape;
     DirectX::SimpleMath::Matrix noseCowlMatrix;
     DirectX::SimpleMath::Matrix localNoseCowlMatrix;
+
 
     std::unique_ptr<DirectX::GeometricPrimitive>    toothShape;
     std::unique_ptr<DirectX::GeometricPrimitive>    toothShape2;
@@ -309,14 +321,20 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    mainWingShape;
     DirectX::SimpleMath::Matrix mainWingMatrix;
     DirectX::SimpleMath::Matrix localMainWingMatrix;
+    DirectX::SimpleMath::Matrix mainWingBellyMatrix;
+    DirectX::SimpleMath::Matrix localMainWingBellyMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    mainWingLeadingEdgeShape;
     DirectX::SimpleMath::Matrix mainWingLeadingEdgeMatrix;
     DirectX::SimpleMath::Matrix localMainWingLeadingEdgeMatrix;
+    DirectX::SimpleMath::Matrix mainWingLeadingEdgeBellMatrix;
+    DirectX::SimpleMath::Matrix localMainWingLeadingBellyEdgeMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    mainWingTailEdgeShape;
     DirectX::SimpleMath::Matrix mainWingTailEdgeMatrix;
     DirectX::SimpleMath::Matrix localMainWingTailEdgeMatrix;
+    DirectX::SimpleMath::Matrix mainWingTailEdgeBellyMatrix;
+    DirectX::SimpleMath::Matrix localMainWingTailEdgeBellyMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    sideWindowUpperShape;
     DirectX::SimpleMath::Matrix sideWindowUpperMatrix;
@@ -338,6 +356,8 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    wingJetForwardHousingShape;
     DirectX::SimpleMath::Matrix wingJetForwardHousingLeftMatrix;
     DirectX::SimpleMath::Matrix localWingJetForwardHousingLeftMatrix;
+    DirectX::SimpleMath::Matrix wingJetForwardHousingLeftBellyMatrix;
+    DirectX::SimpleMath::Matrix localWingJetForwardHousingLeftBellyMatrix;
     DirectX::SimpleMath::Matrix wingJetForwardHousingRightMatrix;
     DirectX::SimpleMath::Matrix localWingJetForwardHousingRightMatrix;
 
