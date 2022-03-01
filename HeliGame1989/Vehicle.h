@@ -14,7 +14,7 @@ struct ControlInput
     float       collectiveInput;
     const float collectiveInputMax = 1.0f;
     const float collectiveInputMin = 0.0f;
-    const float collectiveInputRate = 1.0f;
+    const float collectiveInputRate = 0.5f;
 
     DirectX::SimpleMath::Vector3 cyclicStick;
     const float cyclicDecayRate = 0.3f;
@@ -24,19 +24,19 @@ struct ControlInput
     bool        cyclicInputRollIsPressed;
     const float cyclicInputMax = Utility::ToRadians(20.0f);
     const float cyclicInputMin = -Utility::ToRadians(20.0f);
-    const float cyclicInputRate = 0.2f;
+    const float cyclicInputRate = 0.1f;
 
     float       throttleInput;
     const float throttleInputMin = 0.0f;
     const float throttleInputMax = 1.0f;
-    const float throttleInputRate = 1.0f;
+    const float throttleInputRate = 0.4f;
 
     bool        yawPedalIsPressed;
     float       yawPedalInput;
     const float yawPedalDecayRate = 0.2f;
     const float yawPedalInputMax = 1.0f;
     const float yawPedalInputMin = -1.0f;
-    const float yawPedalInputRate = 0.2f;
+    const float yawPedalInputRate = 0.15f;
 };
 
 struct Engine
@@ -206,7 +206,7 @@ struct HeliModel
     DirectX::SimpleMath::Vector4 testColor3;
 
     // tessellation values for rounded shapes
-    const int circleTessellationVal1 = 8;
+    const int circleTessellationVal1 = 6;
     const int circleTessellationVal2 = 32;
 
     // part shape and local positions
@@ -387,6 +387,10 @@ struct HeliModel
     DirectX::SimpleMath::Matrix localWingJetExhaustTipLeftMatrix;
     DirectX::SimpleMath::Matrix wingJetExhaustTipRightMatrix;
     DirectX::SimpleMath::Matrix localWingJetExhaustTipRightMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    sidePodShape;
+    DirectX::SimpleMath::Matrix sidePodMatrix;
+    DirectX::SimpleMath::Matrix localSidePodMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    engineHousingShape;
     DirectX::SimpleMath::Matrix engineHousingMatrix;

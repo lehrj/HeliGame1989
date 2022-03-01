@@ -3417,7 +3417,7 @@ void Game::Render()
     }
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
-        //DrawDebugVehicleData();
+        DrawDebugVehicleData();
         //DrawUI();
     }
     if (m_currentGameState == GameState::GAMESTATE_TEASERSCREEN)
