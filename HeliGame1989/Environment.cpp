@@ -624,7 +624,8 @@ bool Environment::InitializeTerrain(HeightMap& aMap, EnvironmentType aEnviron)
 void Environment::InitializeHeightMapData()
 {
     // initialize game play map
-    m_heightMapGamePlayData.heightScale = 0.009f;
+    //m_heightMapGamePlayData.heightScale = 0.009f;
+    m_heightMapGamePlayData.heightScale = 0.01f;
     m_heightMapGamePlayData.mapScale = 1000.30f;
     m_heightMapGamePlayData.mapXtransform = -16.0f * m_heightMapGamePlayData.mapScale + -500.0f;
     m_heightMapGamePlayData.mapYtransform = 0.5f;

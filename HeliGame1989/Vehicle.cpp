@@ -39,7 +39,7 @@ float Vehicle::CalculateLiftCoefficient(const float aAngle)
         Cl = curveDeltaRate * currentCurvePos;
     }
     // ////////////////////////////
-    //const float ClMax =1.7;
+    //const float ClMax = 1.7;
     const float ClMax = 1.8;
     //const float inflectionPoint = 0.75f;
     const float inflectionPoint = 0.99f;
@@ -3982,7 +3982,7 @@ void Vehicle::UpdateRotorSpin(HeliData& aHeliData, const double aTimer)
     aHeliData.mainRotor.rotorRotation += mainRotorSpinUpdate;
     aHeliData.mainRotor.rotorRotation = Utility::WrapAngle(aHeliData.mainRotor.rotorRotation);
 
-    const float tailRotarGearing = 0.65f;
+    const float tailRotarGearing = 0.75f;
     const float tailRotorSpinUpdate = mainRotorSpinUpdate * tailRotarGearing;
     aHeliData.tailRotor.rotorRotation += tailRotorSpinUpdate;
     aHeliData.tailRotor.rotorRotation = Utility::WrapAngle(aHeliData.tailRotor.rotorRotation);

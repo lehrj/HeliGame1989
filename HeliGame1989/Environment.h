@@ -225,7 +225,7 @@ private:
 
     // scaling variables for different types of heightmaps
     //const float                         m_heightScale = 0.007f;
-    const float                         m_heightScale = 0.009f;
+    const float                         m_heightScale = 1.009f;
     const float                        m_heightScaleStartScreen = 0.007f;
 
     const float                        m_elevationScaleStartScreen = 0.007f;
