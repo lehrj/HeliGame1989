@@ -204,6 +204,9 @@ void Game::CreateDevice()
     DX::ThrowIfFailed(device.As(&m_d3dDevice));
     DX::ThrowIfFailed(context.As(&m_d3dContext));
 
+    // Jackson Industry textures
+    DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/Textures/skyTexture.jpg", nullptr, m_textureSky.ReleaseAndGetAddressOf()));
+
     DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/Textures/blankTexture.jpg", nullptr, m_texture.ReleaseAndGetAddressOf()));
     DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/NormalMaps/blankNormal.jpg", nullptr, m_normalMap.ReleaseAndGetAddressOf()));
     DX::ThrowIfFailed(CreateWICTextureFromFile(m_d3dDevice.Get(), L"../HeliGame1989/Art/SpecularMaps/blankSpecular.jpg", nullptr, m_specular.ReleaseAndGetAddressOf()));
@@ -278,8 +281,8 @@ void Game::CreateDevice()
     m_batch3 = std::make_unique<PrimitiveBatch<VertexType3>>(m_d3dContext.Get());
 
     //m_shape = GeometricPrimitive::CreateCube(m_d3dContext.Get(), 20000.0f, false);
-    m_shape = GeometricPrimitive::CreateSphere(m_d3dContext.Get(), 200000.0f, 32, false);
-    m_shape->CreateInputLayout(m_effect.get(), m_inputLayout.ReleaseAndGetAddressOf());
+    m_skyShape = GeometricPrimitive::CreateSphere(m_d3dContext.Get(), 200000.0f, 32, false);
+    m_skyShape->CreateInputLayout(m_effect.get(), m_inputLayout.ReleaseAndGetAddressOf());
 
     
     CD3D11_RASTERIZER_DESC rastDesc(D3D11_FILL_SOLID, D3D11_CULL_NONE, FALSE,
@@ -1676,6 +1679,13 @@ void Game::DrawMenuMain()
     }
 }
 
+void Game::DrawSky()
+{
+    DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(50.0f));
+    rotMat *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(-30.0f));
+    m_skyShape->Draw(rotMat, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DirectX::SimpleMath::Vector4(1.0, 1.0, 1.0, 2.0f), m_textureSky.Get());
+}
+
 void Game::DrawStartScreen()
 {
     const float timeStamp = static_cast<float>(m_testTimer);
@@ -2727,27 +2737,46 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
         int testRandom = rand() % 1000;
         float testFloat = testRandom * 0.000001;
 
-        DirectX::XMFLOAT4 testColor(0.0f, 0.0f, 0.0f, 0.0f);
-        float colorVal = aTerrain.terrainVertexArray[i].position.y / 2224.16675f;
+        //DirectX::XMFLOAT4 testColor(0.0f, 0.292156899f, 0.0f, 0.0f);
+        //DirectX::XMFLOAT4 baseColor = m_defaultGameTerrainColor;
+        DirectX::XMFLOAT4 baseColor(0.0f, 0.292156899f, 0.0f, 0.0f);
+        //float colorVal = aTerrain.terrainVertexArray[i].position.y / 2224.16675f;
+        float elevationPercentage = aTerrain.terrainVertexArray[i].position.y / m_gameTerrainMaxY;
+        float colorVal = elevationPercentage;
+
         colorVal += testFloat;
-        testColor.x = colorVal;
-        if (testColor.x > 1.0f)
+        baseColor.x = colorVal;
+        const float colorMax = 0.85f;
+        if (baseColor.x > colorMax)
         {
-            testColor.x = 1.0f;
+            baseColor.x = colorMax;
         }
-        testColor.y = colorVal + 0.292156899f;
-        if (testColor.y > 1.0f)
+        baseColor.y = colorVal + 0.292156899f;
+        if (baseColor.y > colorMax)
         {
-            testColor.y = 1.0f;
+            baseColor.y = colorMax;
         }
-        testColor.z = colorVal;
-        if (testColor.z > 1.0f)
+        baseColor.z = colorVal;
+        if (baseColor.z > colorMax)
         {
-            testColor.z = 1.0f;
+            baseColor.z = colorMax;
         }
-        DirectX::XMFLOAT4 testColor2 = testColor;
-        testColor2.y -= 0.15f;
-        aTerrain.terrainVertexArray[i].color = testColor2;
+        //baseColor.w = 1.0f;
+        //testColor= DirectX::XMFLOAT4(0.0f, 0.292156899f, 0.0f, 0.0f);
+        DirectX::XMFLOAT4 lineColor = baseColor;
+        //lineColor.y += 0.15f;
+
+        if (elevationPercentage > 0.4f)
+        {
+            lineColor.z += 0.15f;
+            lineColor.y -= 0.15f;
+        }
+        else
+        {
+            lineColor.y += 0.15f;
+        }
+
+        aTerrain.terrainVertexArray[i].color = lineColor;
         aTerrain.terrainVertexArrayBase[i].position = vertexPC[i].position;
         //m_terrainVertexArrayBase2[i].normal = vertexPC[i].normal;
         // flip normals around for lighting
@@ -2758,11 +2787,11 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
         //testColor = DirectX::XMFLOAT4(0.0f, 0.292156899f, 0.0f, 0.0f);
         if (i % 2 == 0)
         {
-            aTerrain.terrainVertexArrayBase[i].color = testColor;
+            aTerrain.terrainVertexArrayBase[i].color = baseColor;
         }
         else
         {
-            aTerrain.terrainVertexArrayBase[i].color = testColor;
+            aTerrain.terrainVertexArrayBase[i].color = baseColor;
         }
         /*
         if (i == i)
@@ -3158,11 +3187,11 @@ void Game::OnDeviceLost()
     m_batch.reset();
     m_batch2.reset();
     m_batch3.reset();
-    m_shape.reset();
+    m_skyShape.reset();
     m_normalMap.Reset();
     m_texture.Reset();
     m_specular.Reset();
-
+    m_textureSky.Reset();
     m_normalMapTest.Reset();
     m_textureTest.Reset();
     m_specularTest.Reset();
@@ -3518,8 +3547,7 @@ void Game::Render()
         float maxTime1 = m_testTimer1;
         float maxTime2 = m_testTimer2;
         m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
-        DirectX::SimpleMath::Vector4 DomeColor(0.0f, 0.0f, 0.15f, 1.0f);
-        m_shape->Draw(DirectX::SimpleMath::Matrix::Identity, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DomeColor);
+        DrawSky();
         //DrawStartScreen();
         if (m_isInDebugMode == true)
         {
@@ -3531,8 +3559,8 @@ void Game::Render()
     {
         DrawGamePlayStart();
         m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
-        DirectX::SimpleMath::Vector4 DomeColor(0.0f, 0.0f, 0.15f, 1.0f);
-        m_shape->Draw(DirectX::SimpleMath::Matrix::Identity, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DomeColor);
+        DrawSky();
+
     }
    
     m_batch->End();
@@ -3545,6 +3573,7 @@ void Game::Render()
 
 
     //m_effect2->SetWorld(m_world);
+    //m_effect2->EnableDefaultLighting();
     m_effect2->Apply(m_d3dContext.Get());
 
     //m_d3dContext->PSSetSamplers(0, 1, &sampler);
@@ -3565,7 +3594,7 @@ void Game::Render()
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
         DrawTerrainNew(m_terrainGamePlay);
-        DrawTerrainNew(m_terrainStartScreen);
+        //DrawTerrainNew(m_terrainStartScreen);
     }
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
@@ -3754,14 +3783,14 @@ void Game::Update(DX::StepTimer const& aTimer)
             m_retryAudio = true;
         }
     }
-
+    /*
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
         m_effect->SetTexture(m_textureJI.Get());
         m_effect->SetNormalTexture(m_normalMapJI.Get());
         m_effect->SetSpecularTexture(m_specularJI.Get());
     }
-
+    */
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_BMW);
     UpdateInput(aTimer);
     m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
@@ -3784,6 +3813,8 @@ void Game::Update(DX::StepTimer const& aTimer)
     m_effect->SetView(viewMatrix);
     m_effect2->SetView(viewMatrix);
     m_effect3->SetView(viewMatrix);
+
+
 }
 
 void Game::UpdateInput(DX::StepTimer const& aTimer)

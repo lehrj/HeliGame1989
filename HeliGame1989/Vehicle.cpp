@@ -3926,7 +3926,7 @@ void Vehicle::UpdateRotorSpin(HeliData& aHeliData, const double aTimer)
     float rpmDelta;
     if (currentTorqueCurvePos < 0.333f)
     {
-        const float revDeltaRate = 100.9f;
+        const float revDeltaRate = 2.4f;
         //const float revDeltaRate = 100.9f;
         rpmDelta = revDeltaRate * currentTorqueCurvePos;
     }

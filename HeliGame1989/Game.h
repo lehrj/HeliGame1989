@@ -71,6 +71,7 @@ private:
     void DrawLogoScreen();
     void DrawMenuEnvironmentSelect();
     void DrawMenuMain();
+    void DrawSky();
     void DrawStartScreen();
     void DrawTeaserScreen();
     void DrawTerrain();
@@ -144,6 +145,8 @@ private:
     std::unique_ptr<DirectX::PrimitiveBatch<VertexType2>> m_batch2;
     std::unique_ptr<DirectX::PrimitiveBatch<VertexType3>> m_batch3;
 
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_textureSky;
+
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalMap;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_specular;
@@ -171,7 +174,7 @@ private:
 
     std::shared_ptr<DirectX::IEffect>               m_lightEffect;
 
-    std::unique_ptr<DirectX::GeometricPrimitive>    m_shape;
+    std::unique_ptr<DirectX::GeometricPrimitive>    m_skyShape;
 
     DirectX::SimpleMath::Matrix                     m_world;
     DirectX::SimpleMath::Matrix                     m_view;
