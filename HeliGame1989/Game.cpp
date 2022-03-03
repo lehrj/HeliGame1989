@@ -45,7 +45,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
@@ -2451,7 +2451,7 @@ void Game::Initialize(HWND window, int width, int height)
     }
     */
     m_terrainStartScreen.environType = EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN;
-    result = InitializeTerrainArrayNew(m_terrainStartScreen);
+    result = InitializeTerrainArrayStartScreen(m_terrainStartScreen);
     if (!result)
     {
         isInitSuccessTrue = false;
@@ -2606,11 +2606,49 @@ bool Game::InitializeTerrainArray2()
 
 void Game::TerrainDimmer()
 {
-    float dimmerVal = cos(m_timer.GetTotalSeconds());
-    dimmerVal = m_loadScreenTimerStart * 0.01;
+    const float dimmerDuration = 2.0f;
+    const float dimmerStart = 0.4f;
+    const float dimmerEnd = dimmerStart + dimmerDuration;
+    const float dimmerTimer = m_loadScreenTimerStart;
+    DirectX::XMFLOAT4 updateColor(0.0f, 0.0f, 0.0f, 1.0f);
+    float dimmerPercentage; 
+    if (dimmerTimer < dimmerStart)
+    {
+        dimmerPercentage = 0.0f;
+    }
+    else if (dimmerTimer < dimmerEnd)
+    {
+        dimmerPercentage = (dimmerTimer - dimmerStart) / (dimmerEnd - dimmerStart);
+    }
+    else
+    {
+        dimmerPercentage = 1.0f;
+    }
+
+    updateColor.y = m_defaultGameTerrainColor.y * dimmerPercentage;
+
+
+    //m_terrainGamePlay.terrainVertexArrayBase[i].normal.y = dimmerPercentage;
+
+    DirectX::XMFLOAT4 testColor = m_terrainGamePlay.terrainVertexArrayBase[2969].color;
+    updateColor = testColor;
+    updateColor.y = testColor.y * dimmerPercentage;
+    int index = 2970;
+    int range = index + 6;
+    for (int i = index; i < range; ++i)
+    {
+
+        m_terrainGamePlay.terrainVertexArrayBase[i].color = updateColor;
+        m_terrainGamePlay.terrainVertexArrayBase[i].normal.y = dimmerPercentage;
+    }
+
+    /*
+    float dimmerVal = m_loadScreenTimerStart * 0.01;
+    m_testTimer1 = m_loadScreenTimerStart;
     int total = 0;
     if (dimmerVal <= 1.0f)
     {
+        m_testTimer2 = m_loadScreenTimerStart;
         const float colorVal = dimmerVal * 0.1f;
         DirectX::XMFLOAT4 updateColor(colorVal, colorVal, colorVal, 1.0f);
         for (int i = 0; i < m_terrainGamePlay.terrainVertexCount; ++i)
@@ -2629,6 +2667,7 @@ void Game::TerrainDimmer()
             m_terrainGamePlay.terrainVertexArrayBase[i].normal.y = dimmerVal;
         }
     }
+    */
 }
 
 bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
@@ -2636,12 +2675,8 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     std::vector<DirectX::VertexPositionNormalColor> vertexPC = m_environment->GetTerrainPositionNormalColorVertex(aTerrain.environType);
     m_terrainVector2.clear();
     m_terrainVector2 = vertexPC;
-
     aTerrain.terrainVertexCount = vertexPC.size();
-    //m_terrainVertexCount2 = vertexPC.size();
-    //m_terrainVertexArray2 = new DirectX::VertexPositionNormalColor[m_terrainVertexCount2];
     aTerrain.terrainVertexArray = new DirectX::VertexPositionNormalColor[aTerrain.terrainVertexCount];
-    //m_terrainVertexArrayBase2 = new DirectX::VertexPositionNormalColor[m_terrainVertexCount2];
     aTerrain.terrainVertexArrayBase = new DirectX::VertexPositionNormalColor[aTerrain.terrainVertexCount];
 
     DirectX::XMFLOAT4 lineColor(.486274540f, .988235354f, 0.0, 1.0);
@@ -2670,19 +2705,17 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
 
     if (aTerrain.environType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
     {
-        testWhite = baseColor;
         baseColor = DirectX::XMFLOAT4(0.01, 0.01, 0.01, 1.0);
+        testWhite = baseColor;
+        
     }
     if (aTerrain.environType == EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY)
-    {
-        
+    {       
         baseColor = DirectX::XMFLOAT4(0.000000000f, 0.292156899f, 0.000000000f, 1.000000000f);
         testWhite = baseColor;
     }
     for (int i = 0; i < aTerrain.terrainVertexCount; ++i)
     {   
-
-
         DirectX::SimpleMath::Vector3 flipNormal = vertexPC[i].normal;
         aTerrain.terrainVertexArray[i].position = vertexPC[i].position;
         //m_terrainVertexArray2[i].normal = vertexPC[i].normal;
@@ -2690,9 +2723,6 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
         aTerrain.terrainVertexArray[i].normal.x = flipNormal.x;
         aTerrain.terrainVertexArray[i].normal.y = flipNormal.y;
         aTerrain.terrainVertexArray[i].normal.z = flipNormal.z;
-
-
-
 
         int testRandom = rand() % 1000;
         float testFloat = testRandom * 0.000001;
@@ -2725,8 +2755,6 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
         aTerrain.terrainVertexArrayBase[i].normal.y = flipNormal.y;
         aTerrain.terrainVertexArrayBase[i].normal.z = flipNormal.z;
 
-
-
         //testColor = DirectX::XMFLOAT4(0.0f, 0.292156899f, 0.0f, 0.0f);
         if (i % 2 == 0)
         {
@@ -2739,6 +2767,154 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
         /*
         if (i == i)
             //if (i < 96)
+            //if (i % 96 == 0)
+        {
+            if ((i + 5) % 6 == 0)
+            {
+                aTerrain.terrainVertexArrayBase[i].color = baseColor;
+            }
+            if ((i + 2) % 6 == 0)
+            {
+                aTerrain.terrainVertexArrayBase[i].color = testWhite;
+            }
+            if (i % 6 == 0)
+            {
+                aTerrain.terrainVertexArrayBase[i].color = testWhite;
+            }
+        }
+        */
+        if (aTerrain.terrainVertexArray[i].position.y >= maxY)
+        {
+            maxY = aTerrain.terrainVertexArray[i].position.y;
+        }
+    }
+
+    std::vector<DirectX::SimpleMath::Vector3> testNorms;
+    testNorms.resize(aTerrain.terrainVertexCount);
+    std::vector<DirectX::SimpleMath::Vector3> testNorms2;
+    testNorms2.resize(aTerrain.terrainVertexCount);
+    float gridLineOffSetY = 0.0f;
+    if (aTerrain.environType == EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN)
+    {
+        gridLineOffSetY = 0.003f;
+    }
+    else if (aTerrain.environType == EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY)
+    {
+        gridLineOffSetY = 4.7f;
+    }
+    for (int i = 0; i < aTerrain.terrainVertexCount; ++i)
+    {
+        //aTerrain.terrainVertexArray2[i].normal = - DirectX::SimpleMath::Vector3::UnitY;
+        aTerrain.terrainVertexArray[i].position.y += gridLineOffSetY;
+        //aTerrain.terrainVertexArrayBase2[i].normal = - DirectX::SimpleMath::Vector3::UnitY;
+        testNorms[i] = aTerrain.terrainVertexArray[i].normal;
+        testNorms2[i] = aTerrain.terrainVertexArrayBase[i].normal;
+    }
+
+    return true;
+}
+
+bool Game::InitializeTerrainArrayStartScreen(Terrain& aTerrain)
+{
+    std::vector<DirectX::VertexPositionNormalColor> vertexPC = m_environment->GetTerrainPositionNormalColorVertex(aTerrain.environType);
+    m_terrainVector2.clear();
+    m_terrainVector2 = vertexPC;
+    aTerrain.terrainVertexCount = vertexPC.size();
+    aTerrain.terrainVertexArray = new DirectX::VertexPositionNormalColor[aTerrain.terrainVertexCount];
+    aTerrain.terrainVertexArrayBase = new DirectX::VertexPositionNormalColor[aTerrain.terrainVertexCount];
+
+    DirectX::XMFLOAT4 lineColor(.486274540f, .988235354f, 0.0, 1.0);
+    DirectX::XMFLOAT4 baseColor(0.01, 0.01, 0.01, 1.0);
+    //DirectX::XMFLOAT4 baseColor(0.0, 0.0, 0.0, 1.0);
+    //DirectX::XMFLOAT4 baseColor(0.000000000f, 0.292156899f, 0.000000000f, 1.000000000f);
+
+    DirectX::XMFLOAT4 baseColor2(1.0, 1.0, 1.0, 1.0);
+    //baseColor = baseColor2;
+    m_testColor = baseColor;
+    DirectX::XMFLOAT4 sandColor1(0.956862807f, 0.643137276f, 0.376470625f, 1.0);
+    DirectX::XMFLOAT4 sandColor2(0.960784376f, 0.960784376f, 0.862745166f, 1.0);
+    DirectX::XMFLOAT4 greenColor1 = DirectX::XMFLOAT4(0.0, 0.501960814f, 0.0, 1.0);
+    DirectX::XMFLOAT4 greenColor2 = DirectX::XMFLOAT4(0.486274540f, 0.988235354f, 0.0, 1.0);
+
+    DirectX::XMFLOAT4 grassColor1 = DirectX::XMFLOAT4(0.133333340f, 0.545098066f, 0.133333340f, 1.0);
+    DirectX::XMFLOAT4 grassColor2 = DirectX::XMFLOAT4(0.000000000f, 0.392156899f, 0.0, 1.0);
+    DirectX::XMFLOAT4 testRed = DirectX::XMFLOAT4(1.000000000f, 0.000000000f, 0.0, 1.0);
+    DirectX::XMFLOAT4 testBlue = DirectX::XMFLOAT4(0.000000000f, 0.000000000f, 1.0, 1.0);
+    DirectX::XMFLOAT4 testGray = DirectX::XMFLOAT4(0.662745118f, 0.662745118f, 0.662745118f, 1.000000000f);
+    DirectX::XMFLOAT4 testWhite = DirectX::XMFLOAT4(1.0, 1.0, 1.0, 1.0);
+    //baseColor = sandColor1;
+    testWhite = baseColor;
+
+    testWhite = DirectX::XMFLOAT4(1.0, 1.0, 1.0, 1.0);
+    baseColor = m_defaultStartTerrainColor;
+    float maxY = 0.0f;
+    for (int i = 0; i < aTerrain.terrainVertexCount; ++i)
+    {
+        DirectX::SimpleMath::Vector3 flipNormal = vertexPC[i].normal;
+        aTerrain.terrainVertexArray[i].position = vertexPC[i].position;
+        // Flip normals around for lighting;
+        aTerrain.terrainVertexArray[i].normal.x = flipNormal.x;
+        aTerrain.terrainVertexArray[i].normal.y = flipNormal.y;
+        aTerrain.terrainVertexArray[i].normal.z = flipNormal.z;
+
+        
+        int testRandom = rand() % 1000;
+        float testFloat = testRandom * 0.000001;
+
+        DirectX::XMFLOAT4 testColor(0.0f, 0.0f, 0.0f, 0.0f);
+        float colorVal = aTerrain.terrainVertexArray[i].position.y / (m_startTerrainMaxY + 0.15f);
+        colorVal += testFloat;
+        colorVal -= 0.05;
+        if(colorVal < 0.0f)
+        {
+            colorVal = 0.0f;
+        }
+        testColor.x = colorVal;
+        if (testColor.x > 1.0f)
+        {
+            testColor.x = 1.0f;
+        }
+        testColor.y = colorVal;
+        if (testColor.y > 1.0f)
+        {
+            testColor.y = 1.0f;
+        }
+        testColor.z = colorVal;
+        if (testColor.z > 1.0f)
+        {
+            testColor.z = 1.0f;
+        }
+        DirectX::XMFLOAT4 testColor2 = testColor;
+        testColor2.y -= 0.15f;
+        
+        
+
+        aTerrain.terrainVertexArray[i].color = lineColor;
+        aTerrain.terrainVertexArrayBase[i].position = vertexPC[i].position;
+
+        //m_terrainVertexArrayBase2[i].normal = vertexPC[i].normal;
+        // flip normals around for lighting
+        aTerrain.terrainVertexArrayBase[i].normal.x = flipNormal.x;
+        aTerrain.terrainVertexArrayBase[i].normal.y = flipNormal.y;
+        aTerrain.terrainVertexArrayBase[i].normal.z = flipNormal.z;
+
+        //testColor = DirectX::XMFLOAT4(0.0f, 0.292156899f, 0.0f, 0.0f);
+        if (i % 2 == 0)
+        {
+            aTerrain.terrainVertexArrayBase[i].color = testColor;
+        }
+        else
+        {
+            aTerrain.terrainVertexArrayBase[i].color = testColor;
+        }
+
+        if (aTerrain.terrainVertexArrayBase[i].position.y > (m_startTerrainMaxY - 0.1f))
+        {
+            aTerrain.terrainVertexArrayBase[i].color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+        }
+        /*
+        //if (i == i)
+        if (i < 96)
             //if (i % 96 == 0)
         {
             if ((i + 5) % 6 == 0)
@@ -3258,23 +3434,23 @@ void Game::Render()
     //m_d3dContext->PSSetSamplers(0, 1, &sampler);
 
     m_d3dContext->IASetInputLayout(m_inputLayout.Get());
-
+    m_effect->Apply(m_d3dContext.Get());
     m_batch->Begin();
-
+    /*
     m_effect->EnableDefaultLighting();
     //m_effect->SetTexture(m_textureJI.Get());
     //m_effect->SetNormalTexture(m_normalMapJI.Get());
     //m_effect->SetSpecularTexture(m_specularJI.Get());
     m_effect->SetView(m_camera->GetViewMatrix());
     m_effect->SetProjection(m_camera->GetProjectionMatrix());
-    m_effect->Apply(m_d3dContext.Get());
+    
 
     //DirectX::XMVECTORF32 DomeColor = DirectX::XMVECTORF32(0.1f, 0.1f, 0.1f, 1.0f);
     DirectX::SimpleMath::Vector4 DomeColor(0.0f, 0.0f, 0.15f, 1.0f);
     m_shape->Draw(DirectX::SimpleMath::Matrix::Identity, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DomeColor);
     //m_shape->Draw(m_effect.get(), m_inputLayout.Get());
     //m_shape->Draw(DirectX::SimpleMath::Matrix::Identity, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DirectX::Colors::White, m_effect.get());
-
+    */
 
     /*
     * m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
@@ -3329,9 +3505,6 @@ void Game::Render()
     //m_lighting->UpdateLighting(m_effect, m_timer.GetTotalSeconds());
     */
 
-    m_batch->End();
-    m_batch->Begin();
-    //m_effect->Apply(m_d3dContext.Get());
     
     if (m_currentGameState == GameState::GAMESTATE_INTROSCREEN || m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
@@ -3342,7 +3515,11 @@ void Game::Render()
     //DrawStartScreen();
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
+        float maxTime1 = m_testTimer1;
+        float maxTime2 = m_testTimer2;
         m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
+        DirectX::SimpleMath::Vector4 DomeColor(0.0f, 0.0f, 0.15f, 1.0f);
+        m_shape->Draw(DirectX::SimpleMath::Matrix::Identity, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DomeColor);
         //DrawStartScreen();
         if (m_isInDebugMode == true)
         {
@@ -3354,9 +3531,10 @@ void Game::Render()
     {
         DrawGamePlayStart();
         m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
+        DirectX::SimpleMath::Vector4 DomeColor(0.0f, 0.0f, 0.15f, 1.0f);
+        m_shape->Draw(DirectX::SimpleMath::Matrix::Identity, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DomeColor);
     }
-
-
+   
     m_batch->End();
 
     void const* shaderByteCode2;
@@ -3379,7 +3557,7 @@ void Game::Render()
     //DrawLightFocus2();
     //DrawLightFocus3();
     //DrawWorld(); 
-    
+
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
     {
         DrawTerrainNew(m_terrainGamePlay);
@@ -3387,7 +3565,7 @@ void Game::Render()
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
         DrawTerrainNew(m_terrainGamePlay);
-        //DrawTerrainNew(m_terrainStartScreen);
+        DrawTerrainNew(m_terrainStartScreen);
     }
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {

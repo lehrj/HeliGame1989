@@ -25,7 +25,7 @@ Camera::Camera(int aWidth, int aHeight)
 
 	m_cameraState = CameraState::CAMERASTATE_FOLLOWVEHICLE;
 	//m_cameraState = CameraState::CAMERASTATE_TESTCAMERA01;
-	//m_cameraState = CameraState::CAMERASTATE_PRESWINGVIEW;
+	m_cameraState = CameraState::CAMERASTATE_PRESWINGVIEW;
 	//m_cameraState = CameraState::CAMERASTATE_SPRINGCAMERA;
 	Target springTarget;
 	springTarget.forward = DirectX::SimpleMath::Vector3::UnitX;
@@ -633,6 +633,7 @@ void Camera::SetSpinCameraStartGamePlayStart(const float aTime)
 	m_spinCamEndPos.y += 3.0f;
 	m_spinCamEndPos = DirectX::SimpleMath::Vector3(-16.9999580, 6.51245356, -0.0163976531);
 	m_spinCamEndPos = DirectX::SimpleMath::Vector3(-17.0, 7.044, 0.0);
+	m_spinCamEndPos = DirectX::SimpleMath::Vector3(-16.999981, 6.779059, 0.0);
 	m_spinCamAxisPos = m_spinCamEndPos + m_spinCamStartPos;
 	//m_spinCamAxisPos = m_spinCamStartPos + m_spinCamEndPos;
 	m_spinCamAxisPos *= 0.5f;

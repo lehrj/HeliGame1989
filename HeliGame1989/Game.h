@@ -88,6 +88,7 @@ private:
     bool InitializeTerrainArray2();
 
     bool InitializeTerrainArrayNew(Terrain& aTerrain);
+    bool InitializeTerrainArrayStartScreen(Terrain& aTerrain);
 
     void InitializeWorldGrid();
     void OnDeviceLost();
@@ -325,12 +326,16 @@ private:
     double                              m_testTimerOffset = 0.0;
 
     // start scene control variables
-    
+    /*
     const float                         m_fadeDuration = 4.0f;
     const float                         m_logoDisplayDuration = 9.5f;
     const float                         m_logoDisplayGap = 1.0f;
     const float                         m_startDelay = 5.2f;
-    
+    */
+    const float                         m_fadeDuration = 4.0f;
+    const float                         m_logoDisplayDuration = 11.5f;
+    const float                         m_logoDisplayGap = 0.8f;
+    const float                         m_startDelay = 5.2f;
     /*
     const float                         m_fadeDuration = 0.2f;
     const float                         m_logoDisplayDuration = 0.5f;
@@ -367,8 +372,8 @@ private:
     //DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg1 = DirectX::SimpleMath::Vector3(0.0, -3.8, 0.0);
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg1 = DirectX::SimpleMath::Vector3(0.0, -3.8, 0.0);
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos2 = DirectX::SimpleMath::Vector3(18.0f, 3.5, 0.0);
-    DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg2 = DirectX::SimpleMath::Vector3(0.0, 4.4, 0.0);
-
+    //DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg2 = DirectX::SimpleMath::Vector3(0.0, 4.4, 0.0);
+    DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg2 = DirectX::SimpleMath::Vector3(0.0, 5.0f, 0.0);
     float                               m_gamePlayStartOffSetTimer = 0.0f;
 
     DirectX::SimpleMath::Vector3        m_testNorm = DirectX::SimpleMath::Vector3::UnitZ;
@@ -383,4 +388,12 @@ private:
     float                               m_loadScreenTimerStart = 0.0f;
 
     DirectX::XMFLOAT4 m_testColor;
+    const DirectX::XMFLOAT4 m_defaultStartTerrainColor = DirectX::XMFLOAT4(0.1f, 0.01f, 0.01f, 1.0f);
+    const DirectX::XMFLOAT4 m_defaultGameTerrainColor = DirectX::XMFLOAT4(0.0f, 0.292156899f, 0.0f, 1.0f);
+
+    const float m_startTerrainMaxY = 0.347000033f;
+    const float m_gameTerrainMaxY = 2471.24097f;
+
+    float m_testTimer1 = 0.0f;
+    float m_testTimer2 = 0.0f;
 };
