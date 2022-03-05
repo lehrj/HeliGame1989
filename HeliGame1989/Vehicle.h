@@ -795,6 +795,7 @@ private:
     Utility::Torque UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorque, const float aTimeStep);
     void UpdateAlignmentCamera();
     void UpdateCyclicStick(ControlInput& aInput);
+    float UpdateGroundEffectForce(const float aLiftForce);
     void UpdateLandingGear(struct LandingGear& aLandingGear, const double aTimeDelta);
     void UpdateModel();
     void UpdatePendulumMotion(Utility::Torque& aTorque, DirectX::SimpleMath::Vector3& aVelocity, const float aTimeStep);

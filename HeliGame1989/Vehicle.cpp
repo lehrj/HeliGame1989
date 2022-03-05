@@ -1976,13 +1976,11 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     InitializeFlightControls(m_heli.controlInput);
 
     // helicopter data
-
     m_heli.mainRotorRPM = 0.0f;
     m_heli.mainRotorMaxRPM = 500.0f;
     m_heli.numEqns = 6;
     m_heli.mass = 1700.0f;
     m_heli.massTest = 2000.0f;
-    //m_heli.area = 1.94f;
     m_heli.area = 14.67;
     m_heli.airDensity = 1.2f; // ToDo : pull air density from environment data
     m_heli.dragCoefficient = 0.31f;
@@ -1996,7 +1994,6 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.right = m_heli.forward.Cross(m_heli.up);
     m_heli.alignment = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, m_heli.forward, m_heli.up);
     m_heli.alignment = DirectX::SimpleMath::Matrix::Identity;
-    //m_heli.alignment = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f);
     m_heli.cameraOrientation = m_heli.alignment;
     m_heli.cameraOrientationPrevious = m_heli.cameraOrientation;
 
@@ -2044,11 +2041,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.localCenterOfMass = m_heli.localMainRotorPos;
     m_heli.localCenterOfMass.y = m_heli.localTailRotorPos.y;  // putting CoM at right angle to tail rotor position to simplify flight model for now
     m_heli.centerOfMass = m_heli.localCenterOfMass;
-    /*
-    m_heli.localLandingGearPos = DirectX::SimpleMath::Vector3::Zero;
-    m_heli.localLandingGearPos.y -= 1.5f;
-    m_heli.landingGearPos = m_heli.localLandingGearPos;
-    */
+
     DirectX::SimpleMath::Vector3 posShift(0.0f, 0.0f, 0.0f);
     posShift = - m_heli.localCenterOfMass;
 
@@ -2262,7 +2255,7 @@ void Vehicle::Jump()
     DirectX::SimpleMath::Vector3 jumpVec(50.0f, 0.0f, 0.0f);
     jumpVec = DirectX::SimpleMath::Vector3::Transform(jumpVec, DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(45.0f)));
     //m_heli.q.velocity += jumpVec;
-    const float jumpHeight = 1000.0f;
+    const float jumpHeight = 10.0f;
     //m_heli.q.velocity.y += 50.0f;
     m_heli.q.position.y += jumpHeight;
 }
@@ -2487,7 +2480,6 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
     rotorForce = UpdateRotorForceRunge();
     //rotorForce = aQ->mainRotorForceNormal;
     //rotorForce *= aQ->mainRotorForceMagnitude * m_heli.controlInput.collectiveInput;
-    //rotorForce *= (m_heli.mainRotor.bladeVec[0].liftForcePerSecond + m_heli.mainRotor.bladeVec[1].liftForcePerSecond) / m_heli.mass;
     //rotorForce *= (m_heli.mainRotor.bladeVec[0].liftForcePerSecond + m_heli.mainRotor.bladeVec[1].liftForcePerSecond) / m_heli.mass;
     rotorForce *= (m_heli.mainRotor.bladeVec[0].liftForcePerSecond + m_heli.mainRotor.bladeVec[1].liftForcePerSecond);
 
@@ -2825,6 +2817,9 @@ void Vehicle::UpdateBladeLiftForce(const float aTimeStep)
     DebugPushUILineDecimalNumber("CL : ", Cl, "");
     DebugPushUILineDecimalNumber("m_heli.mainRotor.bladeVec[0].pitchAngle : ", Utility::ToDegrees(m_heli.mainRotor.bladeVec[0].pitchAngle), "");
     
+    m_heli.mainRotor.bladeVec[0].liftForcePerSecond = UpdateGroundEffectForce(m_heli.mainRotor.bladeVec[0].liftForcePerSecond);
+    m_heli.mainRotor.bladeVec[1].liftForcePerSecond = UpdateGroundEffectForce(m_heli.mainRotor.bladeVec[1].liftForcePerSecond);
+    //UpdateGroundEffectForce(m_heli.mainRotor.bladeVec[0].liftForcePerSecond + m_heli.mainRotor.bladeVec[1].liftForcePerSecond);
     // L = .5 * rho * omega^2 * Cl * y integral(r1 -> r2)  r^2 * dr    
 }
 
@@ -3128,6 +3123,20 @@ void Vehicle::UpdateCyclicStick(ControlInput& aInput)
     }
 
     aInput.cyclicStick = updatedCyclic;
+}
+
+float Vehicle::UpdateGroundEffectForce(const float aLiftForce)
+{
+    const float wingSpan = m_heli.mainRotor.length * 3.0f;
+    const float altitude = m_heli.q.position.y - m_heli.terrainHightAtPos - 3.0f; 
+    const float groundEffectFactor = ((16.0f * altitude / wingSpan) * (16.0f * altitude / wingSpan)) / (1.0f + ((16.0f * altitude / wingSpan) * (16.0f * altitude / wingSpan)));
+    DebugPushUILineDecimalNumber("groundEffectFactor : ", groundEffectFactor, "");
+
+    float liftMod = 1.0f - groundEffectFactor;
+    DebugPushUILineDecimalNumber("liftMod : ", liftMod, "");
+    float groundEffectLift = aLiftForce * liftMod;
+    groundEffectLift += aLiftForce;
+    return groundEffectLift;
 }
 
 void Vehicle::UpdateLandingGear(struct LandingGear& aLandingGear, const double aTimeDelta)
@@ -3926,7 +3935,7 @@ void Vehicle::UpdateRotorSpin(HeliData& aHeliData, const double aTimer)
     float rpmDelta;
     if (currentTorqueCurvePos < 0.333f)
     {
-        const float revDeltaRate = 2.4f;
+        const float revDeltaRate = 20.4f;
         //const float revDeltaRate = 100.9f;
         rpmDelta = revDeltaRate * currentTorqueCurvePos;
     }
@@ -4065,15 +4074,11 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     //DebugPushTestLinePositionIndicator(m_heli.q.position, 4.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
     UpdatePhysicsPoints(m_heli);
     
-
-    UpdateBladeLiftForce(static_cast<float>(aTimeDelta));
-    
+    UpdateBladeLiftForce(static_cast<float>(aTimeDelta));  
 
     m_heli.q.bodyTorqueForce.axis = DirectX::SimpleMath::Vector3::Zero;
     m_heli.q.bodyTorqueForce.magnitude = 0.0f;
     
-    
-
     DirectX::SimpleMath::Vector3 prevVelocity = m_heli.q.velocity;
     DirectX::SimpleMath::Vector3 prevPos = m_heli.q.position;
     m_prevPos = m_heli.q.position;
@@ -4081,7 +4086,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     m_prevUp = m_heli.up;
 
     UpdateCyclicStick(m_heli.controlInput);
-    UpdateRotorForce();
+    //UpdateRotorForce();
 
     m_heli.isVehicleLanding = false;
     m_heli.terrainHightAtPos = m_environment->GetTerrainHeightAtPos(m_heli.q.position);
@@ -4106,19 +4111,10 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
         //m_heli.q.position.y = m_heli.terrainHightAtPos - m_heli.localLandingGearPos.y;
     }
 
-
-    UpdateTerrainNorm();   
-    
-    
-
+    UpdateTerrainNorm();      
     RungeKutta4(&m_heli, aTimeDelta);
-    // UpdateAlignmentTorqueTest();
-
-    //DebugPushTestLinePositionIndicator(m_heli.q.position, 4.0f, 0.0f, DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-
     UpdateRotorData(m_heli, aTimeDelta);
     
-
     if (m_heli.forward.Dot(m_heli.q.velocity) < 0.0)
     {
         m_heli.isVelocityBackwards = true;
@@ -4130,7 +4126,6 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
 
     DirectX::SimpleMath::Vector3 speed = m_heli.q.velocity;
     speed.y = 0.0f;
-    //m_heli.speed = m_heli.q.velocity.Length();
     m_heli.speed = speed.Length();
 
     UpdateModel();
@@ -4141,7 +4136,6 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
 
     UpdateResistance();
     
-
     //m_heli.q.bodyTorqueForce.axis = DirectX::SimpleMath::Vector3::Zero;
     //m_heli.q.bodyTorqueForce.magnitude = 0.0f;
 
@@ -4174,7 +4168,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
         UpdateLandingGear(m_heli.landingGear, aTimeDelta);
     }
 
-    m_debugUIVector.clear();
+    //m_debugUIVector.clear();
 }
 
 void Vehicle::DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor)
