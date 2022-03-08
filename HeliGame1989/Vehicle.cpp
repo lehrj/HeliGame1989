@@ -3132,7 +3132,7 @@ float Vehicle::UpdateGroundEffectForce(const float aLiftForce)
     const float groundEffectFactor = ((16.0f * altitude / wingSpan) * (16.0f * altitude / wingSpan)) / (1.0f + ((16.0f * altitude / wingSpan) * (16.0f * altitude / wingSpan)));
     DebugPushUILineDecimalNumber("groundEffectFactor : ", groundEffectFactor, "");
 
-    float liftMod = 1.0f - groundEffectFactor;
+    float liftMod = abs(1.0f - groundEffectFactor);
     DebugPushUILineDecimalNumber("liftMod : ", liftMod, "");
     float groundEffectLift = aLiftForce * liftMod;
     groundEffectLift += aLiftForce;
