@@ -117,11 +117,6 @@ private:
     void InitializeViewMatrix(); //Pavel
 
     void UpdateChaseCamera();
-    void UpdateChaseCameraTest01();
-    void UpdateChaseCameraTest02();
-    void UpdateChaseCameraTest03();
-    void UpdateChaseCameraTest04();
-    void UpdateChaseCameraTest05();
     void UpdateProjectionMatrix();
     void UpdateOrthoganalMatrix();
     void UpdateSpinCamera(DX::StepTimer const& aTimer);
@@ -153,7 +148,6 @@ private:
     const float                     m_rotationTravelSpeed = 2.3f;
     const float                     m_aimTurnRate = 0.3f;
 
-    //bool                            m_isCameraAtDestination;
     bool                            m_isCameraAtDestination = false;
 
     CameraState                     m_cameraState;

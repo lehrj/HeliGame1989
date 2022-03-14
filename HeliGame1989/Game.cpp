@@ -2012,7 +2012,6 @@ void Game::DrawTerrainNew(Terrain& aTerrain)
     m_batch2->Draw(D3D_PRIMITIVE_TOPOLOGY_LINELIST, aTerrain.terrainVertexArray, aTerrain.terrainVertexCount);
 }
 
-
 void Game::DrawTerrainNormals()
 {
     DirectX::XMVECTORF32 lineColor = DirectX::Colors::Red;
