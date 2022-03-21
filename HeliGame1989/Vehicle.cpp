@@ -332,8 +332,6 @@ void Vehicle::InitializeFlightControls(ControlInput& aInput)
     aInput.yawPedalIsPressed = false;
 }
 
-//void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
-//void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
 void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData)
 {
     DirectX::SimpleMath::Vector4 purple1 = DirectX::SimpleMath::Vector4(0.1411764705882353, 0.0901960784313725, 0.4509803921568627, 1.0f);
@@ -382,11 +380,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const DirectX::SimpleMath::Vector3 bodySize(5.0f, 3.0f, 3.0f);
     const DirectX::SimpleMath::Vector3 bodyTranslation(0.0f, bodySize.y * 0.5f, 0.0f);
     m_heliModel.bodyShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), bodySize);
-    //m_heliModel.bodyShape->CreateInputLayout(aEffect.get(), aInputLayout.ReleaseAndGetAddressOf());
-
-        //m_shape = GeometricPrimitive::CreateSphere(context);
-        //m_shape->CreateInputLayout(m_effect.get(), m_inputLayout.ReleaseAndGetAddressOf());
-
     m_heliModel.bodyMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.bodyMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(bodyTranslation);
     m_heliModel.localBodyMatrix = m_heliModel.bodyMatrix;
@@ -1925,8 +1918,6 @@ void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
     }
 }
 
-//void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
-//void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
 void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext)
 {
     InitializeFlightControls(m_heli.controlInput);
@@ -1987,7 +1978,6 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
 
     // set up rotor blades
     InitializeRotorBlades(m_heli);
-    //InitializeModel(aContext, m_heli, aEffect, aInputLayout);
     InitializeModel(aContext, m_heli);
     InitializeEngine(m_heli.engine);
 
@@ -3092,8 +3082,6 @@ void Vehicle::UpdateModel()
 
     m_heliModel.tailWingBellyMatrix = m_heliModel.localTailWingBellyMatrix;
     m_heliModel.tailWingBellyMatrix *= updateMat;
-
-
 
 
     m_heliModel.noseConeMatrix = m_heliModel.localNoseConeMatrix;

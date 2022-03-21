@@ -95,8 +95,7 @@ public:
     void SpinClockwise(float aRotation);
     void SpinCounterClockwise(float aRotation);
     void TranslateAtSpeed(DirectX::SimpleMath::Vector3 aTranslation); //Chili
-
-    
+ 
     void UpdateCamera(DX::StepTimer const& aTimer);
     void UpdateFirstPersonCamera();
     void UpdatePitchYaw(const float aPitch, const float aYaw);
@@ -144,7 +143,7 @@ private:
     DirectX::SimpleMath::Matrix     m_projectionMatrix;
     DirectX::SimpleMath::Matrix     m_orthogonalMatrix;
 
-    const float                     m_posTravelSpeed = 2.6f;
+    const float                     m_posTravelSpeed = 20.6f;
     const float                     m_rotationTravelSpeed = 2.3f;
     const float                     m_aimTurnRate = 0.3f;
 

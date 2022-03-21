@@ -2691,8 +2691,6 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
 
     DirectX::XMFLOAT4 lineColor(.486274540f, .988235354f, 0.0, 1.0);
     DirectX::XMFLOAT4 baseColor(0.01, 0.01, 0.01, 1.0);
-    //DirectX::XMFLOAT4 baseColor(0.0, 0.0, 0.0, 1.0);
-    //DirectX::XMFLOAT4 baseColor(0.000000000f, 0.292156899f, 0.000000000f, 1.000000000f);
 
     DirectX::XMFLOAT4 baseColor2(1.0, 1.0, 1.0, 1.0);
     //baseColor = baseColor2;
@@ -2717,15 +2715,15 @@ bool Game::InitializeTerrainArrayNew(Terrain& aTerrain)
     {
         baseColor = DirectX::XMFLOAT4(0.01, 0.01, 0.01, 1.0);
         testWhite = baseColor;
-        
+
     }
     if (aTerrain.environType == EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY)
-    {       
+    {
         baseColor = DirectX::XMFLOAT4(0.000000000f, 0.292156899f, 0.000000000f, 1.000000000f);
         testWhite = baseColor;
     }
     for (int i = 0; i < aTerrain.terrainVertexCount; ++i)
-    {   
+    {
         DirectX::SimpleMath::Vector3 flipNormal = vertexPC[i].normal;
         aTerrain.terrainVertexArray[i].position = vertexPC[i].position;
         //m_terrainVertexArray2[i].normal = vertexPC[i].normal;
