@@ -18,6 +18,7 @@
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="sounds.h" />
+    <ClInclude Include="FireControl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="Lighting.cpp" />
     <ClCompile Include="Utility.cpp" />
     <ClCompile Include="Vehicle.cpp" />
+    <ClCompile Include="FireControl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

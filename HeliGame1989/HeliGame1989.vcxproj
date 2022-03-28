@@ -165,6 +165,7 @@
     <ClInclude Include="AnimatedTexture.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Environment.h" />
+    <ClInclude Include="FireControl.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="pch.h" />
@@ -177,6 +178,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="FireControl.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Lighting.cpp" />
     <ClCompile Include="Main.cpp" />
