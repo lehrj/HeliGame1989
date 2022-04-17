@@ -3083,7 +3083,6 @@ void Vehicle::UpdateModel()
     m_heliModel.tailWingBellyMatrix = m_heliModel.localTailWingBellyMatrix;
     m_heliModel.tailWingBellyMatrix *= updateMat;
 
-
     m_heliModel.noseConeMatrix = m_heliModel.localNoseConeMatrix;
     m_heliModel.noseConeMatrix *= updateMat;
 
