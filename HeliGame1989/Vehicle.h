@@ -93,6 +93,10 @@ struct Motion
     Utility::Torque              pendulumTorqueForceTest;
 
     DirectX::SimpleMath::Vector3 parabolicMomentum;
+
+    DirectX::SimpleMath::Vector3 angularVelocity = DirectX::SimpleMath::Vector3::Zero;
+    DirectX::SimpleMath::Vector3 angularMomentum = DirectX::SimpleMath::Vector3::Zero;
+    DirectX::SimpleMath::Quaternion angularQuat = DirectX::SimpleMath::Quaternion::Identity;
 };
 
 struct Rotor
@@ -169,12 +173,20 @@ struct HeliData
     DirectX::SimpleMath::Vector3 up;
     DirectX::SimpleMath::Vector3 right;
     DirectX::SimpleMath::Matrix alignment;
+    DirectX::SimpleMath::Matrix inverseAlignment;
+    DirectX::SimpleMath::Quaternion alignmentQuat;
+    DirectX::SimpleMath::Quaternion inverseAlignmentQuat;
     DirectX::SimpleMath::Matrix cameraOrientation;
     DirectX::SimpleMath::Matrix cameraOrientationPrevious;
     float   terrainHightAtPos;
 
     float   testAccel = 0.0;
     DirectX::SimpleMath::Vector3 testAccelVec = DirectX::SimpleMath::Vector3::Zero;
+
+    DirectX::SimpleMath::Matrix inertiaMatrix;
+    DirectX::SimpleMath::Matrix inverseInertiaMatrix;
+    DirectX::SimpleMath::Matrix localInertiaMatrix;
+    DirectX::SimpleMath::Matrix localInverseInertiaMatrix;
 
     ControlInput  controlInput;
     Engine        engine;
@@ -787,7 +799,7 @@ private:
     void RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ, double aTimeDelta, float aQScale, Motion* aDQ);
     void RungeKutta4(struct HeliData* aHeli, double aTimeDelta);
     
-    void UpdateAlignmentTorqueTest();
+    void UpdateAlignmentTorqueTest(const float aTimeDelta);
 
     void UpdateBladeLiftForce(const float aTimeStep);
 
@@ -850,5 +862,13 @@ private:
     DirectX::SimpleMath::Vector3 m_testPos = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_testPos2 = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_testPos3 = DirectX::SimpleMath::Vector3::Zero;
+
+    const float m_inertiaModelX = 10.0f;
+    const float m_inertiaModelY = 5.0f;
+    const float m_inertiaModelZ = 5.0f;
+    const float m_inertiaMass = 1.1f;
+
+    const bool m_isUseNewPhysicsTrue = true;
+    const float m_angularDamping = 0.9f;
 };
 
