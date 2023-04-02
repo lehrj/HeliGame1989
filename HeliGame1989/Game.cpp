@@ -754,6 +754,13 @@ void Game::DrawDebugVehicleData()
     textLinePos.y += 30;
     */
 
+    // Draw FPS  
+    std::string textLine = "FPS  " + std::to_string(m_timer.GetFramesPerSecond());
+    DirectX::SimpleMath::Vector2 textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
+    textLinePos.x = textLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
+    textLinePos.y += 30;
+
 }
 
 void Game::DrawDebugValue()

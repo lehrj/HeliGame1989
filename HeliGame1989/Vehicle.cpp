@@ -104,7 +104,7 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.tailWingEdgeShape->Draw(m_heliModel.tailWingTrailingEdgeBellyMatrix, aView, aProj, m_heliModel.undersideColor);
     m_heliModel.tailWingShape->Draw(m_heliModel.tailWingBellyMatrix, aView, aProj, m_heliModel.undersideColor);
 
-
+   
     m_heliModel.doorShape->Draw(m_heliModel.doorMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.mainWingShape->Draw(m_heliModel.mainWingMatrix, aView, aProj, m_heliModel.bodyColor);
     m_heliModel.mainWingLeadingEdgeShape->Draw(m_heliModel.mainWingLeadingEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
@@ -302,6 +302,52 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     //  tail rotor edge stripe 2
     m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeAltColor);
     m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeAltColor);
+
+    // draw shadows
+    m_heliModel.bodyShape->Draw(m_heliModel.shadowBaseMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.bodyCapShape->Draw(m_heliModel.shadowFrontNoseMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.bodyCapShape->Draw(m_heliModel.shadowRearNoseMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.mainWingShape->Draw(m_heliModel.shadowMainWingMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.mainWingLeadingEdgeShape->Draw(m_heliModel.shadowMainWingFrontMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.mainWingTailEdgeShape->Draw(m_heliModel.shadowMainWingRearMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.tailBoomShape->Draw(m_heliModel.shadowBoomMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailBoomMidEndCapShape->Draw(m_heliModel.shadowBoomEndCapMat, aView, aProj, m_heliModel.shadowColor); 
+    m_heliModel.tailWingShape->Draw(m_heliModel.shadowTailWingMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.tailFinLowerShape->Draw(m_heliModel.shadowTailFinLowerMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailFinUpperShape->Draw(m_heliModel.shadowTailFinUpperMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.engineHousingShape->Draw(m_heliModel.shadowHouseingMainMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineHousingFrontShape->Draw(m_heliModel.shadowHouseingFrontMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineHousingFrontShape->Draw(m_heliModel.shadowHouseingRearMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.tailWingFinShape->Draw(m_heliModel.shadowRearWingFinLeftMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailWingFinShape->Draw(m_heliModel.shadowRearWingFinRightMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.mainRotorAxelShape->Draw(m_heliModel.shadowMainRotorAxelMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.mainRotorHubShape->Draw(m_heliModel.shadowMainRotorHubMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailRotorAxelShape->Draw(m_heliModel.shadowTailRotorAxelMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailRotorHubShape->Draw(m_heliModel.shadowTailRotorHubMat, aView, aProj, m_heliModel.shadowColor);
+    
+    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.shadowMainRotorMat1, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.shadowMainRotorMat2, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.shadowTailRotorMat1, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.shadowTailRotorMat2, aView, aProj, m_heliModel.shadowColor);
+    
+    m_heliModel.mainRotorArmShape->Draw(m_heliModel.shadowMainRotorArmMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailRotorArmShape->Draw(m_heliModel.shadowTailRotorArmMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.noseConeShape->Draw(m_heliModel.shadowNoseMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.noseBodyShape->Draw(m_heliModel.shadowNoseBodyMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.engineHousingSideShape->Draw(m_heliModel.shadowHouseingLeftMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineHousingSideShape->Draw(m_heliModel.shadowHouseingRightMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailBoomNewShape->Draw(m_heliModel.shadowBoomBottomMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailBoomNewShape->Draw(m_heliModel.shadowBoomTopMat, aView, aProj, m_heliModel.shadowColor);
 }
 
 void Vehicle::InitializeEngine(Engine& aEngine)
@@ -1826,6 +1872,14 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.tailRotorTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
     m_heliModel.tailRotorTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(180.0f));
     m_heliModel.tailRotorTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(tailArmTranslation);
+
+    // shadows
+    DirectX::SimpleMath::Vector3 baseShadowSize = DirectX::SimpleMath::Vector3(5.0f, 10.0f, 5.0f);;
+    baseShadowSize.y *= 0.5f;
+    m_heliModel.shadowBaseShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), baseShadowSize);
+    m_heliModel.localShadowBaseMat = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.localShadowBaseMat *= DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(baseShadowSize.x * 0.04f, baseShadowSize.y * 0.45f, 0.0f));
+
 }
 
 void Vehicle::InitializeRotorBlades(HeliData& aHeliData)
@@ -2796,6 +2850,9 @@ void Vehicle::UpdateAlignmentTorqueTest(const float aTimeDelta)
             m_heli.q.angularQuat = updateAlignOutputQuat;
 
             m_heli.alignment = DirectX::SimpleMath::Matrix::CreateFromQuaternion(m_heli.q.angularQuat);
+            float rotVal = Utility::ToRadians(90.0f);
+            DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateFromYawPitchRoll(0.0, rotVal, 0.0);
+            //m_heli.alignment = rotMat;
             m_heli.inverseAlignment = m_heli.alignment;
             m_heli.inverseAlignment = m_heli.inverseAlignment.Invert();
             m_heli.alignmentQuat = m_heli.q.angularQuat;
@@ -3714,6 +3771,260 @@ void Vehicle::UpdateModel()
     m_heliModel.tailRotorEdgeStripe2Matrix2 *= tailArmSpin;
     m_heliModel.tailRotorEdgeStripe2Matrix2 *= m_heliModel.tailRotorTranslationMatrix2;
     m_heliModel.tailRotorEdgeStripe2Matrix2 *= updateMat;
+
+    // update shadow model
+    //DirectX::SimpleMath::Vector3 lightDir = m_environment->GetLightDirectionPrime();
+    DirectX::SimpleMath::Vector3 lightDir = -DirectX::SimpleMath::Vector3::UnitY;
+    //DirectX::SimpleMath::Plane groundPlane = m_vehicleStruct00.vehicleData.groundPlane;
+    DirectX::SimpleMath::Plane groundPlane;
+    groundPlane.x = 0.0f;
+    groundPlane.y = -1.0f;
+    groundPlane.z = 0.0f;
+    groundPlane.w = 0.5f;
+
+    DirectX::SimpleMath::Vector3 zFightOffSet = groundPlane.Normal() * 0.1f;
+    DirectX::SimpleMath::Matrix planeTrans = DirectX::SimpleMath::Matrix::Identity;
+    planeTrans *= DirectX::SimpleMath::Matrix::CreateTranslation(zFightOffSet);
+    DirectX::SimpleMath::Matrix planeTrans2 = planeTrans;
+    planeTrans2 = planeTrans2.Transpose();
+
+    //groundPlane = DirectX::SimpleMath::Plane::Transform(groundPlane, m_heli.inverseAlignment);
+    groundPlane = DirectX::SimpleMath::Plane::Transform(groundPlane, planeTrans2);
+    
+    //float alt = m_vehicleStruct00.vehicleData.altitude;
+    float alt = m_heli.q.position.y;
+
+    //lightDir = DirectX::SimpleMath::Vector3::Transform(lightDir, m_heli.alignment);
+    //groundPlane = DirectX::SimpleMath::Plane::Transform(groundPlane, m_heli.alignment);
+    DirectX::SimpleMath::Matrix shadowMat = DirectX::SimpleMath::Matrix::CreateShadow(lightDir, groundPlane);
+
+    //const float maxShadowRange = m_environment->GetMaxShadowCastRange();
+    const float maxShadowRange = 50.0f;
+    float shadowScale;
+    float inverseShadowScale;
+    //if (m_vehicleStruct00.vehicleData.altitude > maxShadowRange)
+    if (alt > maxShadowRange)
+    {
+        shadowScale = 0.0f;
+        inverseShadowScale = 1.0f;
+    }
+    else
+    {
+        //inverseShadowScale = m_vehicleStruct00.vehicleData.altitude / maxShadowRange;
+        inverseShadowScale = alt / maxShadowRange;
+        shadowScale = 1.0f - inverseShadowScale;
+    }
+    DirectX::SimpleMath::Matrix shadowScaleMat = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(shadowScale, shadowScale, shadowScale));
+
+    //updateMat = DirectX::SimpleMath::Matrix::CreateWorld(m_heli.q.position, -m_heli.right, m_heli.up);
+
+    m_heliModel.shadowBaseMat = m_heliModel.localBodyMatrix;
+    m_heliModel.shadowBaseMat *= inverseShadowScale;
+    m_heliModel.shadowBaseMat *= shadowScaleMat;
+    m_heliModel.shadowBaseMat *= updateMat;
+    m_heliModel.shadowBaseMat *= shadowMat;
+
+    m_heliModel.shadowFrontNoseMat = m_heliModel.localWindShieldMatrix;
+    m_heliModel.shadowFrontNoseMat *= inverseShadowScale;
+    m_heliModel.shadowFrontNoseMat *= shadowScaleMat;
+    m_heliModel.shadowFrontNoseMat *= updateMat;
+    m_heliModel.shadowFrontNoseMat *= shadowMat;
+
+    m_heliModel.shadowNoseMat = m_heliModel.localNoseConeMatrix;
+    m_heliModel.shadowNoseMat *= inverseShadowScale;
+    m_heliModel.shadowNoseMat *= shadowScaleMat;
+    m_heliModel.shadowNoseMat *= updateMat;
+    m_heliModel.shadowNoseMat *= shadowMat;
+
+    m_heliModel.shadowNoseBodyMat = m_heliModel.localNoseBodyMatrix;
+    m_heliModel.shadowNoseBodyMat *= inverseShadowScale;
+    m_heliModel.shadowNoseBodyMat *= shadowScaleMat;
+    m_heliModel.shadowNoseBodyMat *= updateMat;
+    m_heliModel.shadowNoseBodyMat *= shadowMat;
+
+    m_heliModel.shadowRearNoseMat = m_heliModel.localBodyRearMatrix;
+    m_heliModel.shadowRearNoseMat *= inverseShadowScale;
+    m_heliModel.shadowRearNoseMat *= shadowScaleMat;
+    m_heliModel.shadowRearNoseMat *= updateMat;
+    m_heliModel.shadowRearNoseMat *= shadowMat;
+
+    m_heliModel.shadowBoomMat = m_heliModel.localTailBoomMatrix;
+    m_heliModel.shadowBoomMat *= inverseShadowScale;
+    m_heliModel.shadowBoomMat *= shadowScaleMat;
+    m_heliModel.shadowBoomMat *= updateMat;
+    m_heliModel.shadowBoomMat *= shadowMat;
+
+    m_heliModel.shadowBoomBottomMat = m_heliModel.localTailBoomLowerMatrix;
+    m_heliModel.shadowBoomBottomMat *= inverseShadowScale;
+    m_heliModel.shadowBoomBottomMat *= shadowScaleMat;
+    m_heliModel.shadowBoomBottomMat *= updateMat;
+    m_heliModel.shadowBoomBottomMat *= shadowMat;
+
+    m_heliModel.shadowBoomTopMat = m_heliModel.localTailBoomUpperMatrix;
+    m_heliModel.shadowBoomTopMat *= inverseShadowScale;
+    m_heliModel.shadowBoomTopMat *= shadowScaleMat;
+    m_heliModel.shadowBoomTopMat *= updateMat;
+    m_heliModel.shadowBoomTopMat *= shadowMat;
+
+    m_heliModel.shadowBoomEndCapMat = m_heliModel.localTailBoomMidEndCapMatrix;
+    m_heliModel.shadowBoomEndCapMat *= inverseShadowScale;
+    m_heliModel.shadowBoomEndCapMat *= shadowScaleMat;
+    m_heliModel.shadowBoomEndCapMat *= updateMat;
+    m_heliModel.shadowBoomEndCapMat *= shadowMat;
+
+    m_heliModel.shadowMainWingMat = m_heliModel.localMainWingMatrix;
+    m_heliModel.shadowMainWingMat *= inverseShadowScale;
+    m_heliModel.shadowMainWingMat *= shadowScaleMat;
+    m_heliModel.shadowMainWingMat *= updateMat;
+    m_heliModel.shadowMainWingMat *= shadowMat;
+
+    m_heliModel.shadowMainWingFrontMat = m_heliModel.localMainWingLeadingEdgeMatrix;
+    m_heliModel.shadowMainWingFrontMat *= inverseShadowScale;
+    m_heliModel.shadowMainWingFrontMat *= shadowScaleMat;
+    m_heliModel.shadowMainWingFrontMat *= updateMat;
+    m_heliModel.shadowMainWingFrontMat *= shadowMat;
+
+    m_heliModel.shadowMainWingRearMat = m_heliModel.localMainWingTailEdgeMatrix;
+    m_heliModel.shadowMainWingRearMat *= inverseShadowScale;
+    m_heliModel.shadowMainWingRearMat *= shadowScaleMat;
+    m_heliModel.shadowMainWingRearMat *= updateMat;
+    m_heliModel.shadowMainWingRearMat *= shadowMat;
+
+    m_heliModel.shadowTailWingMat = m_heliModel.localTailWingMatrix;
+    m_heliModel.shadowTailWingMat *= inverseShadowScale;
+    m_heliModel.shadowTailWingMat *= shadowScaleMat;
+    m_heliModel.shadowTailWingMat *= updateMat;
+    m_heliModel.shadowTailWingMat *= shadowMat;
+
+    m_heliModel.shadowTailFinLowerMat = m_heliModel.localTailFinLowerMatrix;
+    m_heliModel.shadowTailFinLowerMat *= inverseShadowScale;
+    m_heliModel.shadowTailFinLowerMat *= shadowScaleMat;
+    m_heliModel.shadowTailFinLowerMat *= updateMat;
+    m_heliModel.shadowTailFinLowerMat *= shadowMat;
+
+    m_heliModel.shadowTailFinUpperMat = m_heliModel.localTailFinUpperMatrix;
+    m_heliModel.shadowTailFinUpperMat *= inverseShadowScale;
+    m_heliModel.shadowTailFinUpperMat *= shadowScaleMat;
+    m_heliModel.shadowTailFinUpperMat *= updateMat;
+    m_heliModel.shadowTailFinUpperMat *= shadowMat;
+
+    m_heliModel.shadowTailRotorHubMat = m_heliModel.localTailRotorHubMatrix;
+    m_heliModel.shadowTailRotorHubMat *= inverseShadowScale;
+    m_heliModel.shadowTailRotorHubMat *= shadowScaleMat;
+    m_heliModel.shadowTailRotorHubMat *= updateMat;
+    m_heliModel.shadowTailRotorHubMat *= shadowMat;
+
+    m_heliModel.shadowTailRotorAxelMat = m_heliModel.localTailRotorAxelMatrix;
+    m_heliModel.shadowTailRotorAxelMat *= inverseShadowScale;
+    m_heliModel.shadowTailRotorAxelMat *= shadowScaleMat;
+    m_heliModel.shadowTailRotorAxelMat *= updateMat;
+    m_heliModel.shadowTailRotorAxelMat *= shadowMat;
+
+    m_heliModel.shadowMainRotorAxelMat = m_heliModel.localMainRotorAxelMatrix;
+    m_heliModel.shadowMainRotorAxelMat *= inverseShadowScale;
+    m_heliModel.shadowMainRotorAxelMat *= shadowScaleMat;
+    m_heliModel.shadowMainRotorAxelMat *= updateMat;
+    m_heliModel.shadowMainRotorAxelMat *= shadowMat;
+
+    m_heliModel.shadowMainRotorHubMat = m_heliModel.localMainRotorHubMatrix;
+    m_heliModel.shadowMainRotorHubMat *= inverseShadowScale;
+    m_heliModel.shadowMainRotorHubMat *= shadowScaleMat;
+    m_heliModel.shadowMainRotorHubMat *= updateMat;
+    m_heliModel.shadowMainRotorHubMat *= shadowMat;
+
+    m_heliModel.shadowHouseingMainMat = m_heliModel.localEngineHousingMatrix;
+    m_heliModel.shadowHouseingMainMat *= inverseShadowScale;
+    m_heliModel.shadowHouseingMainMat *= shadowScaleMat;
+    m_heliModel.shadowHouseingMainMat *= updateMat;
+    m_heliModel.shadowHouseingMainMat *= shadowMat;
+
+    m_heliModel.shadowHouseingFrontMat = m_heliModel.localEngineHousingFrontMatrix;
+    m_heliModel.shadowHouseingFrontMat *= inverseShadowScale;
+    m_heliModel.shadowHouseingFrontMat *= shadowScaleMat;
+    m_heliModel.shadowHouseingFrontMat *= updateMat;
+    m_heliModel.shadowHouseingFrontMat *= shadowMat;
+
+    m_heliModel.shadowHouseingLeftMat = m_heliModel.localEngineHousingSideLeftMatrix;
+    m_heliModel.shadowHouseingLeftMat *= inverseShadowScale;
+    m_heliModel.shadowHouseingLeftMat *= shadowScaleMat;
+    m_heliModel.shadowHouseingLeftMat *= updateMat;
+    m_heliModel.shadowHouseingLeftMat *= shadowMat;
+
+    m_heliModel.shadowHouseingRightMat = m_heliModel.localEngineHousingSideRightMatrix;
+    m_heliModel.shadowHouseingRightMat *= inverseShadowScale;
+    m_heliModel.shadowHouseingRightMat *= shadowScaleMat;
+    m_heliModel.shadowHouseingRightMat *= updateMat;
+    m_heliModel.shadowHouseingRightMat *= shadowMat;
+
+    m_heliModel.shadowHouseingRearMat = m_heliModel.localEngineHousingRearMatrix;
+    m_heliModel.shadowHouseingRearMat *= inverseShadowScale;
+    m_heliModel.shadowHouseingRearMat *= shadowScaleMat;
+    m_heliModel.shadowHouseingRearMat *= updateMat;
+    m_heliModel.shadowHouseingRearMat *= shadowMat;
+
+    m_heliModel.shadowRearWingFinLeftMat = m_heliModel.localTailWingFinLeftMatrix;
+    m_heliModel.shadowRearWingFinLeftMat *= inverseShadowScale;
+    m_heliModel.shadowRearWingFinLeftMat *= shadowScaleMat;
+    m_heliModel.shadowRearWingFinLeftMat *= updateMat;
+    m_heliModel.shadowRearWingFinLeftMat *= shadowMat;
+
+    m_heliModel.shadowRearWingFinRightMat = m_heliModel.localTailWingFinRightMatrix;
+    m_heliModel.shadowRearWingFinRightMat *= inverseShadowScale;
+    m_heliModel.shadowRearWingFinRightMat *= shadowScaleMat;
+    m_heliModel.shadowRearWingFinRightMat *= updateMat;
+    m_heliModel.shadowRearWingFinRightMat *= shadowMat;
+
+    m_heliModel.shadowMainRotorMat1 = m_heliModel.mainRotorBladeTranslationMatrix1;
+    m_heliModel.shadowMainRotorMat1 *= mainRotorPitch1;
+    m_heliModel.shadowMainRotorMat1 *= m_heliModel.localMainRotorBladeMatrix1;
+    m_heliModel.shadowMainRotorMat1 *= mainRotorSpin;
+    m_heliModel.shadowMainRotorMat1 *= inverseShadowScale;
+    m_heliModel.shadowMainRotorMat1 *= shadowScaleMat;
+    m_heliModel.shadowMainRotorMat1 *= updateMat;
+    m_heliModel.shadowMainRotorMat1 *= shadowMat;
+
+    m_heliModel.shadowMainRotorMat2 = m_heliModel.mainRotorBladeTranslationMatrix2;
+    m_heliModel.shadowMainRotorMat2 *= mainRotorPitch2;
+    m_heliModel.shadowMainRotorMat2 *= m_heliModel.localMainRotorBladeMatrix2;
+    m_heliModel.shadowMainRotorMat2 *= mainRotorSpin;
+    m_heliModel.shadowMainRotorMat2 *= inverseShadowScale;
+    m_heliModel.shadowMainRotorMat2 *= shadowScaleMat;
+    m_heliModel.shadowMainRotorMat2 *= updateMat;
+    m_heliModel.shadowMainRotorMat2 *= shadowMat;
+
+    // tail rotor blade 1
+    m_heliModel.shadowTailRotorMat1 = m_heliModel.localTailRotorBladeMatrix1;
+    m_heliModel.shadowTailRotorMat1 *= tailRotorPitch1;
+    m_heliModel.shadowTailRotorMat1 *= tailArmSpin;
+    m_heliModel.shadowTailRotorMat1 *= m_heliModel.tailRotorBladeTranslationMatrix1;
+    m_heliModel.shadowTailRotorMat1 *= inverseShadowScale;
+    m_heliModel.shadowTailRotorMat1 *= shadowScaleMat;
+    m_heliModel.shadowTailRotorMat1 *= updateMat;
+    m_heliModel.shadowTailRotorMat1 *= shadowMat;
+
+    // tail rotor blade 2
+    m_heliModel.shadowTailRotorMat2 = m_heliModel.localTailRotorBladeMatrix2;
+    m_heliModel.shadowTailRotorMat2 *= tailRotorPitch2;
+    m_heliModel.shadowTailRotorMat2 *= tailArmSpin;
+    m_heliModel.shadowTailRotorMat2 *= m_heliModel.tailRotorBladeTranslationMatrix2;
+    m_heliModel.shadowTailRotorMat2 *= inverseShadowScale;
+    m_heliModel.shadowTailRotorMat2 *= shadowScaleMat;
+    m_heliModel.shadowTailRotorMat2 *= updateMat;
+    m_heliModel.shadowTailRotorMat2 *= shadowMat;
+
+    m_heliModel.shadowMainRotorArmMat = m_heliModel.localMainRotorArmMatrix;
+    m_heliModel.shadowMainRotorArmMat *= mainRotorSpin;
+    m_heliModel.shadowMainRotorArmMat *= inverseShadowScale;
+    m_heliModel.shadowMainRotorArmMat *= shadowScaleMat;
+    m_heliModel.shadowMainRotorArmMat *= updateMat;
+    m_heliModel.shadowMainRotorArmMat *= shadowMat;
+
+    m_heliModel.shadowTailRotorArmMat = tailArmSpin;
+    m_heliModel.shadowTailRotorArmMat *= m_heliModel.localTailRotorArmMatrix;
+    m_heliModel.shadowTailRotorArmMat *= inverseShadowScale;
+    m_heliModel.shadowTailRotorArmMat *= shadowScaleMat;
+    m_heliModel.shadowTailRotorArmMat *= updateMat;
+    m_heliModel.shadowTailRotorArmMat *= shadowMat;
 }
 
 void Vehicle::UpdatePendulumMotion(Utility::Torque& aTorque, DirectX::SimpleMath::Vector3& aVelocity, const float aTimeStep)
@@ -4012,6 +4323,9 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
 {
     DebugClearUI();
 
+    m_testTimer2 += static_cast<float>(aTimeDelta);
+    DebugPushUILineDecimalNumber("m_testTimer2", m_testTimer2, "");
+    
     //DebugPushTestLinePositionIndicator(m_heli.q.position, 4.0f, 0.0f, DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.0f, 1.0f));
     UpdatePhysicsPoints(m_heli);
     

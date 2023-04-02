@@ -718,6 +718,53 @@ struct HeliModel
 
     DirectX::SimpleMath::Matrix tailRotorTranslationMatrix1;
     DirectX::SimpleMath::Matrix tailRotorTranslationMatrix2;
+
+    // shadows
+    std::unique_ptr<DirectX::GeometricPrimitive>    shadowBaseShape;
+    DirectX::SimpleMath::Matrix localShadowBaseMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowBaseMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix localShadowFrontNoseMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowFrontNoseTranslationMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowFrontNoseMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowRearNoseMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowMainRotorMat1 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowMainRotorMat2 = DirectX::SimpleMath::Matrix::Identity;
+
+    DirectX::SimpleMath::Matrix shadowBoomMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowBoomBottomMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowBoomTopMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowBoomEndCapMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowMainWingMat = DirectX::SimpleMath::Matrix::Identity;
+
+    DirectX::SimpleMath::Matrix shadowMainWingFrontMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowMainWingRearMat = DirectX::SimpleMath::Matrix::Identity;
+
+    DirectX::SimpleMath::Matrix shadowTailWingMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowTailFinUpperMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowTailFinLowerMat = DirectX::SimpleMath::Matrix::Identity;
+
+    DirectX::SimpleMath::Matrix shadowTailRotorMat1 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowTailRotorMat2 = DirectX::SimpleMath::Matrix::Identity;
+
+    DirectX::SimpleMath::Matrix shadowTailRotorAxelMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowTailRotorHubMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowMainRotorAxelMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowMainRotorHubMat = DirectX::SimpleMath::Matrix::Identity;
+
+    DirectX::SimpleMath::Matrix shadowHouseingFrontMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowHouseingLeftMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowHouseingMainMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowHouseingRearMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowHouseingRightMat = DirectX::SimpleMath::Matrix::Identity;
+    
+    DirectX::SimpleMath::Matrix shadowRearWingFinLeftMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowRearWingFinRightMat = DirectX::SimpleMath::Matrix::Identity;
+
+    DirectX::SimpleMath::Matrix shadowMainRotorArmMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowTailRotorArmMat = DirectX::SimpleMath::Matrix::Identity;
+
+    DirectX::SimpleMath::Matrix shadowNoseMat = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix shadowNoseBodyMat = DirectX::SimpleMath::Matrix::Identity;
 };
 
 class Vehicle
