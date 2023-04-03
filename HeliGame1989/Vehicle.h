@@ -1,10 +1,9 @@
 #pragma once
-//#include "Camera.h"
+
 #include "pch.h"
-#include "Utility.h"
 #include "Environment.h"
-
-
+#include "DebugData.h"
+#include "Utility.h"
 
 struct ControlInput
 {
@@ -813,6 +812,7 @@ public:
     void Jump();
 
     void ResetVehicle();
+    void SetDebugData(std::shared_ptr<DebugData> aDebugPtr);
     void SetEnvironment(Environment* aEnviron);
 
     void ToggleLandingGearState();
@@ -852,6 +852,7 @@ private:
 
     Utility::Torque UpdateBodyTorqueTest(const float aTimeStep);
     Utility::Torque UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorque, const float aTimeStep);
+    Utility::Torque UpdateBodyTorqueTestRungeOld(Utility::Torque aPendulumTorque, const float aTimeStep);
     void UpdateAlignmentCamera();
     void UpdateCyclicStick(ControlInput& aInput);
     float UpdateGroundEffectForce(const float aLiftForce);
@@ -873,6 +874,7 @@ private:
     float WindVaningVal(const HeliData& aHeliData, const float aTimeStep);
 
     Environment const*              m_environment;
+    std::shared_ptr<DebugData>      m_debugData;
     HeliData                        m_heli;
     HeliModel                       m_heliModel;
 
@@ -910,12 +912,13 @@ private:
     DirectX::SimpleMath::Vector3 m_testPos2 = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_testPos3 = DirectX::SimpleMath::Vector3::Zero;
 
-    const float m_inertiaModelX = 10.0f;
-    const float m_inertiaModelY = 5.0f;
-    const float m_inertiaModelZ = 5.0f;
-    const float m_inertiaMass = 1.1f;
+    const float m_inertiaModelX = 5.0f;
+    const float m_inertiaModelY = 2.0f;
+    const float m_inertiaModelZ = 2.0f;
+    const float m_inertiaMass = 2000.1f;
+    const float m_testMass = 2000.0f;
 
     const bool m_isUseNewPhysicsTrue = true;
-    const float m_angularDamping = 0.9f;
+    const float m_angularDamping = 0.7f;
 };
 

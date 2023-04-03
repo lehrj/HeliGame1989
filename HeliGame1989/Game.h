@@ -3,11 +3,13 @@
 //
 
 #pragma once
-#include "Keyboard.h"
 #include "AnimatedTexture.h"
+#include "Keyboard.h"
 #include "SpriteSheet.h"
 #include "WICTextureLoader.h"
+
 #include "Camera.h"
+#include "DebugData.h"
 #include "Environment.h"
 #include "Lighting.h"
 #include "sounds.h"
@@ -57,6 +59,8 @@ private:
     void CreateResources();
 
     void DrawCameraFocus();
+    void DrawDebugLinesVectorNew();
+    void DrawDebugDataUI();
     void DrawDebugLines(const DirectX::SimpleMath::Vector3 aPos, const DirectX::XMVECTORF32 aColor);
     void DrawDebugNormalLines(const DirectX::SimpleMath::Vector3 aPos, const DirectX::XMVECTORF32 aColor);
     void DrawDebugLinesVector();
@@ -111,6 +115,7 @@ private:
     void UpdateInput(DX::StepTimer const& aTimer);
 
     Camera* m_camera;
+    std::shared_ptr<DebugData> m_debugData;
     Vehicle* m_vehicle;
     Environment* m_environment;
     Lighting* m_lighting;

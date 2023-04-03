@@ -20,6 +20,7 @@
     <ClInclude Include="sounds.h" />
     <ClInclude Include="FireControl.h" />
     <ClInclude Include="NPCController.h" />
+    <ClInclude Include="DebugData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="FireControl.cpp" />
     <ClCompile Include="NPCController.cpp" />
+    <ClCompile Include="DebugData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

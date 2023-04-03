@@ -24,6 +24,7 @@ Game::Game() noexcept :
     //srand(time(NULL));
     srand(0);
 
+    m_debugData = std::make_shared<DebugData>();
     m_environment = new Environment();
 
     m_camera = new Camera(m_outputWidth, m_outputHeight);
@@ -591,6 +592,71 @@ void Game::DrawCameraFocus()
     m_batch2->DrawLine(origin, zOffset);
 }
 
+void Game::DrawDebugDataUI()
+{
+    std::vector<std::string> uiVector = m_debugData->DebugGetUIVector();
+    DirectX::SimpleMath::Vector2 textLinePos = m_fontPos2;
+    textLinePos.x = 200;
+    //textLinePos.y += 30;
+    for (int i = 0; i < uiVector.size(); ++i)
+    {
+        std::string textLine = uiVector[i];
+        DirectX::SimpleMath::Vector2 textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
+        textLinePos.x = textLineOrigin.x + 20;
+        m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
+        textLinePos.y += 30;
+    }
+    // Draw speed with formatting
+    float speed = m_vehicle->GetGroundSpeed() * 2.23694f;
+    std::string speedLine = "Ground Speed: " + std::to_string(static_cast<int>(speed)) + " MPH";
+    DirectX::SimpleMath::Vector2 speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
+    textLinePos.x = speedLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    textLinePos.y += 30;
+
+    speed = m_vehicle->GetAirSpeed() * 2.23694f;
+    speedLine = "Air Speed: " + std::to_string(static_cast<int>(speed)) + " MPH";
+    speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
+    textLinePos.x = speedLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    textLinePos.y += 30;
+
+    float rpm = m_vehicle->GetRPM() * 1.0f;
+    std::string rpmLine = "Rotor RPM: " + std::to_string(static_cast<int>(rpm)) + " ";
+    DirectX::SimpleMath::Vector2 rpmLineOrigin = m_bitwiseFont->MeasureString(rpmLine.c_str()) / 2.f;
+    textLinePos.x = rpmLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos, Colors::White, 0.f, rpmLineOrigin);
+    textLinePos.y += 30;
+
+    float collective = m_vehicle->GetCollective() * 100.0f;
+    std::string collectiveLine = "Collective: " + std::to_string(static_cast<int>(collective)) + "% ";
+    DirectX::SimpleMath::Vector2 collectiveLineOrigin = m_bitwiseFont->MeasureString(collectiveLine.c_str()) / 2.f;
+    textLinePos.x = collectiveLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos, Colors::White, 0.f, collectiveLineOrigin);
+    textLinePos.y += 30;
+
+    float throttle = m_vehicle->GetThrottle() * 100.0f;
+    std::string throttleLine = "Throttle: " + std::to_string(static_cast<int>(throttle)) + "% ";
+    DirectX::SimpleMath::Vector2 throttleLineOrigin = m_bitwiseFont->MeasureString(throttleLine.c_str()) / 2.f;
+    textLinePos.x = throttleLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos, Colors::White, 0.f, throttleLineOrigin);
+    textLinePos.y += 30;
+
+    float altitude = m_vehicle->GetAltitude();
+    std::string altitudeLine = "Altitude: " + std::to_string(static_cast<int>(altitude)) + "m ";
+    DirectX::SimpleMath::Vector2 altitudeLineOrigin = m_bitwiseFont->MeasureString(altitudeLine.c_str()) / 2.f;
+    textLinePos.x = altitudeLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos, Colors::White, 0.f, altitudeLineOrigin);
+    textLinePos.y += 30;
+
+    // Draw FPS  
+    std::string textLine = "FPS  " + std::to_string(m_timer.GetFramesPerSecond());
+    DirectX::SimpleMath::Vector2 textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
+    textLinePos.x = textLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
+    textLinePos.y += 30;
+}
+
 void Game::DrawDebugLines(const  DirectX::SimpleMath::Vector3 aPos, const DirectX::XMVECTORF32 aColor)
 {
     const float line = .25f;
@@ -660,6 +726,27 @@ void Game::DrawDebugLinesVector()
         DirectX::SimpleMath::Vector4 lineColor = std::get<2>(lineTup[i]);
         VertexPositionColor lineStart(std::get<0>(lineTup[i]), lineColor);
         VertexPositionColor lineEnd(std::get<1>(lineTup[i]), lineColor);
+        m_batch3->DrawLine(lineStart, lineEnd);
+    }
+}
+
+void Game::DrawDebugLinesVectorNew()
+{
+    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> lineTup = m_debugData->DebugGetTestLines();
+    for (unsigned int i = 0; i < lineTup.size(); ++i)
+    {
+        DirectX::SimpleMath::Vector4 lineColor = std::get<2>(lineTup[i]);
+        VertexPositionColor lineStart(std::get<0>(lineTup[i]), lineColor);
+        VertexPositionColor lineEnd(std::get<1>(lineTup[i]), lineColor);
+        m_batch3->DrawLine(lineStart, lineEnd);
+    }
+
+    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::XMVECTORF32>> lineTupVec = m_debugData->GetDebugLinesVec();
+    for (unsigned int i = 0; i < lineTupVec.size(); ++i)
+    {
+        DirectX::XMVECTORF32 lineColor = std::get<2>(lineTupVec[i]);
+        VertexPositionColor lineStart(std::get<0>(lineTupVec[i]), lineColor);
+        VertexPositionColor lineEnd(std::get<1>(lineTupVec[i]), lineColor);
         m_batch3->DrawLine(lineStart, lineEnd);
     }
 }
@@ -2488,6 +2575,7 @@ void Game::Initialize(HWND window, int width, int height)
         errorBreak++;
     }
     m_vehicle->InitializeVehicle(m_d3dContext);
+    m_vehicle->SetDebugData(m_debugData);
     //m_vehicle->InitializeVehicle(m_d3dContext, m_effect2, m_inputLayout);
     // testing new terrain map
     m_terrainVector.clear();
@@ -3672,7 +3760,8 @@ void Game::Render()
     
     //DrawTerrainNormals();
     //DrawDebugNormalLines(m_vehicle->GetModelTestPos(), DirectX::Colors::Blue);
-    //DrawDebugLinesVector();
+    DrawDebugLinesVector();
+    DrawDebugLinesVectorNew();
     //DrawGridForStartScreen();
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
@@ -3708,7 +3797,8 @@ void Game::Render()
     }
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
-        DrawDebugVehicleData();
+        DrawDebugDataUI();
+        //DrawDebugVehicleData();
         //DrawUI();
     }
     if (m_currentGameState == GameState::GAMESTATE_TEASERSCREEN)
@@ -3800,6 +3890,7 @@ void Game::Update(DX::StepTimer const& aTimer)
     }
     */
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_BMW);
+    m_debugData->DebugClearUI();
     UpdateInput(aTimer);
     m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
     
