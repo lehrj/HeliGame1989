@@ -4387,11 +4387,11 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
             m_vehicle->ToggleLandingGearState();
         }
     }
-    if (m_kbStateTracker.pressed.Z)
+    if (m_kbStateTracker.released.Z)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-
+            m_vehicle->DebugToggle2();
         }
     }
     if (m_kbStateTracker.pressed.X)

@@ -138,6 +138,7 @@ struct HeliData
     // rotor data
     const float mainRotorForceMagMax = 15.0f;
     const float mainRotorForceMagMin = 0.0f;
+    const float tailRotorForceMagMax = 2000.0f; // vehicle mass value should work here
     DirectX::SimpleMath::Vector3 mainRotorPos;
     DirectX::SimpleMath::Vector3 localMainRotorPos;
     float       mainRotorRPM;
@@ -149,6 +150,9 @@ struct HeliData
     DirectX::SimpleMath::Vector3 localCenterOfMass;
     DirectX::SimpleMath::Vector3 landingGearPos;
     DirectX::SimpleMath::Vector3 localLandingGearPos;
+    DirectX::SimpleMath::Vector3 gravityTorqueArmPos;
+    DirectX::SimpleMath::Vector3 localGravityTorqueArmPos;
+
     //
     int     numEqns;
     double  time;
@@ -183,6 +187,13 @@ struct HeliData
 
     float   testAccel = 0.0;
     DirectX::SimpleMath::Vector3 testAccelVec = DirectX::SimpleMath::Vector3::Zero;
+
+    DirectX::SimpleMath::Vector3 centrifugalForce = DirectX::SimpleMath::Vector3::Zero;
+    DirectX::SimpleMath::Vector3 centrifugalForcePrevFrame = DirectX::SimpleMath::Vector3::Zero;
+    DirectX::SimpleMath::Quaternion centrifugalForcePrevQuatFrame = DirectX::SimpleMath::Quaternion::Identity;
+
+    DirectX::SimpleMath::Vector3 angularDrag = DirectX::SimpleMath::Vector3::Zero;
+    DirectX::SimpleMath::Vector3 angularDrag2 = DirectX::SimpleMath::Vector3::Zero;
 
     DirectX::SimpleMath::Matrix inertiaMatrix;
     DirectX::SimpleMath::Matrix inverseInertiaMatrix;
@@ -772,6 +783,7 @@ class Vehicle
 {
 public: 
     void DebugToggle();
+    void DebugToggle2();
     std::vector<std::pair<std::string, float>> DebugGetUI() { return m_debugUI; };
     std::vector<std::string> DebugGetUIVector() { return m_debugUIVector; };
     std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> DebugGetTestLines() const { return m_debugLinesVec; };
@@ -823,7 +835,8 @@ public:
 
 private:
     float CalculateLiftCoefficient(const float aAngle);
-
+    DirectX::SimpleMath::Vector3 CalculateDragAngularLocal(const DirectX::SimpleMath::Vector3 aAngVelocity);
+    DirectX::SimpleMath::Vector3 CalculateStabilityTorqueLocal(const HeliData& aHeliData, const float aTimeStep);
     void DebugClearUI() { 
         m_debugUI.clear();
         m_debugUIVector.clear();
@@ -856,6 +869,7 @@ private:
     Utility::Torque UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorque, const float aTimeStep);
     Utility::Torque UpdateBodyTorqueTestRungeOld(Utility::Torque aPendulumTorque, const float aTimeStep);
     void UpdateAlignmentCamera();
+    void UpdateCentrifugalForce(const float aTimeStep);
     void UpdateCyclicStick(ControlInput& aInput);
     float UpdateGroundEffectForce(const float aLiftForce);
     void UpdateLandingGear(struct LandingGear& aLandingGear, const double aTimeDelta);
@@ -911,6 +925,8 @@ private:
     DirectX::SimpleMath::Vector3 m_prevUp = DirectX::SimpleMath::Vector3::UnitY;
 
     bool m_debugToggle = false;
+    bool m_debugToggle2 = false;
+    bool m_debugToggle3 = false;
     DirectX::SimpleMath::Vector3 m_testPos = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_testPos2 = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_testPos3 = DirectX::SimpleMath::Vector3::Zero;
@@ -920,8 +936,14 @@ private:
     const float m_inertiaModelZ = 2.0f;
     const float m_inertiaMass = 2000.1f;
     const float m_testMass = 2000.0f;
+    const float m_angDragCoefficient = 0.8f;
+    const float m_angDragLength = 8.0f;
+    const float m_angDragWidth = 4.0f;
+    const float m_angDragHeight = 2.0f;
+
+    const float m_gravTorqueModTest = 150.0f;
 
     const bool m_isUseNewPhysicsTrue = true;
-    const float m_angularDamping = 0.7f;
+    const float m_angularDamping = 0.9f;
 };
 
