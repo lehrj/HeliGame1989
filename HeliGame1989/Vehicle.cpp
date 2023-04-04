@@ -2018,6 +2018,13 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.q.mainRotorForceNormal = DirectX::SimpleMath::Vector3::UnitY;
     m_heli.q.mainRotorForceMagnitude = 15.0f;
     m_heli.q.position = DirectX::SimpleMath::Vector3::Zero;
+    m_heli.altitude = 0.0f;
+    m_heli.groundPlane.x = 0.0f;
+    m_heli.groundPlane.y = -1.0f;
+    m_heli.groundPlane.z = 0.0f;
+    m_heli.groundPlane.w = 0.5f;
+    m_heli.terrainHightAtPos = 0.0;
+    m_heli.terrainNormal = DirectX::SimpleMath::Vector3::UnitY;
 
     m_heli.q.tailRotorForceNormal = -m_heli.right;
     m_heli.q.tailRotorForceMagnitude = 0.0f;
@@ -2031,9 +2038,6 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.isVehicleAirborne = false;
     m_heli.isVehicleLanding = false;
     m_heli.isVelocityBackwards = false;
-
-    m_heli.terrainHightAtPos = 0.0;
-    m_heli.terrainNormal = DirectX::SimpleMath::Vector3::UnitY;
 
     // set up rotor blades
     InitializeRotorBlades(m_heli);
@@ -3866,14 +3870,8 @@ void Vehicle::UpdateModel()
     m_heliModel.tailRotorEdgeStripe2Matrix2 *= updateMat;
 
     // update shadow model
-    //DirectX::SimpleMath::Vector3 lightDir = m_environment->GetLightDirectionPrime();
-    DirectX::SimpleMath::Vector3 lightDir = -DirectX::SimpleMath::Vector3::UnitY;
-    //DirectX::SimpleMath::Plane groundPlane = m_vehicleStruct00.vehicleData.groundPlane;
-    DirectX::SimpleMath::Plane groundPlane;
-    groundPlane.x = 0.0f;
-    groundPlane.y = -1.0f;
-    groundPlane.z = 0.0f;
-    groundPlane.w = 0.5f;
+    DirectX::SimpleMath::Vector3 lightDir = m_environment->GetLightDirectionPrime();
+    DirectX::SimpleMath::Plane groundPlane = m_heli.groundPlane;
 
     DirectX::SimpleMath::Vector3 zFightOffSet = groundPlane.Normal() * 0.1f;
     DirectX::SimpleMath::Matrix planeTrans = DirectX::SimpleMath::Matrix::Identity;
@@ -3881,21 +3879,14 @@ void Vehicle::UpdateModel()
     DirectX::SimpleMath::Matrix planeTrans2 = planeTrans;
     planeTrans2 = planeTrans2.Transpose();
 
-    //groundPlane = DirectX::SimpleMath::Plane::Transform(groundPlane, m_heli.inverseAlignment);
     groundPlane = DirectX::SimpleMath::Plane::Transform(groundPlane, planeTrans2);
     
-    //float alt = m_vehicleStruct00.vehicleData.altitude;
-    float alt = m_heli.q.position.y;
-
-    //lightDir = DirectX::SimpleMath::Vector3::Transform(lightDir, m_heli.alignment);
-    //groundPlane = DirectX::SimpleMath::Plane::Transform(groundPlane, m_heli.alignment);
+    float alt = m_heli.altitude + 0.0000000001f; // padding added because shadows won't show if altitude = 0
     DirectX::SimpleMath::Matrix shadowMat = DirectX::SimpleMath::Matrix::CreateShadow(lightDir, groundPlane);
 
-    //const float maxShadowRange = m_environment->GetMaxShadowCastRange();
-    const float maxShadowRange = 50.0f;
+    const float maxShadowRange = m_environment->GetMaxShadowCastRange();
     float shadowScale;
     float inverseShadowScale;
-    //if (m_vehicleStruct00.vehicleData.altitude > maxShadowRange)
     if (alt > maxShadowRange)
     {
         shadowScale = 0.0f;
@@ -3903,13 +3894,10 @@ void Vehicle::UpdateModel()
     }
     else
     {
-        //inverseShadowScale = m_vehicleStruct00.vehicleData.altitude / maxShadowRange;
         inverseShadowScale = alt / maxShadowRange;
         shadowScale = 1.0f - inverseShadowScale;
     }
     DirectX::SimpleMath::Matrix shadowScaleMat = DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(shadowScale, shadowScale, shadowScale));
-
-    //updateMat = DirectX::SimpleMath::Matrix::CreateWorld(m_heli.q.position, -m_heli.right, m_heli.up);
 
     m_heliModel.shadowBaseMat = m_heliModel.localBodyMatrix;
     m_heliModel.shadowBaseMat *= inverseShadowScale;
@@ -4414,6 +4402,18 @@ DirectX::SimpleMath::Vector3 Vehicle::UpdateRotorForceRunge()
     return updateForce;
 }
 
+void Vehicle::UpdateTerrainData()
+{
+    bool isVehicleInPlayUpdate = m_environment->GetVehicleUpdateData(m_heli.q.position, m_heli.terrainNormal,
+        m_heli.terrainHightAtPos, m_heli.groundPlane);
+    if (isVehicleInPlayUpdate == false)
+    {
+        // to do: add error handling if out of play
+    }
+
+    m_heli.altitude = m_heli.landingGearPos.y - m_heli.terrainHightAtPos;
+}
+
 void Vehicle::UpdateTerrainNorm()
 {
     DirectX::SimpleMath::Vector3 newTerrainNorm = m_environment->GetTerrainNormal(m_heli.q.position);
@@ -4471,7 +4471,9 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
         //m_heli.q.position.y = m_heli.terrainHightAtPos - m_heli.localLandingGearPos.y;
     }
 
-    UpdateTerrainNorm();      
+    //UpdateTerrainNorm();      
+    UpdateTerrainData();
+
     RungeKutta4(&m_heli, aTimeDelta);
     UpdateRotorData(m_heli, aTimeDelta);
     

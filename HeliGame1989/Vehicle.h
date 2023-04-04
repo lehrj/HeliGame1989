@@ -155,8 +155,10 @@ struct HeliData
     float   area;   
     float   airResistance;
     float   airDensity;
+    float   altitude;
     float   dragCoefficient;
     const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
+    DirectX::SimpleMath::Plane groundPlane;
     float   mainRotorMaxRPM;
     float   mass;
     float   massTest = 2000.0f;
@@ -869,6 +871,7 @@ private:
     void UpdateRotorPitch(HeliData& aHeliData, const double aTimer);
     void UpdateRotorSpin(HeliData& aHeliData, const double aTimer);
 
+    void UpdateTerrainData();
     void UpdateTerrainNorm();
 
     float WindVaningVal(const HeliData& aHeliData, const float aTimeStep);

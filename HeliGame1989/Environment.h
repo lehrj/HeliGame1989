@@ -38,6 +38,15 @@ struct Environ
     std::string                         landingFrictionScaleStr;
     float                              landingHardnessScale;
     std::string                         landingHardnessScaleStr;
+
+    DirectX::SimpleMath::Vector3        lightDirectionPrime = -DirectX::SimpleMath::Vector3::UnitY;
+    DirectX::SimpleMath::Vector3        lightDirection0 = -DirectX::SimpleMath::Vector3::UnitY;
+    DirectX::SimpleMath::Vector3        lightDirection1 = -DirectX::SimpleMath::Vector3::UnitY;
+    DirectX::SimpleMath::Vector3        lightDirection2 = -DirectX::SimpleMath::Vector3::UnitY;
+    float                               lightDirectionsOffsetAngle = Utility::ToRadians(20.0f);
+    float                               lightDirectionRotation = Utility::ToRadians(0.0f);
+    float                               maxShadowCastRange = 60.0f;
+
     int                                 par;
     float                               scale;
     float                               teeDirection;       // start direction for first shot
@@ -131,6 +140,8 @@ public:
     std::vector<DirectX::VertexPositionColor> GetHoleVertex() const { return m_holeVertex; };
     float GetLandingHeight() const { return m_landingHeight; };
     float GetLauchHeight() const { return m_launchHeight; };
+    DirectX::SimpleMath::Vector3 GetLightDirectionPrime() const { return m_currentEnviron.lightDirectionPrime; };
+    float GetMaxShadowCastRange() const { return m_currentEnviron.maxShadowCastRange; };
     int GetNumerOfEnvirons() const { return m_environsAvailable; };
     int GetNumberOfEnvironSelectDisplayVariables() const { return m_environSelectDisplayDataPoints; };
     int GetPar() const { return m_currentEnviron.par; };
@@ -144,6 +155,8 @@ public:
 
     std::vector<DirectX::VertexPositionColor> GetTerrainColorVertex();
     std::vector<DirectX::VertexPositionNormalColor> GetTerrainPositionNormalColorVertex(EnvironmentType aEnvironType);
+
+    bool GetVehicleUpdateData(DirectX::SimpleMath::Vector3 aPos, DirectX::SimpleMath::Vector3& aNorm, float& aHeight, DirectX::SimpleMath::Plane& aPlane) const;
 
     float GetWindDirection() const;
     DirectX::SimpleMath::Vector3 GetWindVector() const { return m_currentEnviron.wind; };
