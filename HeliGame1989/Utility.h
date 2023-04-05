@@ -33,6 +33,15 @@ public:
         return mod;
     }
 
+    static void AddForceAtPoint(const DirectX::SimpleMath::Vector3& aForce, const DirectX::SimpleMath::Vector3& aPoint, const DirectX::SimpleMath::Vector3& aCenterOfMass,
+        DirectX::SimpleMath::Vector3& aForceAccum, DirectX::SimpleMath::Vector3& aTorqueAccum)
+    {
+        DirectX::SimpleMath::Vector3 pt = aPoint;
+        pt -= aCenterOfMass;
+        aForceAccum += aForce;
+        aTorqueAccum += pt.Cross(aForce);
+    }
+
     static float GetAngleBetweenVectors(DirectX::SimpleMath::Vector3 aVec1, DirectX::SimpleMath::Vector3 aVec2)
     {
         aVec1.Normalize();
