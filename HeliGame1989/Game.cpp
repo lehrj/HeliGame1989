@@ -46,7 +46,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
@@ -594,6 +594,16 @@ void Game::DrawCameraFocus()
 
 void Game::DrawDebugDataUI()
 {
+    DirectX::SimpleMath::Vector3 camPos = m_camera->GetPos();
+    m_debugData->DebugPushUILineDecimalNumber("camPos. x", camPos.x, "");
+    m_debugData->DebugPushUILineDecimalNumber("camPos.y ", camPos.y, "");
+    m_debugData->DebugPushUILineDecimalNumber("camPos.z ", camPos.z, "");
+
+    DirectX::SimpleMath::Vector3 targetPos = m_camera->GetTargetPos();
+    m_debugData->DebugPushUILineDecimalNumber("targetPos. x", targetPos.x, "");
+    m_debugData->DebugPushUILineDecimalNumber("targetPos.y ", targetPos.y, "");
+    m_debugData->DebugPushUILineDecimalNumber("targetPos.z ", targetPos.z, "");
+
     std::vector<std::string> uiVector = m_debugData->DebugGetUIVector();
     DirectX::SimpleMath::Vector2 textLinePos = m_fontPos2;
     textLinePos.x = 200;
@@ -652,6 +662,13 @@ void Game::DrawDebugDataUI()
     // Draw FPS  
     std::string textLine = "FPS  " + std::to_string(m_timer.GetFramesPerSecond());
     DirectX::SimpleMath::Vector2 textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
+    textLinePos.x = textLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
+    textLinePos.y += 30;
+
+    // Draw Timer  
+    textLine = "Timer = " + std::to_string(m_timer.GetTotalSeconds());
+    textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
     textLinePos.x = textLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
     textLinePos.y += 30;
@@ -960,6 +977,7 @@ void Game::DrawGridForStartScreen()
 void Game::DrawGamePlayStart()
 {
     TerrainDimmer();
+    /*
     const float fogGap1 = 0.0f;
     const float fogGap2 = 10.0f;
     const float fadeDuration = 14.0;
@@ -967,6 +985,15 @@ void Game::DrawGamePlayStart()
     const float fadeInEnd = fadeInStart + fadeDuration + 0.0f;
     //float fadeInEnd = fadeInStart + fadeDuration + 0.0f;
     const float fullViewDuration = 5.0f;
+    */
+    const float fogGap1 = 0.0f;
+    const float fogGap2 = 10.0f;
+    const float fadeDuration = 3.5;
+    const float fadeInStart = 0.0;
+    const float fadeInEnd = fadeInStart + fadeDuration + 0.0f;
+    //float fadeInEnd = fadeInStart + fadeDuration + 0.0f;
+    const float fullViewDuration = 3.0f;
+
     
     const float fadeOutStart = fadeInEnd + fullViewDuration;
 
@@ -2713,8 +2740,10 @@ bool Game::InitializeTerrainArray2()
 
 void Game::TerrainDimmer()
 {
-    const float dimmerDuration = 2.0f;
-    const float dimmerStart = 0.4f;
+    //const float dimmerDuration = 2.0f;
+    //const float dimmerStart = 0.4f;
+    const float dimmerDuration = 0.5f;
+    const float dimmerStart = 0.1f;
     const float dimmerEnd = dimmerStart + dimmerDuration;
     const float dimmerTimer = m_loadScreenTimerStart;
     DirectX::XMFLOAT4 updateColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -3797,7 +3826,7 @@ void Game::Render()
     }
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
-        DrawDebugDataUI();
+        //DrawDebugDataUI();
         //DrawDebugVehicleData();
         //DrawUI();
     }
@@ -3805,6 +3834,7 @@ void Game::Render()
     {
         //DrawTeaserScreen();
     }
+    DrawDebugDataUI();
     //DrawDebugVehicleData();
     m_spriteBatch->End();
 
@@ -3898,6 +3928,7 @@ void Game::Update(DX::StepTimer const& aTimer)
         
     m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
 
+    CameraState testState = m_camera->GetCameraState();
     /*
     m_lighting->UpdateLightingNormColorTextureVertex(m_effect, aTimer.GetTotalSeconds());
     m_lighting->UpdateLightingNormColorVertex2(m_effect2, aTimer.GetTotalSeconds());
