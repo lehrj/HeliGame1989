@@ -16,6 +16,7 @@ enum class CameraState
     CAMERASTATE_TRANSTONEWSHOT,
     CAMERASTATE_FOLLOWVEHICLE,
     CAMERASTATE_SPRINGCAMERA,
+    CAMERASTATE_SPRINGCAMERAGAMEPLAYSTART,
     CAMERASTATE_SPINCAMERA,
     CAMERASTATE_TESTCAMERA01, 
     CAMERASTATE_TESTCAMERA02,
@@ -143,7 +144,8 @@ private:
     DirectX::SimpleMath::Matrix     m_projectionMatrix;
     DirectX::SimpleMath::Matrix     m_orthogonalMatrix;
 
-    const float                     m_posTravelSpeed = 20.6f;
+    //const float                     m_posTravelSpeed = 20.6f;
+    const float                     m_posTravelSpeed = 1000.6;
     const float                     m_rotationTravelSpeed = 2.3f;
     const float                     m_aimTurnRate = 0.3f;
 
@@ -179,6 +181,7 @@ private:
 
     DirectX::SimpleMath::Vector3 m_followCamDirection = DirectX::SimpleMath::Vector3::UnitX;
     DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-27.0, 3.5f, 0.0f);
+    //DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-17.0, 3.5f, 0.0f);
     DirectX::SimpleMath::Vector3 m_followCamTarget = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_followCamUp = DirectX::SimpleMath::Vector3::UnitY;
     DirectX::SimpleMath::Vector3 m_followCamPosOffset = DirectX::SimpleMath::Vector3(-1.0, 1.0, 0.0);
@@ -207,6 +210,7 @@ private:
     void ComputeSpringMatrix();
     void InitializeSpringCamera(Target aTarget, float aSpringConstant, float ahDist, float aVDist);
     void UpdateSpringCamera(DX::StepTimer const& aTimeDelta);
+    void UpdateSpringCameraGamePlayStart(DX::StepTimer const& aTimeDelta);
     void UpdateSpringCameraOld(DX::StepTimer const& aTimeDelta);
 
     // SpinCamera
