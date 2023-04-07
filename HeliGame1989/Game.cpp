@@ -46,7 +46,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);

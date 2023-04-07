@@ -930,11 +930,23 @@ private:
     DirectX::SimpleMath::Vector3 m_testPos = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_testPos2 = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_testPos3 = DirectX::SimpleMath::Vector3::Zero;
-
+    /*
     const float m_inertiaModelX = 5.0f;
     const float m_inertiaModelY = 2.0f;
     const float m_inertiaModelZ = 2.0f;
-    const float m_inertiaMass = 2000.1f;
+    */
+    
+    const float m_inertiaModelX = 5.0f;
+    const float m_inertiaModelY = 2.0f;
+    const float m_inertiaModelZ = 4.0f;
+    
+    const float m_inertiaMass = 1500.0f;
+    const float m_inertiaModelX2 = 3.0f;
+    const float m_inertiaModelY2 = 0.8f;
+    const float m_inertiaModelZ2 = 0.6f;
+    const float m_inertiaMass2 = 500.0f;
+    const DirectX::SimpleMath::Vector3 m_tailInertiaOffset = DirectX::SimpleMath::Vector3(-5.0f, 0.0f, 0.0f);
+
     const float m_testMass = 2000.0f;
     const float m_angDragCoefficient = 0.8f;
     const float m_angDragLength = 8.0f;

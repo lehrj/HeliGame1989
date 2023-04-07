@@ -27,8 +27,8 @@ DirectX::SimpleMath::Vector3 Vehicle::CalculateDragAngularLocal(const DirectX::S
 
     float yawRadius = (length * abs(yawDot)) * 0.5f;
     float pitchRadius = (length * abs(pitchDot)) * 0.5f;
-    float rollRadius = (width * abs(rollDot)) * 0.5f;
-
+    //float rollRadius = (width * abs(rollDot)) * 0.5f;
+    float rollRadius = (length * abs(rollDot)) * 0.5f;
     float airSurfaceArea = yawSurface + pitchSurface + rollSurface;
     float radiusSum = yawRadius + pitchRadius + rollRadius;
 
@@ -2234,10 +2234,26 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
 
     float mass = m_inertiaMass;
     // cuboid
+    m_heli.inertiaMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heli.inertiaMatrix._11 = (1.0f / 12.0f) * (mass) * ((yExtent * yExtent) + (zExtent * zExtent));
     m_heli.inertiaMatrix._22 = (1.0f / 12.0f) * (mass) * ((xExtent * xExtent) + (zExtent * zExtent));
     m_heli.inertiaMatrix._33 = (1.0f / 12.0f) * (mass) * ((xExtent * xExtent) + (yExtent * yExtent));
 
+    xExtent = m_inertiaModelX2;
+    yExtent = m_inertiaModelY2;
+    zExtent = m_inertiaModelZ2;
+    mass = m_inertiaMass2;
+    DirectX::SimpleMath::Matrix tailInertiaMatrix = DirectX::SimpleMath::Matrix::Identity;
+    tailInertiaMatrix._11 = (1.0f / 12.0f) * (mass) * ((yExtent * yExtent) + (zExtent * zExtent));
+    tailInertiaMatrix._22 = (1.0f / 12.0f) * (mass) * ((xExtent * xExtent) + (zExtent * zExtent));
+    tailInertiaMatrix._33 = (1.0f / 12.0f) * (mass) * ((xExtent * xExtent) + (yExtent * yExtent));
+    DirectX::SimpleMath::Vector3 transformVec = m_tailInertiaOffset;
+    DirectX::SimpleMath::Matrix transformMat = DirectX::SimpleMath::Matrix::CreateTranslation(m_tailInertiaOffset);
+    tailInertiaMatrix *= transformMat;
+    DirectX::SimpleMath::Matrix inverseTailInertiaMatrix = tailInertiaMatrix;
+    inverseTailInertiaMatrix = inverseTailInertiaMatrix.Invert();
+
+    m_heli.inertiaMatrix += tailInertiaMatrix;
     m_heli.localInertiaMatrix = m_heli.inertiaMatrix;
     m_heli.inverseInertiaMatrix = m_heli.inertiaMatrix;
     m_heli.inverseInertiaMatrix = m_heli.inverseInertiaMatrix.Invert();
@@ -3133,8 +3149,8 @@ Utility::Torque Vehicle::UpdateBodyTorqueTest(const float aTimeStep)
 
     if (m_debugToggle == true)
     {
-        int testBreak = 0;
-        m_debugToggle = false;
+        //int testBreak = 0;
+        //m_debugToggle = false;
     }
 
     Utility::Torque rotorTorque = Utility::GetTorqueForce(mainRotorTorqueArm, mainRotorForce);
@@ -3214,14 +3230,15 @@ Utility::Torque Vehicle::UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorq
     //DirectX::SimpleMath::Vector3 tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + windVaning) * modVal;
     DirectX::SimpleMath::Vector3 tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + windVaning) * m_heli.tailRotorForceMagMax;
 
-    if (m_debugToggle == true)
+    if (m_debugToggle == false)
     {
-        tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput) * m_heli.tailRotorForceMagMax;
+        //tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput) * m_heli.tailRotorForceMagMax;
     }
     if (m_debugToggle2 == true)
     {
-        tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + (windVaning * 0.2f)) * m_heli.tailRotorForceMagMax;
+        //tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + (windVaning * 0.2f)) * m_heli.tailRotorForceMagMax;
     }
+    tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput) * m_heli.tailRotorForceMagMax;
 
     m_debugData->DebugPushUILineDecimalNumber("tailForce.Length() ", tailForce.Length(), "");
     //m_debugData->PushDebugLine(m_heli.tailRotorPos, tailForce, 10.0f, 0.0f, DirectX::Colors::White);
@@ -4818,6 +4835,23 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     m_debugData->DebugPushUILineDecimalNumber("cyclicTest.y = ", cyclicTest.y, "");
     m_debugData->DebugPushUILineDecimalNumber("cyclicTest.z = ", cyclicTest.z, "");
 
+
+    DirectX::SimpleMath::Vector3 testVec = m_heli.q.position;
+    testVec.x += m_inertiaModelX;
+    m_debugData->PushDebugLinePositionIndicator(testVec, 8.0f, 0.0f, DirectX::Colors::Red);
+    testVec = m_heli.q.position;
+    testVec.y += m_inertiaModelY;
+    m_debugData->PushDebugLinePositionIndicator(testVec, 8.0f, 0.0f, DirectX::Colors::Red);
+    testVec = m_heli.q.position;
+    testVec.z += m_inertiaModelZ;
+    m_debugData->PushDebugLinePositionIndicator(testVec, 8.0f, 0.0f, DirectX::Colors::Red);
+    testVec = m_heli.q.position;
+    testVec.z -= m_inertiaModelZ;
+    m_debugData->PushDebugLinePositionIndicator(testVec, 8.0f, 0.0f, DirectX::Colors::Red);
+
+    testVec = m_heli.q.position;
+    testVec.x -= m_inertiaModelX;
+    m_debugData->PushDebugLinePositionIndicator(testVec, 8.0f, 0.0f, DirectX::Colors::Red);
 
 }
 

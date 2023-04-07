@@ -26,7 +26,7 @@ Camera::Camera(int aWidth, int aHeight)
 	m_cameraState = CameraState::CAMERASTATE_FOLLOWVEHICLE;
 	//m_cameraState = CameraState::CAMERASTATE_TESTCAMERA01;
 	m_cameraState = CameraState::CAMERASTATE_PRESWINGVIEW;
-	//m_cameraState = CameraState::CAMERASTATE_SPRINGCAMERA;
+	m_cameraState = CameraState::CAMERASTATE_SPRINGCAMERA;
 	Target springTarget;
 	springTarget.forward = DirectX::SimpleMath::Vector3::UnitX;
 	springTarget.up = DirectX::SimpleMath::Vector3::UnitY;
@@ -35,8 +35,8 @@ Camera::Camera(int aWidth, int aHeight)
 	float hDist = -m_followCamPos.x;
 	float vDist = m_followCamPos.y;
 
-	hDist = 50.0f;
-	vDist = 20.0f;
+	//hDist = 50.0f;
+	//vDist = 20.0f;
 
 	InitializeSpringCamera(springTarget, springConst, hDist, vDist);
 
