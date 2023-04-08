@@ -120,6 +120,14 @@ private:
     Environment* m_environment;
     Lighting* m_lighting;
 
+    std::unique_ptr<DirectX::GamePad> m_gamePad;
+    const float m_gamePadInputDeadZone = 0.01f;
+    const float m_gamePadInputRatePitch = 1.0f;
+    const float m_gamePadInputRateRoll = 1.0f;
+    const float m_gamePadInputRateYaw = 1.0f;
+    const float m_gamePadInputRateCollective = 0.02f;
+    const float m_gamePadInputRateThrottle = 0.4f;
+
     // Device resources.
     HWND                                            m_window;
     int                                             m_outputWidth;

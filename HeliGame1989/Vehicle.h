@@ -8,15 +8,17 @@
 struct ControlInput
 {
     // input control data
-    const float inputDeadZone = 0.001;  // small deadzone to ignore nominal control input
+    const float inputDeadZone = 0.000000001;  // small deadzone to ignore nominal control input
 
     float       collectiveInput;
     const float collectiveInputMax = 1.0f;
     const float collectiveInputMin = 0.0f;
     const float collectiveInputRate = 0.5f;
+    const float collectiveInputRateGamePad = 0.5f;
 
     DirectX::SimpleMath::Vector3 cyclicStick;
     const float cyclicDecayRate = 0.3f;
+    const float cyclicDecayRateGamePad = 0.3f;
     float       cyclicInputPitch;
     bool        cyclicInputPitchIsPressed;
     float       cyclicInputRoll;
@@ -24,18 +26,23 @@ struct ControlInput
     const float cyclicInputMax = Utility::ToRadians(20.0f);
     const float cyclicInputMin = -Utility::ToRadians(20.0f);
     const float cyclicInputRate = 0.1f;
+    const float cyclicInputRateGamePad = 0.4f;
 
     float       throttleInput;
     const float throttleInputMin = 0.0f;
     const float throttleInputMax = 1.0f;
     const float throttleInputRate = 0.4f;
+    const float throttleInputRateGamePad = 0.4f;
 
     bool        yawPedalIsPressed;
     float       yawPedalInput;
-    const float yawPedalDecayRate = 0.2f;
+    //const float yawPedalDecayRate = 0.2f;
+    const float yawPedalDecayRate = 0.8f;
+    const float yawPedalDecayRateGamePad = 0.8f;
     const float yawPedalInputMax = 1.0f;
     const float yawPedalInputMin = -1.0f;
     const float yawPedalInputRate = 0.15f;
+    const float yawPedalInputRateGamePad = 1.0f;
 };
 
 struct Engine
@@ -817,18 +824,23 @@ public:
 
     // helicopter functions
     void InputCollective(const float aCollectiveInput);
+    void InputCollectiveGamePad(const float aCollectiveInput);
     void InputCyclicPitch(const float aPitchInput);
     void InputCyclicRoll(const float aRollInput);
-    void InputDecay(const double aTimeDelta);
+    void InputCyclicPitchGamePad(const float aPitchInput, const float aTimeStep);
+    void InputCyclicRollGamePad(const float aRollInput, const float aTimeStep);
+    
     void InputThrottle(const float aThrottleInput);
+    void InputThrottleGamePad(const float aThrottleInput);
     void InputYawPedal(const float aYawInput);
+    void InputYawPedalGamePad(const float aYawInput, const float aTimeStep);
 
     void Jump();
 
     void ResetVehicle();
     void SetDebugData(std::shared_ptr<DebugData> aDebugPtr);
     void SetEnvironment(Environment* aEnviron);
-
+    void SetGamePadConnectionState(const bool aIsGamePadConnected);
     void ToggleLandingGearState();
 
     void UpdateVehicle(const double aTimeDelta);
@@ -853,6 +865,9 @@ private:
     //void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
     //void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
     void InitializeRotorBlades(HeliData& aHeliData);
+
+    void InputDecay(const double aTimeDelta);
+    void InputDecayGamePad(const double aTimeDelta);
 
     void LandVehicle();
 
@@ -957,5 +972,7 @@ private:
 
     const bool m_isUseNewPhysicsTrue = true;
     const float m_angularDamping = 0.9f;
+
+    bool m_isGamePadConnected = false;
 };
 

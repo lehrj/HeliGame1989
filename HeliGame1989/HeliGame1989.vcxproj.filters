@@ -21,6 +21,8 @@
     <ClInclude Include="FireControl.h" />
     <ClInclude Include="NPCController.h" />
     <ClInclude Include="DebugData.h" />
+    <ClInclude Include="GamePad.h" />
+    <ClInclude Include="PlatformHelpers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -34,6 +36,7 @@
     <ClCompile Include="FireControl.cpp" />
     <ClCompile Include="NPCController.cpp" />
     <ClCompile Include="DebugData.cpp" />
+    <ClCompile Include="GamePad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -2606,6 +2606,8 @@ void Game::Initialize(HWND window, int width, int height)
     //m_vehicle->InitializeVehicle(m_d3dContext, m_effect2, m_inputLayout);
     // testing new terrain map
     m_terrainVector.clear();
+
+    m_gamePad = std::make_unique<GamePad>();
 }
 
 // Testing Terrain Vertex
@@ -3292,12 +3294,13 @@ void Game::OnActivated()
 {
     // TODO: Game is becoming active window.
     m_kbStateTracker.Reset();
+    m_gamePad->Resume();
 }
 
 void Game::OnDeactivated()
 {
     // TODO: Game is becoming background window.
-
+    m_gamePad->Suspend();
 }
 
 void Game::OnDeviceLost()
@@ -3380,6 +3383,7 @@ void Game::OnSuspending()
 {
     // TODO: Game is being power-suspended (or minimized).
     m_audioEngine->Suspend();
+    m_gamePad->Suspend();
 }
 
 void Game::OnResuming()
@@ -4470,5 +4474,69 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
         }
 
         m_mouse->SetMode(mouse.leftButton ? Mouse::MODE_RELATIVE : Mouse::MODE_ABSOLUTE);
+    }
+
+    auto pad = m_gamePad->GetState(0);
+    if (pad.IsConnected())
+    {
+        m_vehicle->SetGamePadConnectionState(true);
+        if (pad.IsViewPressed())
+        {
+            ExitGame();
+        }
+        if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY || m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
+        {
+            // Pitch
+            if (pad.thumbSticks.leftY > m_gamePadInputDeadZone || pad.thumbSticks.leftY < -m_gamePadInputDeadZone)
+            {
+                //m_vehicle->InputCyclicRoll(static_cast<float>(aTimer.GetElapsedSeconds()));
+                const float inputMod = m_gamePadInputRatePitch;
+                m_vehicle->InputCyclicPitchGamePad(-pad.thumbSticks.leftY * inputMod, static_cast<float>(aTimer.GetElapsedSeconds()));
+                //m_vehicle->InputCyclicPitchGamePad(-pad.thumbSticks.leftY * static_cast<float>(aTimer.GetElapsedSeconds()));
+                //m_debugData->DebugPushUILineDecimalNumber("pad.thumbSticks.leftX  ", pad.thumbSticks.leftX * inputMod, "");
+            }
+            // Roll
+            if (pad.thumbSticks.leftX > m_gamePadInputDeadZone || pad.thumbSticks.leftX < -m_gamePadInputDeadZone)
+            {
+                //m_vehicle->InputCyclicRoll(static_cast<float>(aTimer.GetElapsedSeconds()));
+                const float inputMod = m_gamePadInputRateRoll;
+                //m_vehicle->InputCyclicRollGamePad(pad.thumbSticks.leftX * inputMod);
+                m_vehicle->InputCyclicRollGamePad(pad.thumbSticks.leftX* inputMod, static_cast<float>(aTimer.GetElapsedSeconds()));
+                //m_vehicle->InputCyclicRollGamePad(-pad.thumbSticks.leftX * static_cast<float>(aTimer.GetElapsedSeconds()));
+                //m_debugData->DebugPushUILineDecimalNumber("pad.thumbSticks.leftX  ", pad.thumbSticks.leftX * inputMod, "");
+            }
+            // Yaw
+            if (pad.IsLeftTriggerPressed() == true)
+            {
+                const float inputMod = m_gamePadInputRateYaw;
+                m_vehicle->InputYawPedalGamePad(-pad.triggers.left * inputMod, static_cast<float>(aTimer.GetElapsedSeconds()));
+            }
+            if (pad.IsRightTriggerPressed() == true)
+            {
+                const float inputMod = m_gamePadInputRateYaw;
+                m_vehicle->InputYawPedalGamePad(pad.triggers.right * inputMod, static_cast<float>(aTimer.GetElapsedSeconds()));
+            }
+            // Collective
+            if (pad.thumbSticks.rightY > m_gamePadInputDeadZone || pad.thumbSticks.rightY < -m_gamePadInputDeadZone)
+            {
+                const float inputMod = m_gamePadInputRateCollective;
+                m_vehicle->InputCollectiveGamePad(pad.thumbSticks.rightY * inputMod);
+            }
+            // Throttle
+            if (pad.IsLeftShoulderPressed() == true)
+            {
+                const float inputMod = m_gamePadInputRateThrottle;
+                m_vehicle->InputThrottleGamePad(static_cast<float>(-aTimer.GetElapsedSeconds()) * inputMod);
+            }
+            if (pad.IsRightShoulderPressed() == true)
+            {
+                const float inputMod = m_gamePadInputRateThrottle;
+                m_vehicle->InputThrottleGamePad(static_cast<float>(aTimer.GetElapsedSeconds()) * inputMod);
+            }
+        }
+    }
+    else
+    {
+        m_vehicle->SetGamePadConnectionState(false);
     }
 }

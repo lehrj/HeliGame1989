@@ -168,9 +168,11 @@
     <ClInclude Include="Environment.h" />
     <ClInclude Include="FireControl.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GamePad.h" />
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="NPCController.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PlatformHelpers.h" />
     <ClInclude Include="sounds.h" />
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="StepTimer.h" />
@@ -183,6 +185,7 @@
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="FireControl.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GamePad.cpp" />
     <ClCompile Include="Lighting.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NPCController.cpp" />

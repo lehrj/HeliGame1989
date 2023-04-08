@@ -113,7 +113,7 @@ float Vehicle::CalculateLiftCoefficient(const float aAngle)
 
 DirectX::SimpleMath::Vector3 Vehicle::CalculateStabilityTorqueLocal(const HeliData& aHeliData, const float aTimeStep)
 {
-    m_debugData->DebugClearUI();
+    //m_debugData->DebugClearUI();
     DirectX::SimpleMath::Vector3 testArm = DirectX::SimpleMath::Vector3::UnitY;
     DirectX::SimpleMath::Vector3 testForce = DirectX::SimpleMath::Vector3::UnitZ;
     Utility::Torque testTorque = Utility::GetTorqueForce(DirectX::SimpleMath::Vector3::UnitY, DirectX::SimpleMath::Vector3::UnitZ);
@@ -201,6 +201,7 @@ DirectX::SimpleMath::Vector3 Vehicle::CalculateStabilityTorqueLocal(const HeliDa
     Utility::AddForceAtPoint(cogForceWorld2, cogArm2, aHeliData.localCenterOfMass, testStabilityForce2, testStabilityTorque2);
     testStabilityTorque *= -1.0f;
     testStabilityTorque2 *= -1.0f;
+    /*
     m_debugData->DebugPushUILineDecimalNumber("testStabilityTorque.Length()  ", testStabilityTorque.Length(), "");
     m_debugData->DebugPushUILineDecimalNumber("stabilityTorque.Length()i      ", stabilityTorque.Length(), "");
     m_debugData->DebugPushUILineDecimalNumber("testStabilityTorque2.Length() ", testStabilityTorque2.Length(), ""); 
@@ -211,7 +212,7 @@ DirectX::SimpleMath::Vector3 Vehicle::CalculateStabilityTorqueLocal(const HeliDa
     m_debugData->PushDebugLine(m_heli.q.position, testStabilityTorque2, 10.0f, 0.5f, DirectX::Colors::Blue);
     m_debugData->PushDebugLine(m_heli.q.position, stabilityTorque, 10.0f, 1.0f, DirectX::Colors::Orange);
     m_debugData->PushDebugLine(m_heli.q.position, stabilityTorque2, 10.0f, 1.5f, DirectX::Colors::Purple);
-
+    */
     /////////////////////////////////////////////////////////////////
     //return stabilityTorque + stabilityTorque2;
     return testStabilityTorque + testStabilityTorque2;
@@ -2277,6 +2278,23 @@ void Vehicle::InputCollective(const float aCollectiveInput)
     }
 }
 
+void Vehicle::InputCollectiveGamePad(const float aCollectiveInput)
+{
+    const float updatedCollective = (aCollectiveInput * m_heli.controlInput.collectiveInputRateGamePad) + m_heli.controlInput.collectiveInput;
+    if (updatedCollective > m_heli.controlInput.collectiveInputMax)
+    {
+        m_heli.controlInput.collectiveInput = m_heli.controlInput.collectiveInputMax;
+    }
+    else if (updatedCollective < m_heli.controlInput.collectiveInputMin)
+    {
+        m_heli.controlInput.collectiveInput = m_heli.controlInput.collectiveInputMin;
+    }
+    else
+    {
+        m_heli.controlInput.collectiveInput = updatedCollective;
+    }
+}
+
 void Vehicle::InputCyclicPitch(const float aPitchInput)
 {
     m_heli.controlInput.cyclicInputPitchIsPressed = true;
@@ -2297,6 +2315,52 @@ void Vehicle::InputCyclicPitch(const float aPitchInput)
     testPitchInput += aPitchInput * testInputMod;
 }
 
+void Vehicle::InputCyclicPitchGamePad(const float aPitchInput, const float aTimeStep)
+{
+    m_heli.controlInput.cyclicInputPitchIsPressed = true;
+    float updatedPitch = (aPitchInput * m_heli.controlInput.cyclicInputRateGamePad) + m_heli.controlInput.cyclicInputPitch;
+    updatedPitch = (aPitchInput * m_heli.controlInput.cyclicInputRateGamePad) + m_heli.controlInput.cyclicInputPitch;
+    float inputFullScaled = aPitchInput * aTimeStep * m_heli.controlInput.cyclicInputRateGamePad;
+    float prevInputNorm = m_heli.controlInput.cyclicInputPitch / m_heli.controlInput.cyclicInputMax;
+    float delta = aPitchInput - prevInputNorm;
+    updatedPitch = inputFullScaled + prevInputNorm;
+
+    if (inputFullScaled < 0.0f)
+    {
+        if (inputFullScaled < delta)
+        {
+            //updatedPitch = aPitchInput;
+            updatedPitch = prevInputNorm - inputFullScaled;
+        }
+    }
+    else if (inputFullScaled > 0.0f)
+    {
+        if (inputFullScaled > delta)
+        {
+            //updatedPitch = aPitchInput;
+            updatedPitch = prevInputNorm - inputFullScaled;
+        }
+    }
+
+    updatedPitch *= m_heli.controlInput.cyclicInputMax;
+
+    if (updatedPitch > m_heli.controlInput.cyclicInputMax)
+    {
+        m_heli.controlInput.cyclicInputPitch = m_heli.controlInput.cyclicInputMax;
+    }
+    else if (updatedPitch < m_heli.controlInput.cyclicInputMin)
+    {
+        m_heli.controlInput.cyclicInputPitch = m_heli.controlInput.cyclicInputMin;
+    }
+    else
+    {
+        m_heli.controlInput.cyclicInputPitch = updatedPitch;
+    }
+
+    //m_heli.controlInput.cyclicInputPitch = aPitchInput * m_heli.controlInput.cyclicInputMax;
+    //testPitchInput += aPitchInput * testInputMod;
+}
+
 void Vehicle::InputCyclicRoll(const float aRollInput)
 {
     m_heli.controlInput.cyclicInputRollIsPressed = true;
@@ -2315,6 +2379,67 @@ void Vehicle::InputCyclicRoll(const float aRollInput)
     }
 
     testRollInput += aRollInput * testInputMod;
+}
+
+void Vehicle::InputCyclicRollGamePad(const float aRollInput, const float aTimeStep)
+{
+    m_heli.controlInput.cyclicInputRollIsPressed = true;
+    float updatedRoll = (aRollInput * m_heli.controlInput.cyclicInputRateGamePad) + m_heli.controlInput.cyclicInputRoll;
+
+    float inputTimeScaled = aRollInput * aTimeStep;
+    float inputFullScaled = aRollInput * aTimeStep * m_heli.controlInput.cyclicInputRateGamePad;
+    float targetRoll = aRollInput;
+    float prevInput = m_heli.controlInput.cyclicInputRoll;
+    float prevInputNorm = prevInput / m_heli.controlInput.cyclicInputMax;
+    float delta = aRollInput - prevInputNorm;
+    float offset = aRollInput - prevInput;
+    float offset2 = aRollInput - prevInputNorm;
+    offset2 = prevInputNorm - aRollInput;
+    updatedRoll = inputFullScaled + prevInput - offset;
+    updatedRoll = inputFullScaled + prevInputNorm;
+
+    if (inputFullScaled < 0.0f)
+    {
+        if (inputFullScaled < delta)
+        {
+            updatedRoll =  prevInputNorm - inputFullScaled;
+        }
+    }
+    else if (inputFullScaled > 0.0f)
+    {
+        if (inputFullScaled > delta)
+        {
+            updatedRoll = prevInputNorm - inputFullScaled;
+        }
+    }
+
+    m_debugData->DebugPushUILineDecimalNumber("updatedRoll ", updatedRoll, "");
+    m_debugData->DebugPushUILineDecimalNumber("offset  ", offset, "");
+    m_debugData->DebugPushUILineDecimalNumber("offset2 ", offset2, "");
+    m_debugData->DebugPushUILineDecimalNumber("inputTimeScaled ", inputTimeScaled, "");
+    m_debugData->DebugPushUILineDecimalNumber("inputFullScaled ", inputFullScaled, "");
+    m_debugData->DebugPushUILineDecimalNumber("delta           ", delta, "");
+    m_debugData->DebugPushUILineDecimalNumber("prevInputNorm ", prevInputNorm, "");
+
+    updatedRoll *= m_heli.controlInput.cyclicInputMax;
+    m_debugData->DebugPushUILineDecimalNumber("updatedRoll Scaled ", updatedRoll, "");
+    if (updatedRoll > m_heli.controlInput.cyclicInputMax)
+    {
+        m_heli.controlInput.cyclicInputRoll = m_heli.controlInput.cyclicInputMax;
+    }
+    else if (updatedRoll < m_heli.controlInput.cyclicInputMin)
+    {
+        m_heli.controlInput.cyclicInputRoll = m_heli.controlInput.cyclicInputMin;
+    }
+    else
+    {
+        m_heli.controlInput.cyclicInputRoll = updatedRoll;
+    }
+
+    m_debugData->DebugPushUILineDecimalNumber("m_heli.controlInput.cyclicInputRoll ", m_heli.controlInput.cyclicInputRoll, "");
+    //m_heli.controlInput.cyclicInputRoll = aRollInput * m_heli.controlInput.cyclicInputMax;
+
+    //testRollInput += aRollInput * testInputMod;
 }
 
 void Vehicle::InputDecay(const double aTimeDelta)
@@ -2417,9 +2542,126 @@ void Vehicle::InputDecay(const double aTimeDelta)
     m_heli.controlInput.yawPedalIsPressed = false;
 }
 
+void Vehicle::InputDecayGamePad(const double aTimeDelta)
+{
+    const float timeDelta = static_cast<float>(aTimeDelta);
+
+    if (m_heli.controlInput.cyclicInputPitchIsPressed == false)
+    {
+        // Cyclic Pitch Decay
+        if (m_heli.controlInput.cyclicInputPitch > 0.0f)
+        {
+            if (m_heli.controlInput.cyclicInputPitch - (m_heli.controlInput.cyclicDecayRateGamePad * timeDelta) < 0.0f)
+            {
+                m_heli.controlInput.cyclicInputPitch = 0.0f;
+            }
+            else
+            {
+                m_heli.controlInput.cyclicInputPitch -= m_heli.controlInput.cyclicDecayRateGamePad * timeDelta;
+            }
+        }
+        else if (m_heli.controlInput.cyclicInputPitch < 0.0f)
+        {
+            if (m_heli.controlInput.cyclicInputPitch + (m_heli.controlInput.cyclicDecayRateGamePad * timeDelta) > 0.0f)
+            {
+                m_heli.controlInput.cyclicInputPitch = 0.0f;
+            }
+            else
+            {
+                m_heli.controlInput.cyclicInputPitch += m_heli.controlInput.cyclicDecayRateGamePad * timeDelta;
+            }
+        }
+        else
+        {
+            m_heli.controlInput.cyclicInputPitch = 0.0f;
+        }
+    }
+    // Cyclic Roll Decay
+    if (m_heli.controlInput.cyclicInputRollIsPressed == false)
+    {
+        if (m_heli.controlInput.cyclicInputRoll > 0.0f)
+        {
+            if (m_heli.controlInput.cyclicInputRoll - (m_heli.controlInput.cyclicDecayRateGamePad * timeDelta) < 0.0f)
+            {
+                m_heli.controlInput.cyclicInputRoll = 0.0f;
+            }
+            else
+            {
+                m_heli.controlInput.cyclicInputRoll -= m_heli.controlInput.cyclicDecayRateGamePad * timeDelta;
+            }
+        }
+        else if (m_heli.controlInput.cyclicInputRoll < 0.0f)
+        {
+            if (m_heli.controlInput.cyclicInputRoll + (m_heli.controlInput.cyclicDecayRateGamePad * timeDelta) > 0.0f)
+            {
+                m_heli.controlInput.cyclicInputRoll = 0.0f;
+            }
+            else
+            {
+                m_heli.controlInput.cyclicInputRoll += m_heli.controlInput.cyclicDecayRateGamePad * timeDelta;
+            }
+        }
+        else
+        {
+            m_heli.controlInput.cyclicInputRoll = 0.0f;
+        }
+    }
+    // Yaw Pedal Decay
+    if (m_heli.controlInput.yawPedalIsPressed == false)
+    {
+        if (m_heli.controlInput.yawPedalInput + (m_heli.controlInput.yawPedalDecayRateGamePad * timeDelta) < 0.0f)
+        {
+            if (m_heli.controlInput.yawPedalInput - (m_heli.controlInput.yawPedalDecayRateGamePad * timeDelta) > -m_heli.controlInput.inputDeadZone)
+            {
+                m_heli.controlInput.yawPedalInput = 0.0f;
+            }
+            else
+            {
+                m_heli.controlInput.yawPedalInput += m_heli.controlInput.yawPedalDecayRateGamePad * timeDelta;
+            }
+        }
+        else if (m_heli.controlInput.yawPedalInput - (m_heli.controlInput.yawPedalDecayRateGamePad * timeDelta) > 0.0f)
+        {
+            if (m_heli.controlInput.yawPedalInput + (m_heli.controlInput.yawPedalDecayRateGamePad * timeDelta) < m_heli.controlInput.inputDeadZone)
+            {
+                m_heli.controlInput.yawPedalInput = 0.0f;
+            }
+            else
+            {
+                m_heli.controlInput.yawPedalInput -= m_heli.controlInput.yawPedalDecayRateGamePad * timeDelta;
+            }
+        }
+        else
+        {
+            m_heli.controlInput.yawPedalInput = 0.0f;
+        }
+    }
+
+    m_heli.controlInput.cyclicInputPitchIsPressed = false;
+    m_heli.controlInput.cyclicInputRollIsPressed = false;
+    m_heli.controlInput.yawPedalIsPressed = false;
+}
+
 void Vehicle::InputThrottle(const float aThrottleInput)
 {
     const float updatedThrottle = (aThrottleInput * m_heli.controlInput.throttleInputRate) + m_heli.controlInput.throttleInput;
+    if (updatedThrottle > m_heli.controlInput.throttleInputMax)
+    {
+        m_heli.controlInput.throttleInput = m_heli.controlInput.throttleInputMax;
+    }
+    else if (updatedThrottle < m_heli.controlInput.throttleInputMin)
+    {
+        m_heli.controlInput.throttleInput = m_heli.controlInput.throttleInputMin;
+    }
+    else
+    {
+        m_heli.controlInput.throttleInput = updatedThrottle;
+    }
+}
+
+void Vehicle::InputThrottleGamePad(const float aThrottleInput)
+{
+    const float updatedThrottle = (aThrottleInput * m_heli.controlInput.throttleInputRateGamePad) + m_heli.controlInput.throttleInput;
     if (updatedThrottle > m_heli.controlInput.throttleInputMax)
     {
         m_heli.controlInput.throttleInput = m_heli.controlInput.throttleInputMax;
@@ -2455,6 +2697,60 @@ void Vehicle::InputYawPedal(const float aYawInput)
         m_heli.controlInput.yawPedalInput = updatedYaw;
     }
 
+    testYawInput += aYawInput * testInputMod;
+}
+
+void Vehicle::InputYawPedalGamePad(const float aYawInput, const float aTimeStep)
+{
+    m_heli.controlInput.yawPedalIsPressed = true;
+    float updatedYaw = (aYawInput * m_heli.controlInput.yawPedalInputRateGamePad) + m_heli.controlInput.yawPedalInput;
+
+    updatedYaw = (aYawInput * m_heli.controlInput.yawPedalInputRateGamePad) + m_heli.controlInput.yawPedalInput;
+    //float inputFullScaled = aYawInput * aTimeStep * m_heli.controlInput.yawPedalInputRateGamePad;
+    float inputFullScaled = aYawInput * aTimeStep * m_heli.controlInput.yawPedalInputRateGamePad;
+    float prevInputNorm = m_heli.controlInput.yawPedalInput / m_heli.controlInput.yawPedalInputMax;
+    float delta = aYawInput - prevInputNorm;
+    updatedYaw = inputFullScaled + prevInputNorm;
+
+    if (inputFullScaled < 0.0f)
+    {
+        if (inputFullScaled < delta)
+        {
+            //updatedPitch = aPitchInput;
+            updatedYaw = prevInputNorm - inputFullScaled;
+        }
+    }
+    else if (inputFullScaled > 0.0f)
+    {
+        if (inputFullScaled > delta)
+        {
+            //updatedPitch = aPitchInput;
+            updatedYaw = prevInputNorm - inputFullScaled;
+        }
+    }
+    //updatedYaw *= 10.0f;
+    updatedYaw *= m_heli.controlInput.yawPedalInputMax;
+
+
+
+    if (updatedYaw > m_heli.controlInput.yawPedalInputMax)
+    {
+        m_heli.controlInput.yawPedalInput = m_heli.controlInput.yawPedalInputMax;
+    }
+    else if (updatedYaw < m_heli.controlInput.yawPedalInputMin)
+    {
+        m_heli.controlInput.yawPedalInput = m_heli.controlInput.yawPedalInputMin;
+    }
+    else if (updatedYaw < m_heli.controlInput.inputDeadZone && updatedYaw > -m_heli.controlInput.inputDeadZone)
+    {
+        m_heli.controlInput.yawPedalInput = 0.0f;
+    }
+    else
+    {
+        m_heli.controlInput.yawPedalInput = updatedYaw;
+    }
+
+    //m_heli.controlInput.yawPedalInput = aYawInput * m_heli.controlInput.yawPedalInputMax;
     testYawInput += aYawInput * testInputMod;
 }
 
@@ -2943,6 +3239,11 @@ void Vehicle::SetEnvironment(Environment* aEnviron)
     m_environment = aEnviron;
 }
 
+void Vehicle::SetGamePadConnectionState(const bool aIsGamePadConnected)
+{
+    m_isGamePadConnected = aIsGamePadConnected;
+}
+
 void Vehicle::ToggleLandingGearState()
 {
     if (m_heli.landingGear.currentState == LandingGear::LandingGearState::LANDINGGEARSTATE_DOWN || m_heli.landingGear.currentState == LandingGear::LandingGearState::LANDINGGEARSTATE_DESCENDING)
@@ -3226,7 +3527,7 @@ Utility::Torque Vehicle::UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorq
     //m_debugData->DebugPushUILineDecimalNumber("mainRotorForce.Length()", mainRotorForce.Length(), "");
     //mainRotorForce = DirectX::SimpleMath::Vector3::Transform(mainRotorForce, m_heli.alignment);
     const float windVaning = WindVaningVal(m_heli, aTimeStep);
-    m_debugData->DebugPushUILineDecimalNumber("windVaning", windVaning, "");
+    //m_debugData->DebugPushUILineDecimalNumber("windVaning", windVaning, "");
     //DirectX::SimpleMath::Vector3 tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + windVaning) * modVal;
     DirectX::SimpleMath::Vector3 tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + windVaning) * m_heli.tailRotorForceMagMax;
 
@@ -3240,7 +3541,7 @@ Utility::Torque Vehicle::UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorq
     }
     tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput) * m_heli.tailRotorForceMagMax;
 
-    m_debugData->DebugPushUILineDecimalNumber("tailForce.Length() ", tailForce.Length(), "");
+    //m_debugData->DebugPushUILineDecimalNumber("tailForce.Length() ", tailForce.Length(), "");
     //m_debugData->PushDebugLine(m_heli.tailRotorPos, tailForce, 10.0f, 0.0f, DirectX::Colors::White);
 
     /*
@@ -3284,8 +3585,8 @@ Utility::Torque Vehicle::UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorq
 
     //m_debugData->PushDebugLine(m_heli.q.position, testRotorTorque, 10.0f, 0.0f, DirectX::Colors::White);
     //m_debugData->PushDebugLine(m_heli.q.position, (rotorTorque.axis * rotorTorque.magnitude), 10.0f, 0.5f, DirectX::Colors::White);
-    m_debugData->DebugPushUILineDecimalNumber("testRotorTorque.Length() ", testRotorTorque.Length(), "");
-    m_debugData->DebugPushUILineDecimalNumber("(rotor.axis * .magnitude) ", (rotorTorque.axis * rotorTorque.magnitude).Length(), "");
+    //m_debugData->DebugPushUILineDecimalNumber("testRotorTorque.Length() ", testRotorTorque.Length(), "");
+    //m_debugData->DebugPushUILineDecimalNumber("(rotor.axis * .magnitude) ", (rotorTorque.axis * rotorTorque.magnitude).Length(), "");
 
     
     //torqueAxis = (rotorTorque.axis * rotorTorque.magnitude) + (tailTorque.axis * tailTorque.magnitude);
@@ -3437,7 +3738,7 @@ void Vehicle::UpdateCentrifugalForce(const float aTimeStep)
     m_heli.centrifugalForce = updateForce;
     m_heli.centrifugalForcePrevFrame = m_heli.q.angularVelocity;
     m_heli.centrifugalForcePrevQuatFrame = m_heli.q.angularQuat;
-
+    /*
     m_debugData->DebugPushUILineDecimalNumber("m_heli.centrifugalForce.Length()", m_heli.centrifugalForce.Length(), "");
     m_debugData->PushDebugLine(m_heli.q.position, updateForce, 15.0f, 0.0f, DirectX::Colors::Red);
 
@@ -3491,6 +3792,7 @@ void Vehicle::UpdateCentrifugalForce(const float aTimeStep)
     m_debugData->DebugPushUILineWholeNumber("m_debugToggle2 = ", m_debugToggle2, "");
 
     m_debugData->DebugClearUI();
+    */
 }
 
 float Vehicle::WindVaningVal(const HeliData& aHeliData, const float aTimeStep)
@@ -4789,7 +5091,14 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     m_heli.speed = speed.Length();
 
     UpdateModel();
-    InputDecay(aTimeDelta);
+    if (m_isGamePadConnected == true)
+    {
+        InputDecayGamePad(aTimeDelta);
+    }
+    else
+    {
+        InputDecay(aTimeDelta);
+    }
 
     m_heli.testAccel = (m_heli.q.velocity.Length() - prevVelocity.Length()) / static_cast<float>(aTimeDelta);
     m_heli.testAccelVec = (m_heli.q.velocity - prevVelocity) / static_cast<float>(aTimeDelta);
@@ -4826,16 +5135,21 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     //m_debugData->PushDebugLinePositionIndicator(m_heli.centerOfMass, 10.0f, 0.0f, DirectX::Colors::Red);
     //m_debugData->PushDebugLinePositionIndicator(m_heli.mainRotorPos, 10.0f, 0.0f, DirectX::Colors::Red);
     */
-
+    m_debugData->DebugPushUILineDecimalNumber("m_heli.controlInput.cyclicInputRoll ", m_heli.controlInput.cyclicInputRoll, "");
+    m_debugData->DebugPushUILineDecimalNumber("m_heli.controlInput.cyclicInputPitch ", m_heli.controlInput.cyclicInputPitch, "");
     m_debugData->DebugPushUILineWholeNumber("m_debugToggle = ", m_debugToggle, "");
     m_debugData->DebugPushUILineWholeNumber("m_debugToggle2 = ", m_debugToggle2, "");
 
+    m_debugData->DebugPushUILineDecimalNumber("Roll = ", m_heli.controlInput.cyclicInputRoll, "");
+    m_debugData->DebugPushUILineDecimalNumber("Pitch=", m_heli.controlInput.cyclicInputPitch, "");
+    m_debugData->DebugPushUILineDecimalNumber("Yaw  =", m_heli.controlInput.yawPedalInput, "");
+    
     DirectX::SimpleMath::Vector3 cyclicTest = UpdateRotorForceRunge();
     m_debugData->DebugPushUILineDecimalNumber("cyclicTest.x = ", cyclicTest.x, "");
     m_debugData->DebugPushUILineDecimalNumber("cyclicTest.y = ", cyclicTest.y, "");
     m_debugData->DebugPushUILineDecimalNumber("cyclicTest.z = ", cyclicTest.z, "");
 
-
+    /*
     DirectX::SimpleMath::Vector3 testVec = m_heli.q.position;
     testVec.x += m_inertiaModelX;
     m_debugData->PushDebugLinePositionIndicator(testVec, 8.0f, 0.0f, DirectX::Colors::Red);
@@ -4852,7 +5166,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     testVec = m_heli.q.position;
     testVec.x -= m_inertiaModelX;
     m_debugData->PushDebugLinePositionIndicator(testVec, 8.0f, 0.0f, DirectX::Colors::Red);
-
+    */
 }
 
 void Vehicle::DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor)
