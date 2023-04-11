@@ -698,12 +698,11 @@ bool Environment::InitializeTerrain(HeightMap& aMap, EnvironmentType aEnviron)
 void Environment::InitializeHeightMapData()
 {
     // initialize game play map
-    //m_heightMapGamePlayData.heightScale = 0.009f;
     m_heightMapGamePlayData.heightScale = 0.01f;
-    m_heightMapGamePlayData.mapScale = 1000.30f;
-    m_heightMapGamePlayData.mapXtransform = -16.0f * m_heightMapGamePlayData.mapScale + -500.0f;
+    m_heightMapGamePlayData.mapScale = m_mapScaleGamePlay;
+    m_heightMapGamePlayData.mapXtransform = -16.0f * m_heightMapGamePlayData.mapScale + -(m_mapScaleGamePlay * 0.5f);
     m_heightMapGamePlayData.mapYtransform = 0.5f;
-    m_heightMapGamePlayData.mapZtransform = -16.0f * m_heightMapGamePlayData.mapScale + 500.0f;
+    m_heightMapGamePlayData.mapZtransform = -16.0f * m_heightMapGamePlayData.mapScale + (m_mapScaleGamePlay * 0.5f);
     
     m_heightMapGamePlayData.mapType = EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY;
     m_heightMapGamePlayData.terrainHeight = 0;
@@ -1316,8 +1315,6 @@ bool Environment::LoadHeightMap(HeightMap& aMap, EnvironmentType aEnviron)
     }
 
     // Create the structure to hold the height map data.
-    //m_heightMap.clear();
-    //m_heightMap.resize(m_terrainWidth * m_terrainHeight);
     aMap.heightMap.clear();
     aMap.heightMap.resize(aMap.terrainWidth * aMap.terrainHeight);
 

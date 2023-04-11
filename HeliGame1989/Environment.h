@@ -249,7 +249,7 @@ private:
     const float                        m_mapZtransformStartScreen = -1.6f;
     
     const float                        m_elevationScaleGamePlay = 0.007f;
-    const float                        m_mapScaleGamePlay = 1000.30f;
+    const float                        m_mapScaleGamePlay = 600.0f;
     const float                        m_mapXtransformGamePlay = -16.0f * m_mapScaleGamePlay;
     const float                        m_mapYtransformGamePlay = 0.0f;
     const float                        m_mapZtransformGamePlay = -16.0f * m_mapScaleGamePlay;

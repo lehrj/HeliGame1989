@@ -42,7 +42,7 @@ struct ControlInput
     const float yawPedalInputMax = 1.0f;
     const float yawPedalInputMin = -1.0f;
     const float yawPedalInputRate = 0.15f;
-    const float yawPedalInputRateGamePad = 1.0f;
+    const float yawPedalInputRateGamePad = 0.3f;
 };
 
 struct Engine
@@ -904,6 +904,8 @@ private:
     void UpdateTerrainNorm();
 
     float WindVaningVal(const HeliData& aHeliData, const float aTimeStep);
+    DirectX::SimpleMath::Vector3 WindVaningVec(const HeliData& aHeliData, const float aTimeStep);
+
 
     Environment const*              m_environment;
     std::shared_ptr<DebugData>      m_debugData;
@@ -963,7 +965,8 @@ private:
     const DirectX::SimpleMath::Vector3 m_tailInertiaOffset = DirectX::SimpleMath::Vector3(-5.0f, 0.0f, 0.0f);
 
     const float m_testMass = 2000.0f;
-    const float m_angDragCoefficient = 0.8f;
+    //const float m_angDragCoefficient = 0.8f;
+    const float m_angDragCoefficient = 0.4f;
     const float m_angDragLength = 8.0f;
     const float m_angDragWidth = 4.0f;
     const float m_angDragHeight = 2.0f;

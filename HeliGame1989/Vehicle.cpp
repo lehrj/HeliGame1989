@@ -2706,7 +2706,6 @@ void Vehicle::InputYawPedalGamePad(const float aYawInput, const float aTimeStep)
     float updatedYaw = (aYawInput * m_heli.controlInput.yawPedalInputRateGamePad) + m_heli.controlInput.yawPedalInput;
 
     updatedYaw = (aYawInput * m_heli.controlInput.yawPedalInputRateGamePad) + m_heli.controlInput.yawPedalInput;
-    //float inputFullScaled = aYawInput * aTimeStep * m_heli.controlInput.yawPedalInputRateGamePad;
     float inputFullScaled = aYawInput * aTimeStep * m_heli.controlInput.yawPedalInputRateGamePad;
     float prevInputNorm = m_heli.controlInput.yawPedalInput / m_heli.controlInput.yawPedalInputMax;
     float delta = aYawInput - prevInputNorm;
@@ -2730,8 +2729,6 @@ void Vehicle::InputYawPedalGamePad(const float aYawInput, const float aTimeStep)
     }
     //updatedYaw *= 10.0f;
     updatedYaw *= m_heli.controlInput.yawPedalInputMax;
-
-
 
     if (updatedYaw > m_heli.controlInput.yawPedalInputMax)
     {
@@ -3060,7 +3057,7 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
 
     DirectX::SimpleMath::Vector3 momentumUpdate = newQ.angularMomentum;
     momentumUpdate *= m_angularDamping;
-    momentumUpdate *= 0.0f;
+    //momentumUpdate *= 1.0f;
     Utility::Torque bodyTorqueUpdateLocal = bodyTorqueUpdate;
     bodyTorqueUpdateLocal.axis = DirectX::SimpleMath::Vector3::Transform(bodyTorqueUpdateLocal.axis, m_heli.inverseAlignment);
 
@@ -3526,11 +3523,15 @@ Utility::Torque Vehicle::UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorq
     //m_debugData->PushDebugLine(m_heli.mainRotorPos, mainRotorForce, 10.0f, 0.0f, DirectX::Colors::Red);
     //m_debugData->DebugPushUILineDecimalNumber("mainRotorForce.Length()", mainRotorForce.Length(), "");
     //mainRotorForce = DirectX::SimpleMath::Vector3::Transform(mainRotorForce, m_heli.alignment);
-    const float windVaning = WindVaningVal(m_heli, aTimeStep);
+    //const float windVaning = WindVaningVal(m_heli, aTimeStep);
+    const DirectX::SimpleMath::Vector3 windVaningVec = WindVaningVec(m_heli, aTimeStep);
     //m_debugData->DebugPushUILineDecimalNumber("windVaning", windVaning, "");
     //DirectX::SimpleMath::Vector3 tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + windVaning) * modVal;
-    DirectX::SimpleMath::Vector3 tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + windVaning) * m_heli.tailRotorForceMagMax;
-
+    //DirectX::SimpleMath::Vector3 tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + windVaning) * m_heli.tailRotorForceMagMax;
+    //tailForce = (-m_heli.right * (m_heli.controlInput.yawPedalInput) * m_heli.tailRotorForceMagMax) + (-m_heli.right * windVaning);
+    DirectX::SimpleMath::Vector3 tailForce = (-m_heli.right * (m_heli.controlInput.yawPedalInput) * m_heli.tailRotorForceMagMax) + (windVaningVec);
+    //m_debugData->DebugPushUILineDecimalNumber("windVaning = ", windVaning, "");
+    m_debugData->DebugPushUILineDecimalNumber("tailForce = ", tailForce.Length(), "");
     if (m_debugToggle == false)
     {
         //tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput) * m_heli.tailRotorForceMagMax;
@@ -3539,7 +3540,7 @@ Utility::Torque Vehicle::UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorq
     {
         //tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput + (windVaning * 0.2f)) * m_heli.tailRotorForceMagMax;
     }
-    tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput) * m_heli.tailRotorForceMagMax;
+    //tailForce = -m_heli.right * (m_heli.controlInput.yawPedalInput) * m_heli.tailRotorForceMagMax;
 
     //m_debugData->DebugPushUILineDecimalNumber("tailForce.Length() ", tailForce.Length(), "");
     //m_debugData->PushDebugLine(m_heli.tailRotorPos, tailForce, 10.0f, 0.0f, DirectX::Colors::White);
@@ -3797,24 +3798,74 @@ void Vehicle::UpdateCentrifugalForce(const float aTimeStep)
 
 float Vehicle::WindVaningVal(const HeliData& aHeliData, const float aTimeStep)
 {
-    DirectX::SimpleMath::Vector3 localizedAirVelocity = -aHeliData.q.velocity;
     DirectX::SimpleMath::Matrix localizeMat = aHeliData.alignment;
     localizeMat = localizeMat.Invert();
+    DirectX::SimpleMath::Vector3 localizedAirVelocity = -aHeliData.q.velocity;
     localizedAirVelocity = DirectX::SimpleMath::Vector3::Transform(localizedAirVelocity, localizeMat);
 
     DirectX::SimpleMath::Vector3 airVelocityNormXZ = localizedAirVelocity;
     airVelocityNormXZ.y = 0.0f;
     airVelocityNormXZ.Normalize();
+    //airVelocityNormXZ = -DirectX::SimpleMath::Vector3::UnitX;
     float ratio = airVelocityNormXZ.Dot(DirectX::SimpleMath::Vector3::UnitZ);
-
+    ratio = airVelocityNormXZ.Dot(m_heli.right);
+    m_debugData->DebugPushUILineDecimalNumber("ratio = ", ratio, "");
     float v = aHeliData.q.velocity.Length();
+    v += 125.0f;
     float airDensity = aHeliData.airDensity;
     float dragCoefficient = aHeliData.dragCoefficient;
     float surfaceArea = aHeliData.area;
     float dragResistance = 0.5f * airDensity * surfaceArea * dragCoefficient * v * v;
+
+    DirectX::SimpleMath::Vector3 airVelocityNormWorldXZ = airVelocityNormXZ;
+    airVelocityNormWorldXZ = DirectX::SimpleMath::Vector3::Transform(airVelocityNormWorldXZ, aHeliData.alignment);
+    m_debugData->DebugPushUILineDecimalNumber("dragResistance = ", dragResistance, "");
+    m_debugData->PushDebugLine(m_heli.q.position, airVelocityNormWorldXZ, 25.0f, 0.0f, DirectX::Colors::White);
+    m_debugData->PushDebugLine(m_heli.q.position, airVelocityNormXZ, 25.0f, 0.0f, DirectX::Colors::Red);
+    m_debugData->PushDebugLine(m_heli.q.position, aHeliData.q.velocity, 25.0f, 0.0f, DirectX::Colors::Blue);
     //float windVaning = -ratio * dragResistance * 0.0000005f;
     float windVaning = (-ratio * dragResistance) / 2000.0f;
     return windVaning;
+}
+
+DirectX::SimpleMath::Vector3 Vehicle::WindVaningVec(const HeliData& aHeliData, const float aTimeStep)
+{
+    DirectX::SimpleMath::Matrix localizeMat = aHeliData.alignment;
+    localizeMat = localizeMat.Invert();
+    DirectX::SimpleMath::Vector3 localizedAirVelocity = -aHeliData.q.velocity;
+    localizedAirVelocity = DirectX::SimpleMath::Vector3::Transform(localizedAirVelocity, localizeMat);
+
+    DirectX::SimpleMath::Vector3 airVelocityNormXZ = localizedAirVelocity;
+    airVelocityNormXZ.y = 0.0f;
+    airVelocityNormXZ.Normalize();
+    //airVelocityNormXZ = -DirectX::SimpleMath::Vector3::UnitX;
+    float ratio = airVelocityNormXZ.Dot(DirectX::SimpleMath::Vector3::UnitZ);
+    ratio = airVelocityNormXZ.Dot(m_heli.right);
+    m_debugData->DebugPushUILineDecimalNumber("ratio = ", ratio, "");
+    float v = aHeliData.q.velocity.Length();
+    //v += 125.0f;
+    float airDensity = aHeliData.airDensity;
+    float dragCoefficient = aHeliData.dragCoefficient;
+    float surfaceArea = aHeliData.area;
+    float dragResistance = 0.5f * airDensity * surfaceArea * dragCoefficient * v * v;
+
+    DirectX::SimpleMath::Vector3 airVelocityNormWorldXZ = airVelocityNormXZ;
+    airVelocityNormWorldXZ = DirectX::SimpleMath::Vector3::Transform(airVelocityNormWorldXZ, aHeliData.alignment);
+    
+    m_debugData->DebugPushUILineDecimalNumber("dragResistance = ", dragResistance, "");
+    /*
+    m_debugData->PushDebugLine(m_heli.q.position, airVelocityNormWorldXZ, 25.0f, 0.0f, DirectX::Colors::White);
+    m_debugData->PushDebugLine(m_heli.q.position, airVelocityNormXZ, 25.0f, 0.0f, DirectX::Colors::Red);
+    m_debugData->PushDebugLine(m_heli.q.position, aHeliData.q.velocity, 25.0f, 0.0f, DirectX::Colors::Blue);
+    */
+    //float windVaning = -ratio * dragResistance * 0.0000005f;
+    float windVaning = (-ratio * dragResistance) / 2000.0f;
+    //return windVaning;
+    //return DirectX::SimpleMath::Vector3::UnitZ;
+    DirectX::SimpleMath::Vector3 windVec = (airVelocityNormXZ * dragResistance) * 0.005;
+    windVec = DirectX::SimpleMath::Vector3::Transform(windVec, aHeliData.alignment);
+    m_debugData->PushDebugLine(m_heli.q.position, windVec, 25.0f, 0.0f, DirectX::Colors::White);
+    return windVec;
 }
 
 void Vehicle::UpdateCyclicStick(ControlInput& aInput)
@@ -5148,6 +5199,9 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     m_debugData->DebugPushUILineDecimalNumber("cyclicTest.x = ", cyclicTest.x, "");
     m_debugData->DebugPushUILineDecimalNumber("cyclicTest.y = ", cyclicTest.y, "");
     m_debugData->DebugPushUILineDecimalNumber("cyclicTest.z = ", cyclicTest.z, "");
+
+    float rotorForce = (m_heli.mainRotor.bladeVec[0].liftForcePerSecond + m_heli.mainRotor.bladeVec[1].liftForcePerSecond);
+    m_debugData->DebugPushUILineDecimalNumber("rotorForce = ", rotorForce, "");
 
     /*
     DirectX::SimpleMath::Vector3 testVec = m_heli.q.position;
