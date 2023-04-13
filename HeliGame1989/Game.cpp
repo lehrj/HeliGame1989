@@ -46,7 +46,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
@@ -651,7 +651,7 @@ void Game::DrawDebugDataUI()
     m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos, Colors::White, 0.f, altitudeLineOrigin);
     textLinePos.y += 30;
 
-    
+    /*
     // Draw FPS  
     std::string textLine = "FPS  " + std::to_string(m_timer.GetFramesPerSecond());
     DirectX::SimpleMath::Vector2 textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
@@ -665,7 +665,7 @@ void Game::DrawDebugDataUI()
     textLinePos.x = textLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
     textLinePos.y += 30;
-    
+    */
 }
 
 void Game::DrawDebugLines(const  DirectX::SimpleMath::Vector3 aPos, const DirectX::XMVECTORF32 aColor)
@@ -3298,6 +3298,7 @@ void Game::OnActivated()
     // TODO: Game is becoming active window.
     m_kbStateTracker.Reset();
     m_gamePad->Resume();
+    m_gamePadTracker.Reset();
 }
 
 void Game::OnDeactivated()
@@ -3395,6 +3396,7 @@ void Game::OnResuming()
     m_timer.ResetElapsedTime();
     m_kbStateTracker.Reset();
     m_audioEngine->Resume();
+    m_gamePadTracker.Reset();
 }
 
 void Game::OnWindowSizeChanged(int width, int height)
@@ -3833,7 +3835,7 @@ void Game::Render()
     }
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
-        //DrawDebugDataUI();
+        DrawDebugDataUI();
         //DrawDebugVehicleData();
         //DrawUI();
     }
@@ -3841,7 +3843,7 @@ void Game::Render()
     {
         //DrawTeaserScreen();
     }
-    DrawDebugDataUI();
+    //DrawDebugDataUI();
     m_spriteBatch->End();
 
     Present();
@@ -4481,11 +4483,9 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     auto pad = m_gamePad->GetState(0);
     if (pad.IsConnected())
     {
+        m_gamePadTracker.Update(pad);
         m_vehicle->SetGamePadConnectionState(true);
-        if (pad.IsViewPressed())
-        {
-            ExitGame();
-        }
+
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY || m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
         {
             // Pitch
@@ -4536,7 +4536,9 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
                 m_vehicle->InputThrottleGamePad(static_cast<float>(aTimer.GetElapsedSeconds()) * inputMod);
             }
         }
-        if (pad.IsYPressed() == true)
+
+        
+        if (m_gamePadTracker.y == GamePad::ButtonStateTracker::PRESSED)
         {
             if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
             {
@@ -4546,6 +4548,7 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     }
     else
     {
+        m_gamePadTracker.Reset();
         m_vehicle->SetGamePadConnectionState(false);
     }
 }

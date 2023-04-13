@@ -31,8 +31,8 @@ struct ControlInput
     float       throttleInput;
     const float throttleInputMin = 0.0f;
     const float throttleInputMax = 1.0f;
-    const float throttleInputRate = 0.4f;
-    const float throttleInputRateGamePad = 0.4f;
+    const float throttleInputRate = 1.4f;
+    const float throttleInputRateGamePad = 0.8f; //0.4f;
 
     bool        yawPedalIsPressed;
     float       yawPedalInput;
@@ -148,9 +148,9 @@ struct HeliData
     const float tailRotorForceMagMax = 2000.0f; // vehicle mass value should work here
     DirectX::SimpleMath::Vector3 mainRotorPos;
     DirectX::SimpleMath::Vector3 localMainRotorPos;
-    float       mainRotorRPM;
-    const float mainRotorRPMmin = 0.0f;
-    const float mainRotorRPMmax = 500.0f;
+    //float       mainRotorRPM;
+    //const float mainRotorRPMmin = 0.0f;
+    //const float mainRotorRPMmax = 690.0f;
     DirectX::SimpleMath::Vector3 tailRotorPos;
     DirectX::SimpleMath::Vector3 localTailRotorPos;
     DirectX::SimpleMath::Vector3 centerOfMass;
@@ -167,12 +167,12 @@ struct HeliData
     float   airResistance;
     float   airDensity;
     float   altitude;
-    float   dragCoefficient;
+    const float   dragCoefficient = 0.31f;
     const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
     DirectX::SimpleMath::Plane groundPlane;
-    float   mainRotorMaxRPM;
-    float   mass;
-    float   massTest = 2000.0f;
+    const float   mainRotorMaxRPM = 500.0f;
+    const float   mass = 2000.0f;;
+    //float   massTest = 2000.0f;
     Motion  q;
     float   totalResistance;
     //
@@ -905,7 +905,7 @@ private:
 
     float WindVaningVal(const HeliData& aHeliData, const float aTimeStep);
     DirectX::SimpleMath::Vector3 WindVaningVec(const HeliData& aHeliData, const float aTimeStep);
-
+    DirectX::SimpleMath::Vector3 WindVaningVec2(const HeliData& aHeliData, const float aTimeStep);
 
     Environment const*              m_environment;
     std::shared_ptr<DebugData>      m_debugData;
@@ -958,10 +958,10 @@ private:
     const float m_inertiaModelZ = 4.0f;
     
     const float m_inertiaMass = 1500.0f;
+    const float m_inertiaMass2 = 500.0f;
     const float m_inertiaModelX2 = 3.0f;
     const float m_inertiaModelY2 = 0.8f;
-    const float m_inertiaModelZ2 = 0.6f;
-    const float m_inertiaMass2 = 500.0f;
+    const float m_inertiaModelZ2 = 0.6f;    
     const DirectX::SimpleMath::Vector3 m_tailInertiaOffset = DirectX::SimpleMath::Vector3(-5.0f, 0.0f, 0.0f);
 
     const float m_testMass = 2000.0f;
