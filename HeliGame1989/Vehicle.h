@@ -26,7 +26,7 @@ struct ControlInput
     const float cyclicInputMax = Utility::ToRadians(20.0f);
     const float cyclicInputMin = -Utility::ToRadians(20.0f);
     const float cyclicInputRate = 0.1f;
-    const float cyclicInputRateGamePad = 0.4f;
+    const float cyclicInputRateGamePad = 0.6f;
 
     float       throttleInput;
     const float throttleInputMin = 0.0f;
@@ -42,7 +42,7 @@ struct ControlInput
     const float yawPedalInputMax = 1.0f;
     const float yawPedalInputMin = -1.0f;
     const float yawPedalInputRate = 0.15f;
-    const float yawPedalInputRateGamePad = 0.3f;
+    const float yawPedalInputRateGamePad = 0.2f;
 };
 
 struct Engine

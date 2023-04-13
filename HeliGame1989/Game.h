@@ -188,6 +188,7 @@ private:
     std::shared_ptr<DirectX::IEffect>               m_lightEffect;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    m_skyShape;
+    float                                           m_skyRotation = 0.0f;
 
     DirectX::SimpleMath::Matrix                     m_world;
     DirectX::SimpleMath::Matrix                     m_view;
@@ -354,10 +355,10 @@ private:
     const float                         m_logoDisplayGap = 0.8f;
     const float                         m_startDelay = 5.2f;
     */
-    const float                         m_fadeDuration = 0.75f;
-    const float                         m_logoDisplayDuration = 3.5f;
+    const float                         m_fadeDuration = 1.0f;
+    const float                         m_logoDisplayDuration = 4.7f;
     const float                         m_logoDisplayGap = 0.1f;
-    const float                         m_startDelay = 1.2f;
+    const float                         m_startDelay = 3.3f;
 
     /*
     const float                         m_fadeDuration = 0.2f;
