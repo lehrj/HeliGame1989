@@ -31,8 +31,8 @@ struct ControlInput
     float       throttleInput;
     const float throttleInputMin = 0.0f;
     const float throttleInputMax = 1.0f;
-    const float throttleInputRate = 1.4f;
-    const float throttleInputRateGamePad = 0.8f; //0.4f;
+    const float throttleInputRate = 0.2f;
+    const float throttleInputRateGamePad = 0.6f; //0.4f;
 
     bool        yawPedalIsPressed;
     float       yawPedalInput;
@@ -163,7 +163,8 @@ struct HeliData
     //
     int     numEqns;
     double  time;
-    float   area;   
+    const float   areaFront = 14.67f;   
+    const float   areaTailAndBoom = 9.0f;
     float   airResistance;
     float   airDensity;
     float   altitude;
@@ -172,7 +173,7 @@ struct HeliData
     DirectX::SimpleMath::Plane groundPlane;
     const float   mainRotorMaxRPM = 500.0f;
     const float   mass = 2000.0f;;
-    //float   massTest = 2000.0f;
+
     Motion  q;
     float   totalResistance;
     //
@@ -907,6 +908,8 @@ private:
     DirectX::SimpleMath::Vector3 WindVaningVec(const HeliData& aHeliData, const float aTimeStep);
     DirectX::SimpleMath::Vector3 WindVaningVec2(const HeliData& aHeliData, const float aTimeStep);
 
+    DirectX::SimpleMath::Vector3 HorizontalStabilizerVec(const HeliData& aHeliData, const float aTimeStep);
+
     Environment const*              m_environment;
     std::shared_ptr<DebugData>      m_debugData;
     HeliData                        m_heli;
@@ -957,8 +960,8 @@ private:
     const float m_inertiaModelY = 2.0f;
     const float m_inertiaModelZ = 4.0f;
     
-    const float m_inertiaMass = 1500.0f;
-    const float m_inertiaMass2 = 500.0f;
+    const float m_inertiaMass = 2050.0f;
+    const float m_inertiaMass2 = 250.0f;
     const float m_inertiaModelX2 = 3.0f;
     const float m_inertiaModelY2 = 0.8f;
     const float m_inertiaModelZ2 = 0.6f;    
@@ -967,6 +970,7 @@ private:
     const float m_testMass = 2000.0f;
     //const float m_angDragCoefficient = 0.8f;
     const float m_angDragCoefficient = 0.4f;
+    const float m_angDragCoefficient2 = 0.2f;
     const float m_angDragLength = 8.0f;
     const float m_angDragWidth = 4.0f;
     const float m_angDragHeight = 2.0f;
@@ -977,5 +981,7 @@ private:
     const float m_angularDamping = 0.9f;
 
     bool m_isGamePadConnected = false;
+
+    bool m_isUseSimpleFlight = false;
 };
 

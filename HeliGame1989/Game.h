@@ -358,7 +358,7 @@ private:
     const float                         m_fadeDuration = 1.0f;
     const float                         m_logoDisplayDuration = 4.7f;
     const float                         m_logoDisplayGap = 0.1f;
-    const float                         m_startDelay = 3.3f;
+    const float                         m_startDelay = 4.5f;
 
     /*
     const float                         m_fadeDuration = 0.2f;

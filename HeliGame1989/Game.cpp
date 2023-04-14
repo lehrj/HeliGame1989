@@ -607,11 +607,18 @@ void Game::DrawDebugDataUI()
         textLinePos.y += 30;
     }
 
+    const float xOffset = 2.0f;
+    const float yOffset = 2.0f;
 
     float rpm = m_vehicle->GetRPM() * 1.0f;
     std::string rpmLine = "Rotor RPM: " + std::to_string(static_cast<int>(rpm)) + " ";
     DirectX::SimpleMath::Vector2 rpmLineOrigin = m_bitwiseFont->MeasureString(rpmLine.c_str()) / 2.f;
     textLinePos.x = rpmLineOrigin.x + 20;
+    DirectX::SimpleMath::Vector2 lineOrigin2 = rpmLineOrigin;
+    DirectX::SimpleMath::Vector2 textLinePos2 = textLinePos;
+    textLinePos2.x += xOffset;
+    textLinePos2.y += yOffset;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos2, Colors::Black, 0.f, lineOrigin2, 1.01f);
     m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos, Colors::White, 0.f, rpmLineOrigin);
     textLinePos.y += 30;
 
@@ -619,6 +626,7 @@ void Game::DrawDebugDataUI()
     std::string collectiveLine = "Collective: " + std::to_string(static_cast<int>(collective)) + "% ";
     DirectX::SimpleMath::Vector2 collectiveLineOrigin = m_bitwiseFont->MeasureString(collectiveLine.c_str()) / 2.f;
     textLinePos.x = collectiveLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, collectiveLineOrigin);
     m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos, Colors::White, 0.f, collectiveLineOrigin);
     textLinePos.y += 30;
 
@@ -626,6 +634,7 @@ void Game::DrawDebugDataUI()
     std::string throttleLine = "Throttle: " + std::to_string(static_cast<int>(throttle)) + "% ";
     DirectX::SimpleMath::Vector2 throttleLineOrigin = m_bitwiseFont->MeasureString(throttleLine.c_str()) / 2.f;
     textLinePos.x = throttleLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, throttleLineOrigin);
     m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos, Colors::White, 0.f, throttleLineOrigin);
     textLinePos.y += 30;
 
@@ -634,6 +643,7 @@ void Game::DrawDebugDataUI()
     std::string speedLine = "Ground Speed: " + std::to_string(static_cast<int>(speed)) + " MPH";
     DirectX::SimpleMath::Vector2 speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
     textLinePos.x = speedLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, speedLineOrigin);
     m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
     textLinePos.y += 30;
 
@@ -641,6 +651,7 @@ void Game::DrawDebugDataUI()
     speedLine = "Air Speed: " + std::to_string(static_cast<int>(speed)) + " MPH";
     speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
     textLinePos.x = speedLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, speedLineOrigin);
     m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
     textLinePos.y += 30;
 
@@ -648,6 +659,7 @@ void Game::DrawDebugDataUI()
     std::string altitudeLine = "Altitude: " + std::to_string(static_cast<int>(altitude)) + "m ";
     DirectX::SimpleMath::Vector2 altitudeLineOrigin = m_bitwiseFont->MeasureString(altitudeLine.c_str()) / 2.f;
     textLinePos.x = altitudeLineOrigin.x + 20;
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, altitudeLineOrigin);
     m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos, Colors::White, 0.f, altitudeLineOrigin);
     textLinePos.y += 30;
 
@@ -4536,7 +4548,6 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
                 m_vehicle->InputThrottleGamePad(static_cast<float>(aTimer.GetElapsedSeconds()) * inputMod);
             }
         }
-
         
         if (m_gamePadTracker.y == GamePad::ButtonStateTracker::PRESSED)
         {
