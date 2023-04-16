@@ -176,11 +176,14 @@ private:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_textureTeaser;
 
     Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout;
+    Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout2;
+    Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout3;
 
     std::shared_ptr<DirectX::IEffect>               m_lightEffect;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    m_skyShape;
     float                                           m_skyRotation = 0.0f;
+    std::unique_ptr<DirectX::GeometricPrimitive>    m_testShape;
 
     DirectX::SimpleMath::Matrix                     m_world;
     DirectX::SimpleMath::Matrix                     m_view;

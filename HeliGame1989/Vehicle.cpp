@@ -514,6 +514,970 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.tailBoomNewShape->Draw(m_heliModel.shadowBoomTopMat, aView, aProj, m_heliModel.shadowColor);
 }
 
+void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
+{
+    DirectX::SimpleMath::Matrix testMat = DirectX::SimpleMath::Matrix::Identity;
+    //testMat = DirectX::SimpleMath::Matrix::CreateWorld(DirectX::SimpleMath::Vector3(0.0f, 10.0f, 5.0f), DirectX::SimpleMath::Vector3::UnitX, DirectX::SimpleMath::Vector3::UnitY);
+    //aEffect->SetView(testMat);
+    //aEffect->SetProjection(testMat);
+    //aEffect->SetWorld(m_heliModel.bodyMatrix);
+    //aEffect->SetMatrices
+    //m_heliModel.bodyShape->
+
+    aEffect->EnableDefaultLighting();
+    DirectX::SimpleMath::Vector3 mainLightDirection0;
+    DirectX::SimpleMath::Vector3 mainLightDirection1;
+    DirectX::SimpleMath::Vector3 mainLightDirection2;
+    mainLightDirection0 = DirectX::SimpleMath::Vector3(0.0f, -1.0f, -1.0f);
+    mainLightDirection0.Normalize();
+    mainLightDirection1 = DirectX::SimpleMath::Vector3(1.0f, -1.0f, 0.0f);
+    mainLightDirection1.Normalize();
+    mainLightDirection2 = DirectX::SimpleMath::Vector3(0.0f, -1.0f, 1.0f);
+    mainLightDirection2.Normalize();
+    //m_environment->GetLightDirectionalVectors(mainLightDirection0, mainLightDirection1, mainLightDirection2);
+    aEffect->SetLightDirection(0, mainLightDirection0);
+    aEffect->SetLightDirection(1, mainLightDirection1);
+    aEffect->SetLightDirection(2, mainLightDirection2);
+    aEffect->EnableDefaultLighting();
+
+    aEffect->SetWorld(m_heliModel.swashplateHubMatrix);
+    aEffect->SetColorAndAlpha(DirectX::Colors::Lime);
+    m_heliModel.swashplateHubShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.pitchArmMatrix1);
+    aEffect->SetColorAndAlpha(DirectX::Colors::Red);
+    m_heliModel.pitchArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.pitchArmMatrix2);
+    aEffect->SetColorAndAlpha(DirectX::Colors::Blue);
+    m_heliModel.pitchArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.pitchLinkMatrix1);
+    aEffect->SetColorAndAlpha(DirectX::Colors::Yellow);
+    m_heliModel.pitchLinkShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.bodyMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.bodyColor);
+    m_heliModel.bodyShape->Draw(aEffect.get(), aInputLayout.Get());
+    //m_heliModel.bodyShape->Draw(m_heliModel.bodyMatrix, aView, aProj, m_heliModel.bodyColor);
+    //m_heliModel.bodyShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.bodyRearBellyMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.bodyCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.bodyBellyMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.bodyShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.noseBodyBellyMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.noseBodyShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.noseConeBellyMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.noseConeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainWingBellyMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.mainWingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainWingTailEdgeBellyMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.mainWingTailEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.mainWingLeadingEdgeBellyMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.mainWingLeadingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetForwardHousingLeftBellyMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.wingJetForwardHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetForwardHousingLeftBellyMatrix);
+    m_heliModel.wingJetForwardHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailWingLeadingEdgeBellyMatrix);
+    m_heliModel.tailWingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailWingTrailingEdgeBellyMatrix);
+    m_heliModel.tailWingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailWingBellyMatrix);
+    m_heliModel.tailWingShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.bodyCapShape->Draw(m_heliModel.bodyRearBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.bodyShape->Draw(m_heliModel.bodyBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.noseBodyShape->Draw(m_heliModel.noseBodyBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.noseConeShape->Draw(m_heliModel.noseConeBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    //m_heliModel.mainWingShape->Draw(m_heliModel.mainWingBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.mainWingTailEdgeShape->Draw(m_heliModel.mainWingTailEdgeBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.mainWingLeadingEdgeShape->Draw(m_heliModel.mainWingLeadingEdgeBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    //m_heliModel.wingJetForwardHousingShape->Draw(m_heliModel.wingJetForwardHousingLeftBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.tailWingEdgeShape->Draw(m_heliModel.tailWingLeadingEdgeBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.tailWingEdgeShape->Draw(m_heliModel.tailWingTrailingEdgeBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.tailWingShape->Draw(m_heliModel.tailWingBellyMatrix, aView, aProj, m_heliModel.undersideColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.doorMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.bodyColor);
+    m_heliModel.doorShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainWingMatrix);
+    m_heliModel.mainWingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainWingLeadingEdgeMatrix);
+    m_heliModel.mainWingLeadingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainWingTailEdgeMatrix);
+    m_heliModel.mainWingTailEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetCenterMatrix);
+    //m_heliModel.wingJetCenterShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetForwardHousingLeftMatrix);
+    m_heliModel.wingJetForwardHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetForwardHousingRightMatrix);
+    m_heliModel.wingJetForwardHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetForwardCowlLeftMatrix);
+    m_heliModel.wingJetForwardCowlShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetForwardCowlRightMatrix);
+    m_heliModel.wingJetForwardCowlShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetCouplingLeftMatrix);
+    m_heliModel.wingJetCouplingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetCouplingRightMatrix);
+    m_heliModel.wingJetCouplingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetRearHousingRightMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.exhaustColor);
+    m_heliModel.wingJetRearHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetRearHousingLeftMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.exhaustColor);
+    m_heliModel.wingJetRearHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.doorShape->Draw(m_heliModel.doorMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainWingShape->Draw(m_heliModel.mainWingMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainWingLeadingEdgeShape->Draw(m_heliModel.mainWingLeadingEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.mainWingTailEdgeShape->Draw(m_heliModel.mainWingTailEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
+    //m_heliModel.wingJetCenterShape->Draw(m_heliModel.wingJetCenterMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.wingJetForwardHousingShape->Draw(m_heliModel.wingJetForwardHousingLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.wingJetForwardHousingShape->Draw(m_heliModel.wingJetForwardHousingRightMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.wingJetForwardCowlShape->Draw(m_heliModel.wingJetForwardCowlLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.wingJetForwardCowlShape->Draw(m_heliModel.wingJetForwardCowlRightMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.wingJetCouplingShape->Draw(m_heliModel.wingJetCouplingLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.wingJetCouplingShape->Draw(m_heliModel.wingJetCouplingRightMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.wingJetRearHousingShape->Draw(m_heliModel.wingJetRearHousingRightMatrix, aView, aProj, m_heliModel.exhaustColor);
+    m_heliModel.wingJetRearHousingShape->Draw(m_heliModel.wingJetRearHousingLeftMatrix, aView, aProj, m_heliModel.exhaustColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.wingJetExhaustTipLeftMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.exhaustColor);
+    m_heliModel.wingJetExhaustTipShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetExhaustTipRightMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.exhaustColor);
+    m_heliModel.wingJetExhaustTipShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.sidePodMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.bodyColor);
+    m_heliModel.sidePodShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.wingJetExhaustTipShape->Draw(m_heliModel.wingJetExhaustTipLeftMatrix, aView, aProj, m_heliModel.exhaustColor);
+    m_heliModel.wingJetExhaustTipShape->Draw(m_heliModel.wingJetExhaustTipRightMatrix, aView, aProj, m_heliModel.exhaustColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.sidePodMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.bodyColor);
+    m_heliModel.sidePodShape->Draw(aEffect.get(), aInputLayout.Get());
+    //m_heliModel.sidePodShape->Draw(m_heliModel.sidePodMatrix, aView, aProj, m_heliModel.bodyColor);
+
+    aEffect->SetWorld(m_heliModel.sideStripeMatrix0);
+    aEffect->SetColorAndAlpha(m_heliModel.stripeColor1);
+    m_heliModel.sideStripeShape0->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.sideStripeMatrix1);
+    m_heliModel.sideStripeShape1->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.sideStripeMatrix2);
+    m_heliModel.sideStripeShape2->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.sideStripeMatrix3);
+    m_heliModel.sideStripeShape3->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.sideStripeMatrix4);
+    m_heliModel.sideStripeShape4->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.sideStripeMatrix5);
+    m_heliModel.sideStripeShape5->Draw(aEffect.get(), aInputLayout.Get());
+
+    /*
+    m_heliModel.sideStripeShape0->Draw(m_heliModel.sideStripeMatrix0, aView, aProj, m_heliModel.stripeColor1);
+    m_heliModel.sideStripeShape1->Draw(m_heliModel.sideStripeMatrix1, aView, aProj, m_heliModel.stripeColor1);
+    m_heliModel.sideStripeShape2->Draw(m_heliModel.sideStripeMatrix2, aView, aProj, m_heliModel.stripeColor1);
+    m_heliModel.sideStripeShape3->Draw(m_heliModel.sideStripeMatrix3, aView, aProj, m_heliModel.stripeColor1);
+    m_heliModel.sideStripeShape4->Draw(m_heliModel.sideStripeMatrix4, aView, aProj, m_heliModel.stripeColor1);
+    m_heliModel.sideStripeShape5->Draw(m_heliModel.sideStripeMatrix5, aView, aProj, m_heliModel.stripeColor1);
+    */
+
+    aEffect->SetWorld(m_heliModel.noseCowlMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.bodyColor);
+    m_heliModel.noseCowlShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.bodyRearMatrix);
+    m_heliModel.bodyCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    /*
+    m_heliModel.noseCowlShape->Draw(m_heliModel.noseCowlMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.bodyCapShape->Draw(m_heliModel.bodyRearMatrix, aView, aProj, m_heliModel.bodyColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.windShieldMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.windshieldColor);
+    m_heliModel.bodyCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.sideWindowUpperMatrix);
+    m_heliModel.sideWindowUpperShape->Draw(aEffect.get(), aInputLayout.Get());
+
+
+    /*
+    m_heliModel.bodyCapShape->Draw(m_heliModel.windShieldMatrix, aView, aProj, m_heliModel.windshieldColor);
+    m_heliModel.sideWindowUpperShape->Draw(m_heliModel.sideWindowUpperMatrix, aView, aProj, m_heliModel.windshieldColor);
+    //m_heliModel.sideWindowEyeShape->Draw(m_heliModel.sideWindowEyeMatrix, aView, aProj, m_heliModel.undersideColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.sideWindowLowerMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.toothColor);
+    m_heliModel.sideWindowLowerShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.sideWindowBottomMatrix);
+    m_heliModel.sideWindowLowerShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix1);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix2);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix3);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix4);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix5);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix6);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix7);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix8);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix9);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix10);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix11);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.toothMatrix12);
+    m_heliModel.toothShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.sideWindowLowerShape->Draw(m_heliModel.sideWindowLowerMatrix, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.sideWindowLowerShape->Draw(m_heliModel.sideWindowBottomMatrix, aView, aProj, m_heliModel.toothColor);
+
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix1, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix2, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix3, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix4, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix5, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape->Draw(m_heliModel.toothMatrix6, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix7, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix8, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix9, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix10, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix11, aView, aProj, m_heliModel.toothColor);
+    m_heliModel.toothShape2->Draw(m_heliModel.toothMatrix12, aView, aProj, m_heliModel.toothColor);
+
+    //m_heliModel.toothBackdropShape->Draw(m_heliModel.toothBackdropLeftMatrix, aView, aProj, m_heliModel.testColor3);
+    //m_heliModel.toothBackdropShape->Draw(m_heliModel.toothBackdropRightMatrix, aView, aProj, m_heliModel.testColor3);
+    //m_heliModel.toothBackdropTestShape->Draw(m_heliModel.toothBackdropLeftMatrix, aView, aProj, m_heliModel.testColor3);
+    */
+
+    aEffect->SetWorld(m_heliModel.landingGearLowerArmMatrix * m_heliModel.landingGearFrontMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.landingGearArmColor);
+    m_heliModel.landingGearLowerArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.landingGearUpperArmMatrix * m_heliModel.landingGearFrontMatrix);
+    m_heliModel.landingGearUpperArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.landingGearLowerArmMatrix * m_heliModel.landingGearRearLeftMatrix);
+    m_heliModel.landingGearLowerArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.landingGearUpperArmMatrix * m_heliModel.landingGearRearLeftMatrix);
+    m_heliModel.landingGearUpperArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.landingGearLowerArmMatrix * m_heliModel.landingGearRearRightMatrix);
+    m_heliModel.landingGearLowerArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.landingGearUpperArmMatrix * m_heliModel.landingGearRearRightMatrix);
+    m_heliModel.landingGearUpperArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearFrontMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.landingGearTireColor);
+    m_heliModel.landingGearTireShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearRearLeftMatrix);
+    m_heliModel.landingGearTireShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearRearRightMatrix);
+    m_heliModel.landingGearTireShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearFrontMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.landingGearWheelColor);
+    m_heliModel.landingGearWheelShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearRearLeftMatrix);
+    m_heliModel.landingGearWheelShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearRearRightMatrix);
+    m_heliModel.landingGearWheelShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    /*
+    m_heliModel.landingGearLowerArmShape->Draw(m_heliModel.landingGearLowerArmMatrix * m_heliModel.landingGearFrontMatrix, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.landingGearUpperArmShape->Draw(m_heliModel.landingGearUpperArmMatrix * m_heliModel.landingGearFrontMatrix, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.landingGearTireShape->Draw(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearFrontMatrix, aView, aProj, m_heliModel.landingGearTireColor);
+    m_heliModel.landingGearWheelShape->Draw(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearFrontMatrix, aView, aProj, m_heliModel.landingGearWheelColor);
+
+    m_heliModel.landingGearLowerArmShape->Draw(m_heliModel.landingGearLowerArmMatrix * m_heliModel.landingGearRearLeftMatrix, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.landingGearUpperArmShape->Draw(m_heliModel.landingGearUpperArmMatrix * m_heliModel.landingGearRearLeftMatrix, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.landingGearTireShape->Draw(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearRearLeftMatrix, aView, aProj, m_heliModel.landingGearTireColor);
+    m_heliModel.landingGearWheelShape->Draw(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearRearLeftMatrix, aView, aProj, m_heliModel.landingGearWheelColor);
+
+    m_heliModel.landingGearLowerArmShape->Draw(m_heliModel.landingGearLowerArmMatrix * m_heliModel.landingGearRearRightMatrix, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.landingGearUpperArmShape->Draw(m_heliModel.landingGearUpperArmMatrix * m_heliModel.landingGearRearRightMatrix, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.landingGearTireShape->Draw(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearRearRightMatrix, aView, aProj, m_heliModel.landingGearTireColor);
+    m_heliModel.landingGearWheelShape->Draw(m_heliModel.landingGearWheelMatrix * m_heliModel.landingGearRearRightMatrix, aView, aProj, m_heliModel.landingGearWheelColor);
+    //*/
+
+    aEffect->SetWorld(m_heliModel.noseConeMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.bodyColor);
+    m_heliModel.noseConeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.noseBodyMatrix);
+    m_heliModel.noseBodyShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineHousingMatrix);
+    m_heliModel.engineHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineHousingRearLeftMatrix);
+    m_heliModel.engineHousingCornerShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineHousingRearRightMatrix);
+    m_heliModel.engineHousingCornerShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.noseConeShape->Draw(m_heliModel.noseConeMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.noseBodyShape->Draw(m_heliModel.noseBodyMatrix, aView, aProj, m_heliModel.bodyColor);
+
+    m_heliModel.engineHousingShape->Draw(m_heliModel.engineHousingMatrix, aView, aProj, m_heliModel.bodyColor);
+    //m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingFrontRightMatrix, aView, aProj, m_heliModel.bodyColor);
+    //m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingFrontLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingRearLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingRearRightMatrix, aView, aProj, m_heliModel.bodyColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.engineHousingIntakeCowlLeftMatrix);
+    m_heliModel.engineHousingIntakeCowlShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.engineHousingIntakeCowlRightMatrix);
+    m_heliModel.engineHousingIntakeCowlShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineHousingFrontMatrix);
+    m_heliModel.engineHousingFrontShape->Draw(aEffect.get(), aInputLayout.Get());
+    
+    aEffect->SetWorld(m_heliModel.engineHousingRearMatrix);
+    m_heliModel.engineHousingFrontShape->Draw(aEffect.get(), aInputLayout.Get());
+    
+    aEffect->SetWorld(m_heliModel.engineHousingSideLeftMatrix);
+    m_heliModel.engineHousingSideShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineHousingSideRightMatrix);
+    m_heliModel.engineHousingSideShape->Draw(aEffect.get(), aInputLayout.Get());
+    
+    /*
+    m_heliModel.engineHousingIntakeCowlShape->Draw(m_heliModel.engineHousingIntakeCowlLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.engineHousingIntakeCowlShape->Draw(m_heliModel.engineHousingIntakeCowlRightMatrix, aView, aProj, m_heliModel.bodyColor);
+
+    m_heliModel.engineHousingFrontShape->Draw(m_heliModel.engineHousingFrontMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.engineHousingFrontShape->Draw(m_heliModel.engineHousingRearMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.engineHousingSideShape->Draw(m_heliModel.engineHousingSideLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.engineHousingSideShape->Draw(m_heliModel.engineHousingSideRightMatrix, aView, aProj, m_heliModel.bodyColor);
+    */
+
+
+
+    aEffect->SetWorld(m_heliModel.engineExhaustLeftMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.exhaustColor);
+    m_heliModel.engineExhaustExteriorShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineExhaustRightMatrix);
+    m_heliModel.engineExhaustExteriorShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineExhaustTipLeftMatrix);
+    m_heliModel.engineExhaustTipShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineExhaustTipRightMatrix);
+    m_heliModel.engineExhaustTipShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.engineExhaustExteriorShape->Draw(m_heliModel.engineExhaustLeftMatrix, aView, aProj, m_heliModel.exhaustColor);
+    m_heliModel.engineExhaustExteriorShape->Draw(m_heliModel.engineExhaustRightMatrix, aView, aProj, m_heliModel.exhaustColor);
+
+    m_heliModel.engineExhaustTipShape->Draw(m_heliModel.engineExhaustTipLeftMatrix, aView, aProj, m_heliModel.exhaustColor);
+    m_heliModel.engineExhaustTipShape->Draw(m_heliModel.engineExhaustTipRightMatrix, aView, aProj, m_heliModel.exhaustColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.tailBoomLowerMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.tailBoomNewShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailBoomLowerEndCapMatrix);
+    m_heliModel.tailBoomLowerUpperEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    /*
+    m_heliModel.tailBoomNewShape->Draw(m_heliModel.tailBoomLowerMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.tailBoomLowerUpperEndCapShape->Draw(m_heliModel.tailBoomLowerEndCapMatrix, aView, aProj, m_heliModel.undersideColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.tailBoomMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.bodyColor);
+    m_heliModel.tailBoomShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailBoomUpperMatrix);
+    m_heliModel.tailBoomNewShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailBoomMidEndCapMatrix);
+    m_heliModel.tailBoomMidEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailBoomUpperEndCapMatrix);
+    m_heliModel.tailBoomLowerUpperEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailFinUpperMatrix);
+    m_heliModel.tailFinUpperShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailFinUpperTipMatrix);
+    m_heliModel.tailFinUpperTipShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailFinLeadingEdgeUpperMatrix);
+    m_heliModel.tailFinLeadingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    /*
+    m_heliModel.tailBoomShape->Draw(m_heliModel.tailBoomMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailBoomNewShape->Draw(m_heliModel.tailBoomUpperMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailBoomMidEndCapShape->Draw(m_heliModel.tailBoomMidEndCapMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailBoomLowerUpperEndCapShape->Draw(m_heliModel.tailBoomUpperEndCapMatrix, aView, aProj, m_heliModel.bodyColor);
+
+    m_heliModel.tailFinUpperShape->Draw(m_heliModel.tailFinUpperMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailFinUpperTipShape->Draw(m_heliModel.tailFinUpperTipMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailFinLeadingEdgeShape->Draw(m_heliModel.tailFinLeadingEdgeUpperMatrix, aView, aProj, m_heliModel.bodyColor);
+    */
+    aEffect->SetWorld(m_heliModel.tailWingMatrix);
+    m_heliModel.tailWingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailWingLeadingEdgeMatrix);
+    m_heliModel.tailWingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailWingTrailingEdgeMatrix);
+    m_heliModel.tailWingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailWingFinLeftMatrix);
+    m_heliModel.tailWingFinShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailWingFinRightMatrix);
+    m_heliModel.tailWingFinShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.tailWingShape->Draw(m_heliModel.tailWingMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailWingEdgeShape->Draw(m_heliModel.tailWingLeadingEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailWingEdgeShape->Draw(m_heliModel.tailWingTrailingEdgeMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailWingFinShape->Draw(m_heliModel.tailWingFinLeftMatrix, aView, aProj, m_heliModel.bodyColor);
+    m_heliModel.tailWingFinShape->Draw(m_heliModel.tailWingFinRightMatrix, aView, aProj, m_heliModel.bodyColor);
+    */
+    aEffect->SetWorld(m_heliModel.tailFinLowerMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
+    m_heliModel.tailFinLowerShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailFinLowerTipMatrix);
+    m_heliModel.tailFinLowerTipShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailFinLeadingEdgeLowerMatrix);
+    m_heliModel.tailFinLeadingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailWingFinEdgeLeftMatrix);
+    m_heliModel.tailWingFinEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailWingFinEdgeRightMatrix);
+    m_heliModel.tailWingFinEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    /*
+    m_heliModel.tailFinLowerShape->Draw(m_heliModel.tailFinLowerMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.tailFinLowerTipShape->Draw(m_heliModel.tailFinLowerTipMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.tailFinLeadingEdgeShape->Draw(m_heliModel.tailFinLeadingEdgeLowerMatrix, aView, aProj, m_heliModel.undersideColor);
+
+    m_heliModel.tailWingFinEdgeShape->Draw(m_heliModel.tailWingFinEdgeLeftMatrix, aView, aProj, m_heliModel.undersideColor);
+    m_heliModel.tailWingFinEdgeShape->Draw(m_heliModel.tailWingFinEdgeRightMatrix, aView, aProj, m_heliModel.undersideColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.mainRotorAxelMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.axelColor);
+    m_heliModel.mainRotorAxelShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorHubMatrix);
+    m_heliModel.mainRotorHubShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.mainRotorAxelShape->Draw(m_heliModel.mainRotorAxelMatrix, aView, aProj, m_heliModel.axelColor);
+    m_heliModel.mainRotorHubShape->Draw(m_heliModel.mainRotorHubMatrix, aView, aProj, m_heliModel.axelColor);
+    */
+    aEffect->SetWorld(m_heliModel.mainRotorArmMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.rotorColor);
+    m_heliModel.mainRotorArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeMatrix1);
+    m_heliModel.mainRotorBladeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeMatrix2);
+    m_heliModel.mainRotorBladeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeInteriorMatrix1);
+    m_heliModel.mainRotorBladeInteriorShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeInteriorMatrix2);
+    m_heliModel.mainRotorBladeInteriorShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeEdgeMatrix1);
+    m_heliModel.mainRotorBladeEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeEdgeMatrix2);
+    m_heliModel.mainRotorBladeEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.mainRotorArmShape->Draw(m_heliModel.mainRotorArmMatrix, aView, aProj, m_heliModel.rotorColor);
+
+    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.mainRotorBladeMatrix1, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.mainRotorBladeMatrix2, aView, aProj, m_heliModel.rotorColor);
+
+    m_heliModel.mainRotorBladeInteriorShape->Draw(m_heliModel.mainRotorBladeInteriorMatrix1, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.mainRotorBladeInteriorShape->Draw(m_heliModel.mainRotorBladeInteriorMatrix2, aView, aProj, m_heliModel.rotorColor);
+
+    m_heliModel.mainRotorBladeEdgeShape->Draw(m_heliModel.mainRotorBladeEdgeMatrix1, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.mainRotorBladeEdgeShape->Draw(m_heliModel.mainRotorBladeEdgeMatrix2, aView, aProj, m_heliModel.rotorColor);
+    */
+    // stripe 1
+    aEffect->SetWorld(m_heliModel.mainRotorBladeStripe1Matrix1);
+    aEffect->SetColorAndAlpha(m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeStripe1Matrix2);
+    m_heliModel.mainRotorBladeStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeEdgeStripe1Matrix1);
+    m_heliModel.mainRotorBladeEdgeStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeEdgeStripe1Matrix2);
+    m_heliModel.mainRotorBladeEdgeStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorArmStripe1Matrix1);
+    m_heliModel.mainRotorArmStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorArmStripe1Matrix2);
+    m_heliModel.mainRotorArmStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    // stripe 1
+    m_heliModel.mainRotorBladeStripe1Shape->Draw(m_heliModel.mainRotorBladeStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeStripe1Shape->Draw(m_heliModel.mainRotorBladeStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeStripe1Shape->Draw(m_heliModel.mainRotorBladeEdgeStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeStripe1Shape->Draw(m_heliModel.mainRotorBladeEdgeStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorArmStripe1Shape->Draw(m_heliModel.mainRotorArmStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorArmStripe1Shape->Draw(m_heliModel.mainRotorArmStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    */
+    aEffect->SetWorld(m_heliModel.mainRotorArmStripe2Matrix1);
+    aEffect->SetColorAndAlpha(m_heliModel.rotorStripeAltColor);
+    m_heliModel.mainRotorArmStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorArmStripe2Matrix2);
+    m_heliModel.mainRotorArmStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorEdgeStripe2Matrix1);
+    m_heliModel.mainRotorBladeEdgeStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorEdgeStripe2Matrix2);
+    m_heliModel.mainRotorBladeEdgeStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeStripe2Matrix1);
+    m_heliModel.mainRotorBladeStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeStripe2Matrix2);
+    m_heliModel.mainRotorBladeStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    // stripe 2
+    m_heliModel.mainRotorArmStripe2Shape->Draw(m_heliModel.mainRotorArmStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeAltColor);
+    m_heliModel.mainRotorArmStripe2Shape->Draw(m_heliModel.mainRotorArmStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeAltColor);
+    m_heliModel.mainRotorBladeEdgeStripe2Shape->Draw(m_heliModel.mainRotorEdgeStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeAltColor);
+    m_heliModel.mainRotorBladeEdgeStripe2Shape->Draw(m_heliModel.mainRotorEdgeStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeAltColor);
+    m_heliModel.mainRotorBladeStripe2Shape->Draw(m_heliModel.mainRotorBladeStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeAltColor);
+    m_heliModel.mainRotorBladeStripe2Shape->Draw(m_heliModel.mainRotorBladeStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeAltColor);
+    */
+    aEffect->SetWorld(m_heliModel.mainRotorArmEndCapMatrix1);
+    aEffect->SetColorAndAlpha(m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorArmEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorArmEndCapMatrix2);
+    m_heliModel.mainRotorArmEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeEndCapMatrix1);
+    m_heliModel.mainRotorBladeEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeEndCapMatrix2);
+    m_heliModel.mainRotorBladeEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeEdgeEndCapMatrix1);
+    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.mainRotorBladeEdgeEndCapMatrix2);
+    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    /*
+    m_heliModel.mainRotorArmEndCapShape->Draw(m_heliModel.mainRotorArmEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorArmEndCapShape->Draw(m_heliModel.mainRotorArmEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEndCapShape->Draw(m_heliModel.mainRotorBladeEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEndCapShape->Draw(m_heliModel.mainRotorBladeEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(m_heliModel.mainRotorBladeEdgeEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.mainRotorBladeEdgeEndCapShape->Draw(m_heliModel.mainRotorBladeEdgeEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    */
+    aEffect->SetWorld(m_heliModel.tailRotorAxelMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.axelColor);
+    m_heliModel.tailRotorAxelShape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.tailRotorHubMatrix);
+    m_heliModel.tailRotorHubShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.tailRotorAxelShape->Draw(m_heliModel.tailRotorAxelMatrix, aView, aProj, m_heliModel.axelColor);
+    m_heliModel.tailRotorHubShape->Draw(m_heliModel.tailRotorHubMatrix, aView, aProj, m_heliModel.axelColor);
+    */
+    aEffect->SetWorld(m_heliModel.tailRotorArmMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.rotorColor);
+    m_heliModel.tailRotorArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeMatrix1);
+    m_heliModel.tailRotorBladeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeMatrix2);
+    m_heliModel.tailRotorBladeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeEdgeMatrix1);
+    m_heliModel.tailRotorBladeEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeEdgeMatrix2);
+    m_heliModel.tailRotorBladeEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeInteriorMatrix1);
+    m_heliModel.tailRotorBladeInteriorShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeInteriorMatrix2);
+    m_heliModel.tailRotorBladeInteriorShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.tailRotorArmShape->Draw(m_heliModel.tailRotorArmMatrix, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.tailRotorBladeMatrix1, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.tailRotorBladeMatrix2, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.tailRotorBladeEdgeShape->Draw(m_heliModel.tailRotorBladeEdgeMatrix1, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.tailRotorBladeEdgeShape->Draw(m_heliModel.tailRotorBladeEdgeMatrix2, aView, aProj, m_heliModel.rotorColor);
+
+    m_heliModel.tailRotorBladeInteriorShape->Draw(m_heliModel.tailRotorBladeInteriorMatrix1, aView, aProj, m_heliModel.rotorColor);
+    m_heliModel.tailRotorBladeInteriorShape->Draw(m_heliModel.tailRotorBladeInteriorMatrix2, aView, aProj, m_heliModel.rotorColor);
+    */
+    aEffect->SetWorld(m_heliModel.tailRotorBladeEndCapMatrix1);
+    aEffect->SetColorAndAlpha(m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeEndCapMatrix2);
+    m_heliModel.tailRotorBladeEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorArmEndCapMatrix1);
+    m_heliModel.tailRotorArmEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorArmEndCapMatrix2);
+    m_heliModel.tailRotorArmEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeEdgeEndCapMatrix1);
+    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeEdgeEndCapMatrix2);
+    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    /*
+    m_heliModel.tailRotorBladeEndCapShape->Draw(m_heliModel.tailRotorBladeEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeEndCapShape->Draw(m_heliModel.tailRotorBladeEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
+
+    m_heliModel.tailRotorArmEndCapShape->Draw(m_heliModel.tailRotorArmEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorArmEndCapShape->Draw(m_heliModel.tailRotorArmEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
+
+    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(m_heliModel.tailRotorBladeEdgeEndCapMatrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeEdgeEndCapShape->Draw(m_heliModel.tailRotorBladeEdgeEndCapMatrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    */
+
+    //  tail rotor arm stripe 1
+    aEffect->SetWorld(m_heliModel.tailRotorArmStripe1Matrix1);
+    m_heliModel.tailRotorArmStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.tailRotorArmStripe1Matrix2);
+    m_heliModel.tailRotorArmStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.tailRotorBladeStripe1Matrix1);
+    m_heliModel.tailRotorBladeStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.tailRotorBladeStripe1Matrix2);
+    m_heliModel.tailRotorBladeStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    //  tail rotor edge stripe 1
+    aEffect->SetWorld(m_heliModel.tailRotorEdgeStripe1Matrix1);
+    m_heliModel.tailRotorEdgeStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+    aEffect->SetWorld(m_heliModel.tailRotorEdgeStripe1Matrix2);
+    m_heliModel.tailRotorEdgeStripe1Shape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    //  tail rotor arm stripe 1
+    m_heliModel.tailRotorArmStripe1Shape->Draw(m_heliModel.tailRotorArmStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorArmStripe1Shape->Draw(m_heliModel.tailRotorArmStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeStripe1Shape->Draw(m_heliModel.tailRotorBladeStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorBladeStripe1Shape->Draw(m_heliModel.tailRotorBladeStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+
+    //  tail rotor edge stripe 1
+    m_heliModel.tailRotorEdgeStripe1Shape->Draw(m_heliModel.tailRotorEdgeStripe1Matrix1, aView, aProj, m_heliModel.rotorStripeColor);
+    m_heliModel.tailRotorEdgeStripe1Shape->Draw(m_heliModel.tailRotorEdgeStripe1Matrix2, aView, aProj, m_heliModel.rotorStripeColor);
+    */
+    //  tail rotor arm stripe 2
+    aEffect->SetWorld(m_heliModel.tailRotorArmStripe2Matrix1);
+    aEffect->SetColorAndAlpha(m_heliModel.rotorStripeAltColor);
+    m_heliModel.tailRotorArmStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorArmStripe2Matrix2);
+    m_heliModel.tailRotorArmStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeStripe2Matrix1);
+    m_heliModel.tailRotorBladeStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorBladeStripe2Matrix2);
+    m_heliModel.tailRotorBladeStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorEdgeStripe2Matrix1);
+    m_heliModel.tailRotorEdgeStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.tailRotorEdgeStripe2Matrix2);
+    m_heliModel.tailRotorEdgeStripe2Shape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    //  tail rotor arm stripe 2
+    m_heliModel.tailRotorArmStripe2Shape->Draw(m_heliModel.tailRotorArmStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeAltColor);
+    m_heliModel.tailRotorArmStripe2Shape->Draw(m_heliModel.tailRotorArmStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeAltColor);
+
+    //  tail rotor blade stripe 2
+    m_heliModel.tailRotorBladeStripe2Shape->Draw(m_heliModel.tailRotorBladeStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeAltColor);
+    m_heliModel.tailRotorBladeStripe2Shape->Draw(m_heliModel.tailRotorBladeStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeAltColor);
+
+    //  tail rotor edge stripe 2
+    m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix1, aView, aProj, m_heliModel.rotorStripeAltColor);
+    m_heliModel.tailRotorEdgeStripe2Shape->Draw(m_heliModel.tailRotorEdgeStripe2Matrix2, aView, aProj, m_heliModel.rotorStripeAltColor);
+    */
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // shadow start
+    auto lights = dynamic_cast<DirectX::IEffectLights*>(aEffect.get());
+    if (lights)
+    {
+        lights->SetLightEnabled(0, true);
+        lights->SetLightEnabled(1, true);
+        lights->SetLightEnabled(2, true);
+        lights->SetAmbientLightColor(DirectX::Colors::Black);
+        lights->SetLightDiffuseColor(0, DirectX::Colors::Black);
+        lights->SetLightDiffuseColor(1, DirectX::Colors::Black);
+        lights->SetLightDiffuseColor(2, DirectX::Colors::Black);
+        lights->SetLightSpecularColor(0, DirectX::Colors::Black);
+        lights->SetLightSpecularColor(1, DirectX::Colors::Black);
+        lights->SetLightSpecularColor(2, DirectX::Colors::Black);
+    }
+
+    aEffect->SetWorld(m_heliModel.engineExhaustLeftMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.shadowColor);
+    m_heliModel.engineExhaustInteriorShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineExhaustRightMatrix);
+    m_heliModel.engineExhaustInteriorShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineHousingIntakeLeftMatrix);
+    m_heliModel.engineHousingCornerShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.engineHousingIntakeRightMatrix);
+    m_heliModel.engineHousingCornerShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.engineExhaustInteriorShape->Draw(m_heliModel.engineExhaustLeftMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineExhaustInteriorShape->Draw(m_heliModel.engineExhaustRightMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingIntakeLeftMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineHousingCornerShape->Draw(m_heliModel.engineHousingIntakeRightMatrix, aView, aProj, m_heliModel.shadowColor);
+    */
+    // shadows 
+    aEffect->SetWorld(m_heliModel.wingJetForwardHousingLeftMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.shadowColor);
+    m_heliModel.wingJetForwardIntakeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetForwardHousingRightMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.shadowColor);
+    m_heliModel.wingJetForwardIntakeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetRearHousingLeftMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.shadowColor);
+    m_heliModel.wingJetExhaustShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.wingJetRearHousingRightMatrix);
+    aEffect->SetColorAndAlpha(m_heliModel.shadowColor);
+    m_heliModel.wingJetExhaustShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.wingJetForwardIntakeShape->Draw(m_heliModel.wingJetForwardHousingLeftMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.wingJetForwardIntakeShape->Draw(m_heliModel.wingJetForwardHousingRightMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.wingJetExhaustShape->Draw(m_heliModel.wingJetRearHousingLeftMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.wingJetExhaustShape->Draw(m_heliModel.wingJetRearHousingRightMatrix, aView, aProj, m_heliModel.shadowColor);
+    */
+    // draw shadows
+    aEffect->SetWorld(m_heliModel.shadowBaseMat);
+    aEffect->SetColorAndAlpha(m_heliModel.shadowColor);
+    m_heliModel.bodyShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowFrontNoseMat);
+    m_heliModel.bodyCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowRearNoseMat);
+    m_heliModel.bodyCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowMainWingMat);
+    m_heliModel.mainWingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowMainWingFrontMat);
+    m_heliModel.mainWingLeadingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowMainWingRearMat);
+    m_heliModel.mainWingTailEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowBoomMat);
+    m_heliModel.tailBoomShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowBoomEndCapMat);
+    m_heliModel.tailBoomMidEndCapShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowTailWingMat);
+    m_heliModel.tailWingShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    // draw shadows
+    m_heliModel.bodyShape->Draw(m_heliModel.shadowBaseMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.bodyCapShape->Draw(m_heliModel.shadowFrontNoseMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.bodyCapShape->Draw(m_heliModel.shadowRearNoseMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.mainWingShape->Draw(m_heliModel.shadowMainWingMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.mainWingLeadingEdgeShape->Draw(m_heliModel.shadowMainWingFrontMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.mainWingTailEdgeShape->Draw(m_heliModel.shadowMainWingRearMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.tailBoomShape->Draw(m_heliModel.shadowBoomMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailBoomMidEndCapShape->Draw(m_heliModel.shadowBoomEndCapMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailWingShape->Draw(m_heliModel.shadowTailWingMat, aView, aProj, m_heliModel.shadowColor);
+    */
+    aEffect->SetWorld(m_heliModel.shadowTailFinLowerMat);
+    m_heliModel.tailFinLowerShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowTailFinUpperMat);
+    m_heliModel.tailFinLowerShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowHouseingMainMat);
+    m_heliModel.engineHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowHouseingFrontMat);
+    m_heliModel.engineHousingFrontShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowHouseingRearMat);
+    m_heliModel.engineHousingFrontShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.tailFinLowerShape->Draw(m_heliModel.shadowTailFinLowerMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailFinUpperShape->Draw(m_heliModel.shadowTailFinUpperMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.engineHousingShape->Draw(m_heliModel.shadowHouseingMainMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineHousingFrontShape->Draw(m_heliModel.shadowHouseingFrontMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineHousingFrontShape->Draw(m_heliModel.shadowHouseingRearMat, aView, aProj, m_heliModel.shadowColor);
+    */
+    aEffect->SetWorld(m_heliModel.shadowRearWingFinLeftMat);
+    m_heliModel.tailWingFinShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowRearWingFinRightMat);
+    m_heliModel.tailWingFinShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowMainRotorAxelMat);
+    m_heliModel.mainRotorAxelShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowMainRotorHubMat);
+    m_heliModel.mainRotorHubShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowTailRotorAxelMat);
+    m_heliModel.tailRotorAxelShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowTailRotorHubMat);
+    m_heliModel.tailRotorHubShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.tailWingFinShape->Draw(m_heliModel.shadowRearWingFinLeftMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailWingFinShape->Draw(m_heliModel.shadowRearWingFinRightMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.mainRotorAxelShape->Draw(m_heliModel.shadowMainRotorAxelMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.mainRotorHubShape->Draw(m_heliModel.shadowMainRotorHubMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailRotorAxelShape->Draw(m_heliModel.shadowTailRotorAxelMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailRotorHubShape->Draw(m_heliModel.shadowTailRotorHubMat, aView, aProj, m_heliModel.shadowColor);
+    */
+    aEffect->SetWorld(m_heliModel.shadowMainRotorMat1);
+    m_heliModel.mainRotorBladeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowMainRotorMat2);
+    m_heliModel.mainRotorBladeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowTailRotorMat1);
+    m_heliModel.tailRotorBladeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowTailRotorMat2);
+    m_heliModel.tailRotorBladeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowMainRotorArmMat);
+    m_heliModel.mainRotorArmShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowTailRotorArmMat);
+    m_heliModel.tailRotorArmShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.shadowMainRotorMat1, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.mainRotorBladeShape->Draw(m_heliModel.shadowMainRotorMat2, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.shadowTailRotorMat1, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailRotorBladeShape->Draw(m_heliModel.shadowTailRotorMat2, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.mainRotorArmShape->Draw(m_heliModel.shadowMainRotorArmMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailRotorArmShape->Draw(m_heliModel.shadowTailRotorArmMat, aView, aProj, m_heliModel.shadowColor);
+    */
+
+    aEffect->SetWorld(m_heliModel.shadowNoseMat);
+    m_heliModel.noseConeShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowNoseBodyMat);
+    m_heliModel.noseBodyShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowHouseingLeftMat);
+    m_heliModel.engineHousingSideShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowHouseingRightMat);
+    m_heliModel.engineHousingSideShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowBoomBottomMat);
+    m_heliModel.tailBoomNewShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->SetWorld(m_heliModel.shadowBoomTopMat);
+    m_heliModel.tailBoomNewShape->Draw(aEffect.get(), aInputLayout.Get());
+    /*
+    m_heliModel.noseConeShape->Draw(m_heliModel.shadowNoseMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.noseBodyShape->Draw(m_heliModel.shadowNoseBodyMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.engineHousingSideShape->Draw(m_heliModel.shadowHouseingLeftMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.engineHousingSideShape->Draw(m_heliModel.shadowHouseingRightMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailBoomNewShape->Draw(m_heliModel.shadowBoomBottomMat, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.tailBoomNewShape->Draw(m_heliModel.shadowBoomTopMat, aView, aProj, m_heliModel.shadowColor);
+    */
+}
+
 void Vehicle::InitializeEngine(Engine& aEngine)
 {
     // all data is temp and just guessed at. update once good data from a turboshaft engine found, currently using an internal combustion engine model
@@ -593,7 +1557,6 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.bodyMatrix = DirectX::SimpleMath::Matrix::Identity;
     m_heliModel.bodyMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(bodyTranslation);
     m_heliModel.localBodyMatrix = m_heliModel.bodyMatrix;
-
 
     // main body belly
     m_heliModel.bodyBellyMatrix = DirectX::SimpleMath::Matrix::Identity;
@@ -1698,6 +2661,63 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.localMainRotorBladeMatrix1 = m_heliModel.mainRotorBladeMatrix1;
     m_heliModel.mainRotorBladeTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, rotorBladeSize.z * 0.5f));
 
+    // swashplate hub
+    const float swashPlateHubDiameter = 2.0f;
+    const float swashplateHubHeight = 0.25f;
+    m_heliModel.swashplateHubShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), swashplateHubHeight, swashPlateHubDiameter,6);
+    const DirectX::SimpleMath::Vector3 swashPlateHubTranslation(0.0f, mainHubTranslation.y * 0.9f, 0.0f);
+    m_heliModel.swashplateHubMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.swashplateHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(swashPlateHubTranslation);
+    m_heliModel.localSwashplateHubMatrix = m_heliModel.swashplateHubMatrix;
+    //m_heliModel.swashplateHubTranslationMatrix = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, rotorBladeSize.z * 0.5f));
+    m_heliModel.swashplateHubTranslationMatrix = DirectX::SimpleMath::Matrix::Identity;
+
+    // pitch arm 1
+    const float pitchArmDiameter = mainArmHeight;
+    const float pitchArmHeight = 0.8f;
+    m_pitchArmLength = pitchArmHeight;
+    const float pitchArmOffset = 0.35f;
+    m_heliModel.pitchArmShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), pitchArmHeight, pitchArmDiameter, 6);
+    //const DirectX::SimpleMath::Vector3 pitchArmTrans1(pitchArmOffset, mainHubTranslation.y, 0.0f);
+    DirectX::SimpleMath::Vector3 pitchArmTrans1(0.0f, mainHubTranslation.y, 0.0f);
+    //pitchArmTrans1 = swashPlateHubTranslation;
+    //pitchArmTrans1.y -= 0.3f;
+    m_heliModel.pitchArmMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.pitchArmMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.pitchArmMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(pitchArmTrans1);
+    m_heliModel.localPitchArmMatrix1 = m_heliModel.pitchArmMatrix1;
+    m_heliModel.pitchArmTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, pitchArmHeight * 0.5f));
+    m_heliModel.pitchArmTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(pitchArmOffset, pitchArmHeight * 0.5f, 0.0f));
+    //m_heliModel.pitchArmTranslationMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+
+    // pitch arm 2
+    m_heliModel.pitchArmMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.pitchArmMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(180.0f));
+    m_heliModel.pitchArmMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.pitchArmMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(pitchArmTrans1);
+    m_heliModel.localPitchArmMatrix2 = m_heliModel.pitchArmMatrix2;
+    m_heliModel.pitchArmTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, -pitchArmHeight * 0.5f));
+    m_heliModel.pitchArmTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(pitchArmOffset, -pitchArmHeight * 0.5f, 0.0f));
+    //m_heliModel.pitchArmTranslationMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    
+    // pitch link 1
+    const float pitchLinkDiameter = mainArmHeight;
+    const float pitchLinkHeight = 0.75f;
+    const float pitchLinkOffset = 0.35f;
+    m_heliModel.pitchLinkShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), pitchLinkHeight, pitchLinkDiameter, 6);
+    //const DirectX::SimpleMath::Vector3 pitchLinkTrans1(pitchArmOffset, mainHubTranslation.y, 0.0f);
+    DirectX::SimpleMath::Vector3 pitchLinkTrans1(0.0f, mainHubTranslation.y, 0.0f);
+    //pitchLinkTrans1 = swashPlateHubTranslation;
+    //pitchLinkTrans1.y -= 0.3f;
+    m_heliModel.pitchLinkMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    //m_heliModel.pitchLinkMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
+    m_heliModel.pitchLinkMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(pitchLinkTrans1);
+    m_heliModel.localPitchLinkMatrix1 = m_heliModel.pitchLinkMatrix1;
+    m_heliModel.pitchLinkTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, pitchLinkHeight * 0.5f));
+    m_heliModel.pitchLinkTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(-pitchLinkOffset, -pitchLinkHeight * 0.5f, -pitchArmHeight));
+    //m_heliModel.pitchLinkTranslationMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(pitchLinkOffset, -pitchLinkHeight * 0.5f, 5.0f));
+    //m_heliModel.pitchLinkTranslationMatrix1 = m_heliModel.pitchArmTranslationMatrix1;
+
     // main rotor blade end cap 1
     m_heliModel.mainRotorBladeEndCapShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), mainBladeWidth, mainArmHeight + rotorStripeOffset);
     const DirectX::SimpleMath::Vector3 rotorBladeEndCapTranslation1(((mainArmDiameter * 0.5f) - (mainBladeWidth * 0.0f)), mainHubTranslation.y * 1.0f + (mainBladeWidth * 0.0f), rotorBladeSize.z * 0.0f);
@@ -2148,11 +3168,17 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.totalResistance = m_heli.airResistance;
     m_heli.time = 0.0;  
 
+    DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToDegrees(0.0f));
     m_heli.forward = DirectX::SimpleMath::Vector3::UnitX;
+    m_heli.forward = DirectX::SimpleMath::Vector3::Transform(m_heli.forward, rotMat);
+    //m_heli.forward = DirectX::SimpleMath::Vector3(-0.4f, 0.0f, -1.0f);
+    //m_heli.forward.Normalize();
     m_heli.up = DirectX::SimpleMath::Vector3::UnitY;
     m_heli.right = m_heli.forward.Cross(m_heli.up);
-    m_heli.alignment = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, m_heli.forward, m_heli.up);
+    //m_heli.alignment = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, m_heli.forward, m_heli.up);
+    m_heli.alignment = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
     m_heli.alignment = DirectX::SimpleMath::Matrix::Identity;
+    m_heli.alignment *= rotMat;
     m_heli.inverseAlignment = m_heli.alignment;
     m_heli.inverseAlignment = m_heli.inverseAlignment.Invert();
     m_heli.alignmentQuat = DirectX::SimpleMath::Quaternion::CreateFromRotationMatrix(m_heli.alignment);
@@ -2176,6 +3202,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     m_heli.q.mainRotorForceNormal = DirectX::SimpleMath::Vector3::UnitY;
     m_heli.q.mainRotorForceMagnitude = 15.0f;
     m_heli.q.position = DirectX::SimpleMath::Vector3::Zero;
+    //m_heli.q.position.y += 10.0f;
     m_heli.altitude = 0.0f;
     m_heli.groundPlane.x = 0.0f;
     m_heli.groundPlane.y = -1.0f;
@@ -2213,7 +3240,8 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     posShift = - m_heli.localCenterOfMass;
 
     m_heli.localLandingGearPos = DirectX::SimpleMath::Vector3::Zero;
-    m_heli.localLandingGearPos.y -= 0.869f;
+    //m_heli.localLandingGearPos.y -= 0.869f;
+    m_heli.localLandingGearPos.y -= 0.99f;
     m_heli.landingGearPos = m_heli.localLandingGearPos;
 
     m_heli.localGravityTorqueArmPos = m_heli.localCenterOfMass;
@@ -2941,6 +3969,15 @@ void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos,
     m_heli.localTailRotorPos += aPos;
     m_heli.localCenterOfMass += aPos;
     m_heli.localLandingGearPos += aPos;
+
+    const DirectX::SimpleMath::Matrix transMat = DirectX::SimpleMath::Matrix::CreateTranslation(aPos);
+    aModel.localSwashplateHubMatrix *= transMat;
+    aModel.localPitchArmMatrix1 *= transMat;
+    aModel.localPitchArmMatrix2 *= transMat;
+
+    aModel.localPitchLinkMatrix1 *= transMat;
+    aModel.localPitchLinkMatrix2 *= transMat;
+
 }
 
 void Vehicle::ResetVehicle()
@@ -4431,6 +5468,64 @@ void Vehicle::UpdateModel()
     m_heliModel.mainRotorBladeMatrix2 *= mainRotorSpin;
     m_heliModel.mainRotorBladeMatrix2 *= updateMat;
     
+    // swashplate 
+    const float collectiveTravelMax = 0.2f;
+    DirectX::SimpleMath::Vector3 collectiveTranslation = DirectX::SimpleMath::Vector3(0.0f, -collectiveTravelMax * m_heli.controlInput.collectiveInput, 0.0f);
+    const float hypotenuse = 1.0f;
+    float transOffset0 = sin(m_swashplateOffset0) * hypotenuse;
+    float transOffset1 = sin(m_swashplateOffset1) * hypotenuse;
+    collectiveTranslation.y += transOffset0 + transOffset1;
+    m_debugData->DebugPushUILineDecimalNumber("transOffset0 ", transOffset0, "");
+    m_debugData->DebugPushUILineDecimalNumber("transOffset1 ", transOffset1, "");
+    DirectX::SimpleMath::Matrix swashPlatePitch = DirectX::SimpleMath::Matrix::Identity;
+    //swashPlatePitch = DirectX::SimpleMath::Matrix::CreateRotationX(m_heli.mainRotor.bladeVec[0].pitchAngle) * DirectX::SimpleMath::Matrix::CreateRotationX(-m_heli.mainRotor.bladeVec[1].pitchAngle);
+    swashPlatePitch = DirectX::SimpleMath::Matrix::CreateRotationX(m_swashplate0) * DirectX::SimpleMath::Matrix::CreateRotationX(-m_swashplate1);
+    m_heliModel.swashplateHubMatrix = m_heliModel.swashplateHubTranslationMatrix;
+    m_heliModel.swashplateHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(collectiveTranslation);
+    m_heliModel.swashplateHubMatrix *= swashPlatePitch;
+    m_heliModel.swashplateHubMatrix *= m_heliModel.localSwashplateHubMatrix;
+    m_heliModel.swashplateHubMatrix *= mainRotorSpin;
+    m_heliModel.swashplateHubMatrix *= updateMat;
+
+    // pitch arm 1
+    m_heliModel.pitchArmMatrix1 = m_heliModel.pitchArmTranslationMatrix1;
+    m_heliModel.pitchArmMatrix1 *= mainRotorPitch1;
+    m_heliModel.pitchArmMatrix1 *= m_heliModel.localPitchArmMatrix1;
+    m_heliModel.pitchArmMatrix1 *= mainRotorSpin;
+    m_heliModel.pitchArmMatrix1 *= updateMat;
+    
+    // pitch arm 2
+    m_heliModel.pitchArmMatrix2 = m_heliModel.pitchArmTranslationMatrix2;
+    m_heliModel.pitchArmMatrix2 *= mainRotorPitch2;
+    m_heliModel.pitchArmMatrix2 *= m_heliModel.localPitchArmMatrix2;
+    m_heliModel.pitchArmMatrix2 *= mainRotorSpin;
+    m_heliModel.pitchArmMatrix2 *= updateMat;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // pitch link 1
+    DirectX::SimpleMath::Vector3 pitchLinkTrans1 = DirectX::SimpleMath::Vector3::Zero;
+    pitchLinkTrans1.y -= sin(m_heli.mainRotor.bladeVec[0].pitchAngle) * m_pitchArmLength;
+    pitchLinkTrans1.z += m_pitchArmLength - (cos(m_heli.mainRotor.bladeVec[0].pitchAngle + Utility::ToRadians(0.0f)) * m_pitchArmLength);
+    //pitchLinkTrans1.z += tan(m_heli.mainRotor.bladeVec[0].pitchAngle + Utility::ToRadians(0.0f)) * pitchLinkTrans1.y;
+    //pitchLinkTrans1.z -= cos(m_heli.mainRotor.bladeVec[0].pitchAngle + Utility::ToRadians(90.0f)) * pitchLinkTrans1.y;
+    //pitchLinkTrans1.y = 0.0f;
+    float linkAngleOffset1 =  Utility::ToRadians(90.0f) + m_heli.mainRotor.bladeVec[0].pitchAngle;
+    linkAngleOffset1 = m_heli.mainRotor.bladeVec[0].pitchAngle - Utility::ToRadians(0.0f);
+    m_heliModel.pitchLinkMatrix1 = DirectX::SimpleMath::Matrix::CreateRotationX(-linkAngleOffset1);
+    m_heliModel.pitchLinkMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(pitchLinkTrans1);
+    
+    //m_heliModel.pitchLinkMatrix1 = DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::GetPi());
+    m_heliModel.pitchLinkMatrix1 = DirectX::SimpleMath::Matrix::CreateRotationX(linkAngleOffset1);
+    m_heliModel.pitchLinkMatrix1 *= m_heliModel.pitchLinkTranslationMatrix1;
+    //m_heliModel.pitchLinkMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationX(-m_heli.mainRotor.bladeVec[0].pitchAngle);
+    //m_heliModel.pitchLinkMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationX(linkAngleOffset1);
+    m_heliModel.pitchLinkMatrix1 *= mainRotorPitch1;
+    m_heliModel.pitchLinkMatrix1 *= m_heliModel.localPitchLinkMatrix1;
+    m_heliModel.pitchLinkMatrix1 *= mainRotorSpin;
+    m_heliModel.pitchLinkMatrix1 *= updateMat;
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // main rotor blade interior 2
     m_heliModel.mainRotorBladeInteriorMatrix2 = m_heliModel.mainRotorBladeInteriorTranslationMatrix2;
     m_heliModel.mainRotorBladeInteriorMatrix2 *= mainRotorPitch2;
@@ -5056,6 +6151,11 @@ void Vehicle::UpdateRotorData(HeliData& aHeliData, const double aTimer)
 
 void Vehicle::UpdateRotorPitch(HeliData& aHeliData, const double aTimer)
 {
+    m_swashplate0 = 0.0f;
+    m_swashplate1 = 0.0f;
+    m_swashplateOffset0 = 0.0f;
+    m_swashplateOffset1 = 0.0f;
+
     float mainRotorPitch = aHeliData.controlInput.collectiveInput * aHeliData.mainRotor.pitchAngleMax;  
     for (unsigned int i = 0; i < aHeliData.mainRotor.bladeVec.size(); ++i)
     {
@@ -5067,10 +6167,32 @@ void Vehicle::UpdateRotorPitch(HeliData& aHeliData, const double aTimer)
         if (mainRotorPitch + pitchAng > 0.0f)
         {
             aHeliData.mainRotor.bladeVec[i].pitchAngle = mainRotorPitch + pitchAng;
+            if (i == 0)
+            {
+                //m_swashplate0 = mainRotorPitch + pitchAng;
+                m_swashplate0 = pitchAng;
+            }
+            else
+            {
+                //m_swashplate1 = mainRotorPitch + pitchAng;
+                m_swashplate1 = pitchAng;
+            }
         }
         else
         {
             aHeliData.mainRotor.bladeVec[i].pitchAngle = 0.0f;
+            if (i == 0)
+            {
+                m_swashplateOffset0 = mainRotorPitch + pitchAng;
+                //m_swashplateOffset0 = mainRotorPitch + aHeliData.mainRotor.bladeVec[i].pitchAngle;
+                m_swashplate0 = pitchAng;
+            }
+            else
+            {
+                m_swashplateOffset1 = mainRotorPitch + pitchAng;
+                //m_swashplateOffset0 = mainRotorPitch + aHeliData.mainRotor.bladeVec[i].pitchAngle;
+                m_swashplate1 = pitchAng;
+            }
         }
     }
     float tailRotorPitch = aHeliData.tailRotor.neutralAngle + (aHeliData.controlInput.yawPedalInput * (aHeliData.tailRotor.pitchAngleMax * .5f));
@@ -5302,7 +6424,7 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     DirectX::SimpleMath::Vector3 speed = m_heli.q.velocity;
     speed.y = 0.0f;
     m_heli.speed = speed.Length();
-
+    m_debugData->DebugClearUI();
     UpdateModel();
     if (m_isGamePadConnected == true)
     {
@@ -5386,6 +6508,9 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     testVec.x -= m_inertiaModelX;
     m_debugData->PushDebugLinePositionIndicator(testVec, 8.0f, 0.0f, DirectX::Colors::Red);
     */
+    //m_debugData->DebugClearUI();
+    m_debugData->PushDebugLine(m_heli.q.position, DirectX::SimpleMath::Vector3::UnitX, 10.0f, 0.0f, DirectX::Colors::White);
+    m_debugData->PushDebugLine(m_heli.q.position, DirectX::SimpleMath::Vector3::UnitZ, 10.0f, 0.0f, DirectX::Colors::Red);
 }
 
 void Vehicle::DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor)

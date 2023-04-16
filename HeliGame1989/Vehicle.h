@@ -11,7 +11,7 @@ struct ControlInput
     const float inputDeadZone = 0.000000001;  // small deadzone to ignore nominal control input
 
     float       collectiveInput;
-    const float collectiveInputMax = 1.0f;
+    const float collectiveInputMax = 3.0f;
     const float collectiveInputMin = 0.0f;
     const float collectiveInputRate = 0.5f;
     const float collectiveInputRateGamePad = 0.5f;
@@ -23,8 +23,10 @@ struct ControlInput
     bool        cyclicInputPitchIsPressed;
     float       cyclicInputRoll;
     bool        cyclicInputRollIsPressed;
-    const float cyclicInputMax = Utility::ToRadians(20.0f);
-    const float cyclicInputMin = -Utility::ToRadians(20.0f);
+    //const float cyclicInputMax = Utility::ToRadians(20.0f);
+    //const float cyclicInputMin = -Utility::ToRadians(20.0f);
+    const float cyclicInputMax = Utility::ToRadians(90.0f);
+    const float cyclicInputMin = -Utility::ToRadians(90.0f);
     const float cyclicInputRate = 0.1f;
     const float cyclicInputRateGamePad = 0.6f;
 
@@ -785,6 +787,31 @@ struct HeliModel
 
     DirectX::SimpleMath::Matrix shadowNoseMat = DirectX::SimpleMath::Matrix::Identity;
     DirectX::SimpleMath::Matrix shadowNoseBodyMat = DirectX::SimpleMath::Matrix::Identity;
+
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    swashplateHubShape;
+    DirectX::SimpleMath::Matrix swashplateHubMatrix;
+    DirectX::SimpleMath::Matrix swashplateHubTranslationMatrix;
+    DirectX::SimpleMath::Matrix localSwashplateHubMatrix;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    pitchArmShape;
+    DirectX::SimpleMath::Matrix pitchArmMatrix1;
+    DirectX::SimpleMath::Matrix pitchArmTranslationMatrix1;
+    DirectX::SimpleMath::Matrix localPitchArmMatrix1;
+
+    DirectX::SimpleMath::Matrix pitchArmMatrix2;
+    DirectX::SimpleMath::Matrix pitchArmTranslationMatrix2;
+    DirectX::SimpleMath::Matrix localPitchArmMatrix2;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    pitchLinkShape;
+    DirectX::SimpleMath::Matrix pitchLinkMatrix1;
+    DirectX::SimpleMath::Matrix pitchLinkTranslationMatrix1;
+    DirectX::SimpleMath::Matrix localPitchLinkMatrix1;
+
+    DirectX::SimpleMath::Matrix pitchLinkMatrix2;
+    DirectX::SimpleMath::Matrix pitchLinkTranslationMatrix2;
+    DirectX::SimpleMath::Matrix localPitchLinkMatrix2;
+
 };
 
 class Vehicle
@@ -797,7 +824,7 @@ public:
     std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> DebugGetTestLines() const { return m_debugLinesVec; };
 
     void DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj);
-    //void DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
+    void DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
     //void DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
 
     float GetAccel() const { return m_heli.testAccel; };
@@ -983,5 +1010,12 @@ private:
     bool m_isGamePadConnected = false;
 
     bool m_isUseSimpleFlight = false;
+
+    float m_swashplate0 = 0.0f;
+    float m_swashplate1 = 0.0f;
+    float m_swashplateOffset0 = 0.0f;
+    float m_swashplateOffset1 = 0.0f;
+
+    float m_pitchArmLength = 0.0f;
 };
 

@@ -266,7 +266,7 @@ void Game::CreateDevice()
     void const* shaderByteCode2;
     size_t byteCodeLength2;
     m_effect2->GetVertexShaderBytecode(&shaderByteCode2, &byteCodeLength2);
-    DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType2::InputElements, VertexType2::InputElementCount, shaderByteCode2, byteCodeLength2, m_inputLayout.ReleaseAndGetAddressOf()));
+    DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType2::InputElements, VertexType2::InputElementCount, shaderByteCode2, byteCodeLength2, m_inputLayout2.ReleaseAndGetAddressOf()));
     const int maxVertices = 8192;
     const int maxIndices = maxVertices * 3;
     m_batch2 = std::make_unique<PrimitiveBatch<VertexType2>>(m_d3dContext.Get(), maxIndices, maxVertices);
@@ -280,25 +280,27 @@ void Game::CreateDevice()
     void const* shaderByteCode3;
     size_t byteCodeLength3;
     m_effect3->GetVertexShaderBytecode(&shaderByteCode3, &byteCodeLength3);
-    DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType3::InputElements, VertexType3::InputElementCount, shaderByteCode3, byteCodeLength3, m_inputLayout.ReleaseAndGetAddressOf()));
+    DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType3::InputElements, VertexType3::InputElementCount, shaderByteCode3, byteCodeLength3, m_inputLayout3.ReleaseAndGetAddressOf()));
     m_batch3 = std::make_unique<PrimitiveBatch<VertexType3>>(m_d3dContext.Get());
 
     //m_shape = GeometricPrimitive::CreateCube(m_d3dContext.Get(), 20000.0f, false);
     m_skyShape = GeometricPrimitive::CreateSphere(m_d3dContext.Get(), 200000.0f, 32, false);
     m_skyShape->CreateInputLayout(m_effect.get(), m_inputLayout.ReleaseAndGetAddressOf());
+    m_testShape = GeometricPrimitive::CreateBox(m_d3dContext.Get(), DirectX::SimpleMath::Vector3(10.0f, 10.0f, 10.0f));
 
-    
+    /*
     CD3D11_RASTERIZER_DESC rastDesc(D3D11_FILL_SOLID, D3D11_CULL_NONE, FALSE,
         D3D11_DEFAULT_DEPTH_BIAS, D3D11_DEFAULT_DEPTH_BIAS_CLAMP,
         D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS, TRUE, FALSE, FALSE, TRUE);
-    
+    */
      // For multisampling rendering
+    
     /*
     CD3D11_RASTERIZER_DESC rastDesc(D3D11_FILL_SOLID, D3D11_CULL_NONE, FALSE,
         D3D11_DEFAULT_DEPTH_BIAS, D3D11_DEFAULT_DEPTH_BIAS_CLAMP,
         D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS, TRUE, FALSE, TRUE, TRUE); // Multisampling
     */
-    DX::ThrowIfFailed(m_d3dDevice->CreateRasterizerState(&rastDesc, m_raster.ReleaseAndGetAddressOf()));
+    //DX::ThrowIfFailed(m_d3dDevice->CreateRasterizerState(&rastDesc, m_raster.ReleaseAndGetAddressOf()));
 
     m_font = std::make_unique<SpriteFont>(m_d3dDevice.Get(), L"Art/Fonts/myfile.spritefont");
     m_titleFont = std::make_unique<SpriteFont>(m_d3dDevice.Get(), L"Art/Fonts/titleFont.spritefont");
@@ -441,6 +443,7 @@ void Game::CreateResources()
         swapChainDesc.Height = backBufferHeight;
         swapChainDesc.Format = backBufferFormat;
         swapChainDesc.SampleDesc.Count = 1;
+        //swapChainDesc.SampleDesc.Count = 4;
         swapChainDesc.SampleDesc.Quality = 0;
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         swapChainDesc.BufferCount = backBufferCount;
@@ -472,7 +475,7 @@ void Game::CreateResources()
     // Allocate a 2-D surface as the depth/stencil buffer and
     // create a DepthStencil view on this surface to use on bind.
     CD3D11_TEXTURE2D_DESC depthStencilDesc(depthBufferFormat, backBufferWidth, backBufferHeight, 1, 1, D3D11_BIND_DEPTH_STENCIL);
-    //CD3D11_TEXTURE2D_DESC depthStencilDesc(depthBufferFormat, backBufferWidth, backBufferHeight, 1, 1, D3D11_BIND_DEPTH_STENCIL, D3D11_USAGE_DEFAULT, 0, 8, 0);  // For multisampling rendering
+    //CD3D11_TEXTURE2D_DESC depthStencilDesc(depthBufferFormat, backBufferWidth, backBufferHeight, 1, 1, D3D11_BIND_DEPTH_STENCIL, D3D11_USAGE_DEFAULT, 0, 4, 0);  // For multisampling rendering
 
     ComPtr<ID3D11Texture2D> depthStencil;
     DX::ThrowIfFailed(m_d3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, depthStencil.GetAddressOf()));
@@ -607,35 +610,44 @@ void Game::DrawDebugDataUI()
         textLinePos.y += 30;
     }
 
-    const float xOffset = 2.0f;
-    const float yOffset = 2.0f;
-
+    const float xOffset1 = 2.0f;
+    const float yOffset1 = 2.0f;
+    const float xOffset2 = 3.0f;
+    const float yOffset2 = 3.0f;
+    XMVECTORF32 testGray = { { { 0.3f, 0.3f, 0.3f, 1.000000000f } } };
+    const XMVECTORF32 baseColor = Colors::White;
+    const XMVECTORF32 shadowColor1 = testGray;
+    const XMVECTORF32 shadowColor2 = Colors::Black;
     float rpm = m_vehicle->GetRPM() * 1.0f;
     std::string rpmLine = "Rotor RPM: " + std::to_string(static_cast<int>(rpm)) + " ";
     DirectX::SimpleMath::Vector2 rpmLineOrigin = m_bitwiseFont->MeasureString(rpmLine.c_str()) / 2.f;
     textLinePos.x = rpmLineOrigin.x + 20;
-    DirectX::SimpleMath::Vector2 lineOrigin2 = rpmLineOrigin;
-    DirectX::SimpleMath::Vector2 textLinePos2 = textLinePos;
-    textLinePos2.x += xOffset;
-    textLinePos2.y += yOffset;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos2, Colors::Black, 0.f, lineOrigin2, 1.01f);
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos, Colors::White, 0.f, rpmLineOrigin);
+    //DirectX::SimpleMath::Vector2 lineOrigin2 = rpmLineOrigin;
+    //DirectX::SimpleMath::Vector2 textLinePos2 = textLinePos;
+    //textLinePos2.x += xOffset;
+    //textLinePos2.y += yOffset;
+    //m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos2, Colors::Black, 0.f, lineOrigin2, 1.01f);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset2, yOffset2), shadowColor2, 0.f, rpmLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset1, yOffset1), shadowColor1, 0.f, rpmLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos, baseColor, 0.f, rpmLineOrigin);
     textLinePos.y += 30;
 
     float collective = m_vehicle->GetCollective() * 100.0f;
     std::string collectiveLine = "Collective: " + std::to_string(static_cast<int>(collective)) + "% ";
     DirectX::SimpleMath::Vector2 collectiveLineOrigin = m_bitwiseFont->MeasureString(collectiveLine.c_str()) / 2.f;
     textLinePos.x = collectiveLineOrigin.x + 20;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, collectiveLineOrigin);
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos, Colors::White, 0.f, collectiveLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset2, yOffset2), shadowColor2, 0.f, collectiveLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset1, yOffset1), shadowColor1, 0.f, collectiveLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), collectiveLine.c_str(), textLinePos, baseColor, 0.f, collectiveLineOrigin);
     textLinePos.y += 30;
 
     float throttle = m_vehicle->GetThrottle() * 100.0f;
     std::string throttleLine = "Throttle: " + std::to_string(static_cast<int>(throttle)) + "% ";
     DirectX::SimpleMath::Vector2 throttleLineOrigin = m_bitwiseFont->MeasureString(throttleLine.c_str()) / 2.f;
     textLinePos.x = throttleLineOrigin.x + 20;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, throttleLineOrigin);
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos, Colors::White, 0.f, throttleLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset2, yOffset2), shadowColor2, 0.f, throttleLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset1, yOffset1), shadowColor1, 0.f, throttleLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), throttleLine.c_str(), textLinePos, baseColor, 0.f, throttleLineOrigin);
     textLinePos.y += 30;
 
     // Draw speed with formatting
@@ -643,34 +655,37 @@ void Game::DrawDebugDataUI()
     std::string speedLine = "Ground Speed: " + std::to_string(static_cast<int>(speed)) + " MPH";
     DirectX::SimpleMath::Vector2 speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
     textLinePos.x = speedLineOrigin.x + 20;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, speedLineOrigin);
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset2, yOffset2), shadowColor2, 0.f, speedLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset1, yOffset1), shadowColor1, 0.f, speedLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, baseColor, 0.f, speedLineOrigin);
     textLinePos.y += 30;
 
     speed = m_vehicle->GetAirSpeed() * 2.23694f;
     speedLine = "Air Speed: " + std::to_string(static_cast<int>(speed)) + " MPH";
     speedLineOrigin = m_bitwiseFont->MeasureString(speedLine.c_str()) / 2.f;
     textLinePos.x = speedLineOrigin.x + 20;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, speedLineOrigin);
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, Colors::White, 0.f, speedLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset2, yOffset2), shadowColor2, 0.f, speedLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset1, yOffset1), shadowColor1, 0.f, speedLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), speedLine.c_str(), textLinePos, baseColor, 0.f, speedLineOrigin);
     textLinePos.y += 30;
 
     float altitude = m_vehicle->GetAltitude();
     std::string altitudeLine = "Altitude: " + std::to_string(static_cast<int>(altitude)) + "m ";
     DirectX::SimpleMath::Vector2 altitudeLineOrigin = m_bitwiseFont->MeasureString(altitudeLine.c_str()) / 2.f;
     textLinePos.x = altitudeLineOrigin.x + 20;
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset, yOffset), Colors::Black, 0.f, altitudeLineOrigin);
-    m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos, Colors::White, 0.f, altitudeLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset2, yOffset2), shadowColor2, 0.f, altitudeLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset1, yOffset1), shadowColor1, 0.f, altitudeLineOrigin);
+    m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos, baseColor, 0.f, altitudeLineOrigin);
     textLinePos.y += 30;
 
-    /*
+    
     // Draw FPS  
     std::string textLine = "FPS  " + std::to_string(m_timer.GetFramesPerSecond());
     DirectX::SimpleMath::Vector2 textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
     textLinePos.x = textLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
     textLinePos.y += 30;
-
+    /*
     // Draw Timer  
     textLine = "Timer = " + std::to_string(m_timer.GetTotalSeconds());
     textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
@@ -3331,6 +3346,7 @@ void Game::OnDeviceLost()
     m_batch2.reset();
     m_batch3.reset();
     m_skyShape.reset();
+    m_testShape.reset();
     m_normalMap.Reset();
     m_texture.Reset();
     m_specular.Reset();
@@ -3354,6 +3370,8 @@ void Game::OnDeviceLost()
     m_textureTeaser.Reset();
 
     m_inputLayout.Reset();
+    m_inputLayout2.Reset();
+    m_inputLayout3.Reset();
     m_font.reset();
     m_titleFont.reset();
     m_bitwiseFont.reset();
@@ -3585,13 +3603,14 @@ void Game::Render()
     //11  m_d3dContext->RSSetState(m_states->CullCounterClockwise());
 
     //world start
-    m_d3dContext->RSSetState(m_raster.Get()); // WLJ anti-aliasing  RenderTesting
-    //m_d3dContext->RSSetState(m_states->CullNone());
-
+    //m_d3dContext->RSSetState(m_raster.Get()); // WLJ anti-aliasing  RenderTesting
+    m_d3dContext->RSSetState(m_states->CullNone());
+    /*
     void const* shaderByteCode;
     size_t byteCodeLength;
     m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
     DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType::InputElements, VertexType::InputElementCount, shaderByteCode, byteCodeLength, m_inputLayout.ReleaseAndGetAddressOf()));
+    */
     m_batch = std::make_unique<PrimitiveBatch<VertexType>>(m_d3dContext.Get());
     m_effect->SetWorld(m_world);
     //world end
@@ -3691,7 +3710,68 @@ void Game::Render()
     {
         float maxTime1 = m_testTimer1;
         float maxTime2 = m_testTimer2;
-        m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
+        //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
+        m_effect->EnableDefaultLighting();
+        m_effect->SetTexture(m_texture.Get());
+        m_effect->SetNormalTexture(m_normalMap.Get());
+        m_effect->SetSpecularTexture(m_specular.Get());
+        m_effect->Apply(m_d3dContext.Get());
+        m_vehicle->DrawModel2(m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), m_effect, m_inputLayout);
+        m_effect->SetProjection(m_proj);
+        m_effect->SetView(m_camera->GetViewMatrix());
+        m_effect->SetWorld(m_world);
+
+        m_effect->EnableDefaultLighting();
+        DirectX::SimpleMath::Vector3 mainLightDirection0;
+        DirectX::SimpleMath::Vector3 mainLightDirection1;
+        DirectX::SimpleMath::Vector3 mainLightDirection2;
+        mainLightDirection0 = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
+        mainLightDirection0.Normalize();
+        mainLightDirection1 = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
+        mainLightDirection1.Normalize();
+        mainLightDirection2 = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
+        mainLightDirection2.Normalize();
+        //m_environment->GetLightDirectionalVectors(mainLightDirection0, mainLightDirection1, mainLightDirection2);
+        m_effect->SetLightDirection(0, mainLightDirection0);
+        m_effect->SetLightDirection(1, mainLightDirection1);
+        m_effect->SetLightDirection(2, mainLightDirection2);
+        /*
+        auto lights = dynamic_cast<DirectX::IEffectLights*>(m_effect.get());
+        if (lights)
+        {
+            lights->SetLightEnabled(0, true);
+            lights->SetLightEnabled(1, true);
+            lights->SetLightEnabled(2, true);
+            lights->SetAmbientLightColor(DirectX::Colors::Red);
+            lights->SetLightDiffuseColor(0, DirectX::Colors::Green);
+            lights->SetLightDiffuseColor(1, DirectX::Colors::Blue);
+            lights->SetLightDiffuseColor(2, DirectX::Colors::White);
+            lights->SetLightSpecularColor(0, DirectX::Colors::Yellow);
+            lights->SetLightSpecularColor(1, DirectX::Colors::Black);
+            lights->SetLightSpecularColor(2, DirectX::Colors::Black);
+        }
+        */
+        //m_effect->EnableDefaultLighting();
+        m_effect->Apply(m_d3dContext.Get());
+        //m_effect->EnableDefaultLighting();
+        DirectX::SimpleMath::Vector3 pos = m_vehicle->GetPos();
+        DirectX::SimpleMath::Matrix align = m_vehicle->GetVehicleOrientation();
+        //m_testShape->Draw(align, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DirectX::Colors::Red, m_texture.Get());
+
+        //m_effect->EnableDefaultLighting();
+        
+        //m_effect->SetWorld(align);
+        //m_effect->SetColorAndAlpha(DirectX::Colors::White);
+        //m_testShape->Draw(m_effect.get(), m_inputLayout.Get());
+        
+
+        /*
+        m_skyRotation += static_cast<float>(m_timer.GetElapsedSeconds()) * 0.19f;
+        DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-m_skyRotation));
+        rotMat *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(30.0f));
+        rotMat *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(30.0f));
+        m_skyShape->Draw(rotMat, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DirectX::SimpleMath::Vector4(1.0, 1.0, 1.0, 2.0f), m_textureSky.Get());
+        */
         DrawSky();
         //DrawStartScreen();
         if (m_isInDebugMode == true)
@@ -3708,11 +3788,11 @@ void Game::Render()
     }
    
     m_batch->End();
-
+    
     void const* shaderByteCode2;
     size_t byteCodeLength2;
     m_effect2->GetVertexShaderBytecode(&shaderByteCode2, &byteCodeLength2);
-    DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType2::InputElements, VertexType2::InputElementCount, shaderByteCode2, byteCodeLength2, m_inputLayout.ReleaseAndGetAddressOf()));
+    DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType2::InputElements, VertexType2::InputElementCount, shaderByteCode2, byteCodeLength2, m_inputLayout2.ReleaseAndGetAddressOf()));
     const int maxVertices = 8192;
     const int maxIndices = maxVertices * 3;
     m_batch2 = std::make_unique<PrimitiveBatch<VertexType2>>(m_d3dContext.Get(), maxIndices, maxVertices);
@@ -3723,7 +3803,7 @@ void Game::Render()
     m_effect2->Apply(m_d3dContext.Get());
 
     //m_d3dContext->PSSetSamplers(0, 1, &sampler);
-    m_d3dContext->IASetInputLayout(m_inputLayout.Get());
+    m_d3dContext->IASetInputLayout(m_inputLayout2.Get());
 
     m_batch2->Begin();
     //DrawLightBar();
@@ -3732,7 +3812,7 @@ void Game::Render()
     //DrawLightFocus2();
     //DrawLightFocus3();
     //DrawWorld(); 
-
+    
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
     {
         DrawTerrainNew(m_terrainGamePlay);
@@ -3751,7 +3831,7 @@ void Game::Render()
     {
         //DrawLightBar();
     }
-
+    
     //DrawLoadScreen();
     
     //m_effect2->EnableDefaultLighting();
@@ -3782,15 +3862,6 @@ void Game::Render()
         ilights2->SetLightDirection(2, light2);
         ilights2->EnableDefaultLighting();   
     }
-    
-
-
-    /*
-    m_effect2->SetFogEnabled(false);
-    m_effect2->SetFogStart(0.2f);
-    m_effect2->SetFogColor(DirectX::Colors::Black);
-    m_effect2->SetFogEnd(1.0f);
-    */
 
     //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj, m_effect2, m_inputLayout);
     m_effect2->Apply(m_d3dContext.Get());
@@ -3800,9 +3871,9 @@ void Game::Render()
     void const* shaderByteCode3;
     size_t byteCodeLength3;
     m_effect3->GetVertexShaderBytecode(&shaderByteCode3, &byteCodeLength3);
-    DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType3::InputElements, VertexType3::InputElementCount, shaderByteCode3, byteCodeLength3, m_inputLayout.ReleaseAndGetAddressOf()));
+    DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType3::InputElements, VertexType3::InputElementCount, shaderByteCode3, byteCodeLength3, m_inputLayout3.ReleaseAndGetAddressOf()));
     m_batch3 = std::make_unique<PrimitiveBatch<VertexType3>>(m_d3dContext.Get());
-    m_d3dContext->IASetInputLayout(m_inputLayout.Get());
+    m_d3dContext->IASetInputLayout(m_inputLayout3.Get());
 
     m_effect3->Apply(m_d3dContext.Get());
 
@@ -3857,7 +3928,7 @@ void Game::Render()
     }
     //DrawDebugDataUI();
     m_spriteBatch->End();
-
+    
     Present();
 }
 
@@ -3948,7 +4019,6 @@ void Game::Update(DX::StepTimer const& aTimer)
         
     m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
 
-    CameraState testState = m_camera->GetCameraState();
     /*
     m_lighting->UpdateLightingNormColorTextureVertex(m_effect, aTimer.GetTotalSeconds());
     m_lighting->UpdateLightingNormColorVertex2(m_effect2, aTimer.GetTotalSeconds());
