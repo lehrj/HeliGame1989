@@ -11,7 +11,7 @@ struct ControlInput
     const float inputDeadZone = 0.000000001;  // small deadzone to ignore nominal control input
 
     float       collectiveInput;
-    const float collectiveInputMax = 3.0f;
+    const float collectiveInputMax = 1.0f;
     const float collectiveInputMin = 0.0f;
     const float collectiveInputRate = 0.5f;
     const float collectiveInputRateGamePad = 0.5f;
@@ -25,8 +25,8 @@ struct ControlInput
     bool        cyclicInputRollIsPressed;
     //const float cyclicInputMax = Utility::ToRadians(20.0f);
     //const float cyclicInputMin = -Utility::ToRadians(20.0f);
-    const float cyclicInputMax = Utility::ToRadians(90.0f);
-    const float cyclicInputMin = -Utility::ToRadians(90.0f);
+    const float cyclicInputMax = Utility::ToRadians(20.0f);
+    const float cyclicInputMin = -Utility::ToRadians(20.0f);
     const float cyclicInputRate = 0.1f;
     const float cyclicInputRateGamePad = 0.6f;
 
@@ -788,7 +788,7 @@ struct HeliModel
     DirectX::SimpleMath::Matrix shadowNoseMat = DirectX::SimpleMath::Matrix::Identity;
     DirectX::SimpleMath::Matrix shadowNoseBodyMat = DirectX::SimpleMath::Matrix::Identity;
 
-
+    std::unique_ptr<DirectX::GeometricPrimitive>    swashplateFrameShape;
     std::unique_ptr<DirectX::GeometricPrimitive>    swashplateHubShape;
     DirectX::SimpleMath::Matrix swashplateHubMatrix;
     DirectX::SimpleMath::Matrix swashplateHubTranslationMatrix;
@@ -804,14 +804,26 @@ struct HeliModel
     DirectX::SimpleMath::Matrix localPitchArmMatrix2;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    pitchLinkShape;
-    DirectX::SimpleMath::Matrix pitchLinkMatrix1;
-    DirectX::SimpleMath::Matrix pitchLinkTranslationMatrix1;
-    DirectX::SimpleMath::Matrix localPitchLinkMatrix1;
+    DirectX::SimpleMath::Matrix pitchLinkMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix pitchLinkTranslationMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix localPitchLinkMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix pitchLinkBodyTransMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix pitchLinkBaseMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    pitchJointShape;
+    DirectX::SimpleMath::Matrix pitchJointMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix pitchJointTranslationMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix localPitchJointMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+
+    DirectX::SimpleMath::Matrix pitchJointMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix pitchJointTranslationMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix localPitchJointMatrix2 = DirectX::SimpleMath::Matrix::Identity;
 
     DirectX::SimpleMath::Matrix pitchLinkMatrix2;
     DirectX::SimpleMath::Matrix pitchLinkTranslationMatrix2;
     DirectX::SimpleMath::Matrix localPitchLinkMatrix2;
-
+    DirectX::SimpleMath::Matrix pitchLinkBodyTransMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    DirectX::SimpleMath::Matrix pitchLinkBaseMatrix2 = DirectX::SimpleMath::Matrix::Identity;
 };
 
 class Vehicle

@@ -144,7 +144,7 @@ private:
     DirectX::SimpleMath::Matrix     m_projectionMatrix;
     DirectX::SimpleMath::Matrix     m_orthogonalMatrix;
 
-    const float                     m_posTravelSpeed = 10.6f;
+    const float                     m_posTravelSpeed = 5.6f;
     const float                     m_rotationTravelSpeed = 2.3f;
     const float                     m_aimTurnRate = 0.3f;
 
@@ -182,7 +182,8 @@ private:
     const float m_springConstantSet = 30.0f;
     DirectX::SimpleMath::Vector3 m_followCamDirection = DirectX::SimpleMath::Vector3::UnitX;
     //DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-27.0, 3.5f, 0.0f);
-    DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-30.0, 3.5f, 0.0f);
+    //DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-30.0, 3.5f, 0.0f);
+    DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-8.0, 5.5f, 0.0f);
     //DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-17.0, 3.5f, 0.0f);
     DirectX::SimpleMath::Vector3 m_followCamTarget = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_followCamUp = DirectX::SimpleMath::Vector3::UnitY;
