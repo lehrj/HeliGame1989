@@ -522,11 +522,11 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
     DirectX::SimpleMath::Vector3 mainLightDirection0;
     DirectX::SimpleMath::Vector3 mainLightDirection1;
     DirectX::SimpleMath::Vector3 mainLightDirection2;
-    mainLightDirection0 = DirectX::SimpleMath::Vector3(0.0f, -1.0f, -1.0f);
+    mainLightDirection0 = DirectX::SimpleMath::Vector3(-1.0f, 0.0f, 0.0f);
     mainLightDirection0.Normalize();
-    mainLightDirection1 = DirectX::SimpleMath::Vector3(1.0f, -1.0f, 0.0f);
+    mainLightDirection1 = DirectX::SimpleMath::Vector3(-1.0f, -1.0f, 0.0f);
     mainLightDirection1.Normalize();
-    mainLightDirection2 = DirectX::SimpleMath::Vector3(0.0f, -1.0f, 1.0f);
+    mainLightDirection2 = DirectX::SimpleMath::Vector3(-1.0f, 1.0f, 0.0f);
     mainLightDirection2.Normalize();
     //m_environment->GetLightDirectionalVectors(mainLightDirection0, mainLightDirection1, mainLightDirection2);
     aEffect->SetLightDirection(0, mainLightDirection0);
@@ -534,10 +534,8 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
     aEffect->SetLightDirection(2, mainLightDirection2);
     aEffect->EnableDefaultLighting();
 
-    aEffect->SetWorld(m_heliModel.swashplateHubMatrix);
+    aEffect->SetWorld(m_heliModel.swashplateFrameMatrix);
     aEffect->SetColorAndAlpha(m_heliModel.bodyColor);
-    //m_heliModel.swashplateHubShape->Draw(aEffect.get(), aInputLayout.Get());
-    //aEffect->SetColorAndAlpha(DirectX::Colors::Yellow);
     m_heliModel.swashplateFrameShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetColorAndAlpha(m_heliModel.landingGearArmColor);
@@ -549,8 +547,17 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
     //aEffect->SetColorAndAlpha(DirectX::Colors::Blue);
     m_heliModel.pitchArmShape->Draw(aEffect.get(), aInputLayout.Get());
 
+    
+    aEffect->SetWorld(m_heliModel.pitchArmCouplingMatrix1);
+    aEffect->SetColorAndAlpha(m_heliModel.axelColor);
+    m_heliModel.pitchArmCouplingShape->Draw(aEffect.get(), aInputLayout.Get());
+    
+    aEffect->SetWorld(m_heliModel.pitchArmCouplingMatrix2);
+    //aEffect->SetColorAndAlpha(DirectX::Colors::Red);
+    m_heliModel.pitchArmCouplingShape->Draw(aEffect.get(), aInputLayout.Get());
+
     aEffect->SetWorld(m_heliModel.pitchLinkMatrix1);
-    //aEffect->SetColorAndAlpha(DirectX::Colors::Yellow);
+    aEffect->SetColorAndAlpha(m_heliModel.landingGearArmColor);
     m_heliModel.pitchLinkShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.pitchLinkMatrix2);
@@ -558,7 +565,7 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
     m_heliModel.pitchLinkShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.pitchJointMatrix1);
-    //aEffect->SetColorAndAlpha(DirectX::Colors::Orange);
+    aEffect->SetColorAndAlpha(m_heliModel.axelColor);
     m_heliModel.pitchJointShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.pitchJointMatrix2);
@@ -2399,21 +2406,31 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     // swashplate hub
     const float swashPlateHubDiameter = 0.85f;
     const float swashplateHubHeight = 0.15f;
-    m_heliModel.swashplateFrameShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), 1.0f, 0.21f);
+    m_heliModel.swashplateFrameShape = DirectX::GeometricPrimitive::CreateTorus(aContext.Get(), 1.0f, 0.08f);
     m_heliModel.swashplateHubShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), swashplateHubHeight, swashPlateHubDiameter);
     const DirectX::SimpleMath::Vector3 swashPlateHubTranslation(0.0f, mainHubTranslation.y * 0.815f, 0.0f);
     m_heliModel.swashplateHubMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.swashplateHubMatrix *= DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(1.19f, 1.0f, 0.97f));
     m_heliModel.swashplateHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(swashPlateHubTranslation);
     m_heliModel.localSwashplateHubMatrix = m_heliModel.swashplateHubMatrix;
     //m_heliModel.swashplateHubTranslationMatrix = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, rotorBladeSize.z * 0.5f));
     m_heliModel.swashplateHubTranslationMatrix = DirectX::SimpleMath::Matrix::Identity;
 
+    m_heliModel.swashplateFrameMatrix = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.localSwashplateFrameMatrix = DirectX::SimpleMath::Matrix::Identity;
+    //m_heliModel.localSwashplateFrameMatrix *= DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(1.09f, 5.0f, 0.89f));
+    m_heliModel.localSwashplateFrameMatrix *= DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(0.9f, 5.0f, 0.92f));
+
     // pitch arm 1
     const float pitchArmDiameter = mainArmHeight * 0.5f;
-    const float pitchArmHeight = 0.2f;
+    //const float pitchArmHeight = 0.2f;
+    const float pitchArmHeight = 0.35f;
     m_pitchArmLength = pitchArmHeight;
-    const float pitchArmOffset = 0.25f;
-    m_heliModel.pitchArmShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), pitchArmHeight, pitchArmDiameter);
+    //const float pitchArmOffset = 0.25f;
+    const float pitchArmOffset = 0.32f;
+    const DirectX::SimpleMath::Vector3 pitchArmSize = DirectX::SimpleMath::Vector3(pitchArmDiameter * 1.5f, pitchArmHeight, pitchArmDiameter);
+    //m_heliModel.pitchArmShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), pitchArmHeight, pitchArmDiameter);
+    m_heliModel.pitchArmShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), pitchArmSize);
     //const DirectX::SimpleMath::Vector3 pitchArmTrans1(pitchArmOffset, mainHubTranslation.y, 0.0f);
     DirectX::SimpleMath::Vector3 pitchArmTrans1(0.0f, mainHubTranslation.y, 0.0f);
     //pitchArmTrans1 = swashPlateHubTranslation;
@@ -2436,12 +2453,52 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     m_heliModel.pitchArmTranslationMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(pitchArmOffset, -pitchArmHeight * 0.5f, 0.0f));
     //m_heliModel.pitchArmTranslationMatrix2 = DirectX::SimpleMath::Matrix::Identity;
     
+    
+    // pitch arm coupling 1
+    const float pitchArmCouplingDiameter = mainArmHeight * 1.2f;
+    const float pitchArmCouplingHeight = pitchArmHeight * 0.4f;
+    //m_pitchArmLength = pitchArmCouplingHeight;
+    const float pitchArmCouplingOffset = 0.32f;
+    const DirectX::SimpleMath::Vector3 pitchArmCouplingSize = DirectX::SimpleMath::Vector3(pitchArmDiameter * 1.5f, pitchArmHeight, pitchArmDiameter);
+    m_heliModel.pitchArmCouplingShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), pitchArmCouplingHeight, pitchArmCouplingDiameter);
+    //m_heliModel.pitchArmCouplingShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), pitchArmSize);
+    DirectX::SimpleMath::Vector3 pitchArmCouplingTrans1(0.0f, mainHubTranslation.y, 0.0f);
+
+    m_heliModel.pitchArmCouplingMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.pitchArmCouplingMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
+    //m_heliModel.pitchArmCouplingMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, pitchArmCouplingHeight * 0.25f));
+    //m_heliModel.pitchArmCouplingMatrix1 *= DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 2.0f));
+    //m_heliModel.pitchArmCouplingMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, -pitchArmCouplingHeight * 0.25f));
+    m_heliModel.pitchArmCouplingMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(pitchArmCouplingTrans1);
+    m_heliModel.localPitchArmCouplingMatrix1 = m_heliModel.pitchArmCouplingMatrix1;
+    m_heliModel.pitchArmTranslationCouplingMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, pitchArmHeight * 0.5f));
+    m_heliModel.pitchArmTranslationCouplingMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(pitchArmCouplingOffset, -pitchArmCouplingHeight * 0.5f, 0.0f));
+    m_heliModel.pitchArmTranslationCouplingMatrix1 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, -pitchArmCouplingOffset, 0.0f));
+    
+    // pitch arm coupling 2
+    DirectX::SimpleMath::Vector3 pitchArmCouplingTrans2(0.0f, mainHubTranslation.y, 0.0f);
+
+    m_heliModel.pitchArmCouplingMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.pitchArmCouplingMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
+    //m_heliModel.pitchArmCouplingMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, pitchArmCouplingHeight * 0.25f));
+    //m_heliModel.pitchArmCouplingMatrix2 *= DirectX::SimpleMath::Matrix::CreateScale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 2.0f));
+    //m_heliModel.pitchArmCouplingMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, -pitchArmCouplingHeight * 0.25f));
+    m_heliModel.pitchArmCouplingMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(pitchArmCouplingTrans2);
+    m_heliModel.localPitchArmCouplingMatrix2 = m_heliModel.pitchArmCouplingMatrix2;
+    m_heliModel.pitchArmTranslationCouplingMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, pitchArmHeight * 0.5f));
+    m_heliModel.pitchArmTranslationCouplingMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(pitchArmCouplingOffset, -pitchArmCouplingHeight * 0.5f, 0.0f));
+    m_heliModel.pitchArmTranslationCouplingMatrix2 = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0.0f, pitchArmCouplingOffset, 0.0f));
+
+
     // pitch link 1
-    const float pitchLinkDiameter = mainArmHeight * 0.5f;
+    const float pitchLinkDiameter = pitchArmDiameter;
     const float pitchLinkHeight = 0.85f;
-    const float pitchLinkOffset = 0.35f;
+    const float pitchLinkOffset = pitchArmOffset - pitchArmSize.x;
+    const DirectX::SimpleMath::Vector3 pitchLinkSize = DirectX::SimpleMath::Vector3(pitchArmSize.x, pitchLinkHeight, pitchLinkDiameter);
     m_heliModel.pitchLinkShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), pitchLinkHeight, pitchLinkDiameter);
-    const DirectX::SimpleMath::Vector3 pitchLinkTrans1(pitchArmOffset, mainHubTranslation.y - (pitchLinkHeight * 0.5f), pitchArmHeight);
+    //m_heliModel.pitchLinkShape = DirectX::GeometricPrimitive::CreateBox(aContext.Get(), pitchLinkSize);
+    //const DirectX::SimpleMath::Vector3 pitchLinkTrans1(pitchLinkOffset, mainHubTranslation.y - (pitchLinkHeight * 0.5f), pitchArmHeight);
+    const DirectX::SimpleMath::Vector3 pitchLinkTrans1(0.0f, mainHubTranslation.y - (pitchLinkHeight * 0.5f), pitchArmHeight);
     //DirectX::SimpleMath::Vector3 pitchLinkTrans1(0.0f, mainHubTranslation.y, 0.0f);
     //pitchLinkTrans1 = swashPlateHubTranslation;
     //pitchLinkTrans1.y -= 0.3f;
@@ -2457,7 +2514,8 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     //m_heliModel.pitchLinkTranslationMatrix1 = m_heliModel.pitchArmTranslationMatrix1;
 
     // pitch link 2
-    const DirectX::SimpleMath::Vector3 pitchLinkTrans2(-pitchArmOffset, mainHubTranslation.y - (pitchLinkHeight * 0.5f), -pitchArmHeight);
+    //const DirectX::SimpleMath::Vector3 pitchLinkTrans2(-pitchLinkOffset, mainHubTranslation.y - (pitchLinkHeight * 0.5f), -pitchArmHeight);
+    const DirectX::SimpleMath::Vector3 pitchLinkTrans2(0.0f, mainHubTranslation.y - (pitchLinkHeight * 0.5f), -pitchArmHeight);
     //DirectX::SimpleMath::Vector3 pitchLinkTrans1(0.0f, mainHubTranslation.y, 0.0f);
     //pitchLinkTrans1 = swashPlateHubTranslation;
     //pitchLinkTrans1.y -= 0.3f;
@@ -2474,11 +2532,19 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
 
     // Pitch Joint 1
     const float pitchJointDiameter = mainArmHeight * 0.5f;
-    m_heliModel.pitchJointShape = DirectX::GeometricPrimitive::CreateSphere(aContext.Get(), pitchJointDiameter);
+    //const float pitchJointHeight = pitchLinkDiameter * 2.0f;
+    //const float pitchJointHeight = pitchArmSize.x * 2.5f;
+    const float pitchJointHeight = pitchArmOffset + (pitchArmSize.x) + 0.01f;
+    //const float pitchJointOffest = pitchArmOffset - (pitchArmSize.x * 0.5f);
+    const float pitchJointOffest = pitchArmOffset * 0.5f;
+    //const float pitchJointOffest = 0.23f;
+    //m_heliModel.pitchJointShape = DirectX::GeometricPrimitive::CreateSphere(aContext.Get(), pitchJointDiameter);
+    m_heliModel.pitchJointShape = DirectX::GeometricPrimitive::CreateCylinder(aContext.Get(), pitchJointHeight, pitchJointDiameter);
     //const DirectX::SimpleMath::Vector3 pitchLinkTrans1(pitchArmOffset, mainHubTranslation.y - (pitchLinkHeight * 0.5f), pitchArmHeight);
-    DirectX::SimpleMath::Vector3 pitchJointTrans1(pitchArmOffset, mainHubTranslation.y - (pitchLinkHeight * 0.0f), pitchArmHeight);
+    DirectX::SimpleMath::Vector3 pitchJointTrans1(pitchJointOffest, mainHubTranslation.y - (pitchLinkHeight * 0.0f), pitchArmHeight);
 
     m_heliModel.pitchJointMatrix1 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.pitchJointMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
     m_heliModel.pitchJointTranslationMatrix1 = DirectX::SimpleMath::Matrix::Identity;
     //m_heliModel.pitchJointMatrix1 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
     m_heliModel.pitchJointTranslationMatrix1 *= DirectX::SimpleMath::Matrix::CreateTranslation(pitchJointTrans1);
@@ -2486,8 +2552,9 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
 
 
     // Pitch Joint 2
-    DirectX::SimpleMath::Vector3 pitchJointTrans2(-pitchArmOffset, mainHubTranslation.y - (pitchLinkHeight * 0.0f), -pitchArmHeight);
+    DirectX::SimpleMath::Vector3 pitchJointTrans2(-pitchJointOffest, mainHubTranslation.y - (pitchLinkHeight * 0.0f), -pitchArmHeight);
     m_heliModel.pitchJointMatrix2 = DirectX::SimpleMath::Matrix::Identity;
+    m_heliModel.pitchJointMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(90.0f));
     m_heliModel.pitchJointTranslationMatrix2 = DirectX::SimpleMath::Matrix::Identity;
     //m_heliModel.pitchJointMatrix2 *= DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(90.0f));
     m_heliModel.pitchJointTranslationMatrix2 *= DirectX::SimpleMath::Matrix::CreateTranslation(pitchJointTrans2);
@@ -2945,7 +3012,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
 
     DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToDegrees(0.0f));
     m_heli.forward = DirectX::SimpleMath::Vector3::UnitX;
-    m_heli.forward = DirectX::SimpleMath::Vector3::Transform(m_heli.forward, rotMat);
+    //m_heli.forward = DirectX::SimpleMath::Vector3::Transform(m_heli.forward, rotMat);
     //m_heli.forward = DirectX::SimpleMath::Vector3(-0.4f, 0.0f, -1.0f);
     //m_heli.forward.Normalize();
     m_heli.up = DirectX::SimpleMath::Vector3::UnitY;
@@ -2953,7 +3020,7 @@ void Vehicle::InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCo
     //m_heli.alignment = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, m_heli.forward, m_heli.up);
     m_heli.alignment = DirectX::SimpleMath::Matrix::CreateLookAt(DirectX::SimpleMath::Vector3::Zero, -m_heli.right, m_heli.up);
     m_heli.alignment = DirectX::SimpleMath::Matrix::Identity;
-    m_heli.alignment *= rotMat;
+    //m_heli.alignment *= rotMat;
     m_heli.inverseAlignment = m_heli.alignment;
     m_heli.inverseAlignment = m_heli.inverseAlignment.Invert();
     m_heli.alignmentQuat = DirectX::SimpleMath::Quaternion::CreateFromRotationMatrix(m_heli.alignment);
@@ -3749,6 +3816,9 @@ void Vehicle::RepositionModelCordinates(const DirectX::SimpleMath::Vector3 aPos,
     aModel.localSwashplateHubMatrix *= transMat;
     aModel.localPitchArmMatrix1 *= transMat;
     aModel.localPitchArmMatrix2 *= transMat;
+
+    aModel.localPitchArmCouplingMatrix1 *= transMat;
+    aModel.localPitchArmCouplingMatrix2 *= transMat;
 
     aModel.localPitchLinkMatrix1 *= transMat;
     aModel.pitchLinkBodyTransMatrix1 *= transMat;
@@ -5258,8 +5328,6 @@ void Vehicle::UpdateModel()
     float transOffset0 = sin(m_swashplateOffset0) * hypotenuse;
     float transOffset1 = sin(m_swashplateOffset1) * hypotenuse;
     collectiveTranslation.y += transOffset0 + transOffset1;
-    m_debugData->DebugPushUILineDecimalNumber("transOffset0 ", transOffset0, "");
-    m_debugData->DebugPushUILineDecimalNumber("transOffset1 ", transOffset1, "");
     DirectX::SimpleMath::Matrix swashPlatePitch = DirectX::SimpleMath::Matrix::Identity;
     //swashPlatePitch = DirectX::SimpleMath::Matrix::CreateRotationX(m_heli.mainRotor.bladeVec[0].pitchAngle) * DirectX::SimpleMath::Matrix::CreateRotationX(-m_heli.mainRotor.bladeVec[1].pitchAngle);
     swashPlatePitch = DirectX::SimpleMath::Matrix::CreateRotationX(m_swashplate0) * DirectX::SimpleMath::Matrix::CreateRotationX(-m_swashplate1);
@@ -5267,8 +5335,11 @@ void Vehicle::UpdateModel()
     //m_heliModel.swashplateHubMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(collectiveTranslation);
     //m_heliModel.swashplateHubMatrix *= swashPlatePitch;
     m_heliModel.swashplateHubMatrix *= m_heliModel.localSwashplateHubMatrix;
-    m_heliModel.swashplateHubMatrix *= mainRotorSpin;
+    //m_heliModel.swashplateHubMatrix *= mainRotorSpin;
     m_heliModel.swashplateHubMatrix *= updateMat;
+
+    m_heliModel.swashplateFrameMatrix = m_heliModel.localSwashplateFrameMatrix;
+    m_heliModel.swashplateFrameMatrix *= m_heliModel.swashplateHubMatrix;
 
     // pitch arm 1
     m_heliModel.pitchArmMatrix1 = m_heliModel.pitchArmTranslationMatrix1;
@@ -5283,6 +5354,20 @@ void Vehicle::UpdateModel()
     m_heliModel.pitchArmMatrix2 *= m_heliModel.localPitchArmMatrix2;
     m_heliModel.pitchArmMatrix2 *= mainRotorSpin;
     m_heliModel.pitchArmMatrix2 *= updateMat;
+    
+    // pitch arm coupling 1 
+    m_heliModel.pitchArmCouplingMatrix1 = m_heliModel.pitchArmTranslationCouplingMatrix1;
+    //m_heliModel.pitchArmCouplingMatrix1 *= mainRotorPitch1;
+    m_heliModel.pitchArmCouplingMatrix1 *= m_heliModel.localPitchArmCouplingMatrix1;
+    m_heliModel.pitchArmCouplingMatrix1 *= mainRotorSpin;
+    m_heliModel.pitchArmCouplingMatrix1 *= updateMat;
+    
+    // pitch arm coupling 2 
+    m_heliModel.pitchArmCouplingMatrix2 = m_heliModel.pitchArmTranslationCouplingMatrix2;
+    //m_heliModel.pitchArmCouplingMatrix2 *= mainRotorPitch1;
+    m_heliModel.pitchArmCouplingMatrix2 *= m_heliModel.localPitchArmCouplingMatrix2;
+    m_heliModel.pitchArmCouplingMatrix2 *= mainRotorSpin;
+    m_heliModel.pitchArmCouplingMatrix2 *= updateMat;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     // pitch link 1
@@ -6336,8 +6421,6 @@ void Vehicle::UpdateVehicle(const double aTimeDelta)
     m_debugData->PushDebugLinePositionIndicator(testVec, 8.0f, 0.0f, DirectX::Colors::Red);
     */
     //m_debugData->DebugClearUI();
-    m_debugData->PushDebugLine(m_heli.q.position, DirectX::SimpleMath::Vector3::UnitX, 10.0f, 0.0f, DirectX::Colors::White);
-    m_debugData->PushDebugLine(m_heli.q.position, DirectX::SimpleMath::Vector3::UnitZ, 10.0f, 0.0f, DirectX::Colors::Red);
 }
 
 void Vehicle::DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor)

@@ -174,7 +174,7 @@ struct HeliData
     const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
     DirectX::SimpleMath::Plane groundPlane;
     const float   mainRotorMaxRPM = 500.0f;
-    const float   mass = 2000.0f;;
+    const float   mass = 2000.0f;
 
     Motion  q;
     float   totalResistance;
@@ -793,6 +793,8 @@ struct HeliModel
     DirectX::SimpleMath::Matrix swashplateHubMatrix;
     DirectX::SimpleMath::Matrix swashplateHubTranslationMatrix;
     DirectX::SimpleMath::Matrix localSwashplateHubMatrix;
+    DirectX::SimpleMath::Matrix localSwashplateFrameMatrix;
+    DirectX::SimpleMath::Matrix swashplateFrameMatrix;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    pitchArmShape;
     DirectX::SimpleMath::Matrix pitchArmMatrix1;
@@ -802,6 +804,15 @@ struct HeliModel
     DirectX::SimpleMath::Matrix pitchArmMatrix2;
     DirectX::SimpleMath::Matrix pitchArmTranslationMatrix2;
     DirectX::SimpleMath::Matrix localPitchArmMatrix2;
+
+    std::unique_ptr<DirectX::GeometricPrimitive>    pitchArmCouplingShape;
+    DirectX::SimpleMath::Matrix pitchArmCouplingMatrix1;
+    DirectX::SimpleMath::Matrix pitchArmTranslationCouplingMatrix1;
+    DirectX::SimpleMath::Matrix localPitchArmCouplingMatrix1;
+
+    DirectX::SimpleMath::Matrix pitchArmCouplingMatrix2;
+    DirectX::SimpleMath::Matrix pitchArmTranslationCouplingMatrix2;
+    DirectX::SimpleMath::Matrix localPitchArmCouplingMatrix2 = DirectX::SimpleMath::Matrix::Identity;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    pitchLinkShape;
     DirectX::SimpleMath::Matrix pitchLinkMatrix1 = DirectX::SimpleMath::Matrix::Identity;
@@ -999,7 +1010,7 @@ private:
     const float m_inertiaModelY = 2.0f;
     const float m_inertiaModelZ = 4.0f;
     
-    const float m_inertiaMass = 2050.0f;
+    const float m_inertiaMass = 2000.0f;
     const float m_inertiaMass2 = 250.0f;
     const float m_inertiaModelX2 = 3.0f;
     const float m_inertiaModelY2 = 0.8f;

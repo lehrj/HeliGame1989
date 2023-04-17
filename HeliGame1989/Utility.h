@@ -122,6 +122,31 @@ public:
         return torqueForce;
     }
 
+    static void GetDispersedLightDirectionsRotation(const DirectX::SimpleMath::Vector3 aPrimeDirection, const float aOffsetAngle, const float aRotation, DirectX::SimpleMath::Vector3& aDir1, DirectX::SimpleMath::Vector3& aDir2, DirectX::SimpleMath::Vector3& aDir3)
+    {
+        DirectX::SimpleMath::Vector3 rightVec;
+        if (aPrimeDirection == DirectX::SimpleMath::Vector3::UnitY)
+        {
+            rightVec = DirectX::SimpleMath::Vector3::UnitZ;
+        }
+        else if (aPrimeDirection == -DirectX::SimpleMath::Vector3::UnitY)
+        {
+            rightVec = -DirectX::SimpleMath::Vector3::UnitZ;
+        }
+        else
+        {
+            rightVec = aPrimeDirection.Cross(DirectX::SimpleMath::Vector3::UnitY);
+        }
+
+        aDir1 = aPrimeDirection;
+        aDir1 = DirectX::SimpleMath::Vector3::TransformNormal(aDir1, DirectX::SimpleMath::Matrix::CreateFromAxisAngle(rightVec, aOffsetAngle));
+        aDir1 = DirectX::SimpleMath::Vector3::TransformNormal(aDir1, DirectX::SimpleMath::Matrix::CreateFromAxisAngle(aPrimeDirection, aRotation));
+        aDir2 = aDir1;
+        aDir2 = DirectX::SimpleMath::Vector3::TransformNormal(aDir2, DirectX::SimpleMath::Matrix::CreateFromAxisAngle(aPrimeDirection, Utility::ToRadians(120.0f)));
+        aDir3 = aDir1;
+        aDir3 = DirectX::SimpleMath::Vector3::TransformNormal(aDir3, DirectX::SimpleMath::Matrix::CreateFromAxisAngle(aPrimeDirection, Utility::ToRadians(240.0f)));
+    }
+
 private:
 
     

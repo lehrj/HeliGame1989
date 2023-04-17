@@ -43,8 +43,8 @@ struct Environ
     DirectX::SimpleMath::Vector3        lightDirection0 = -DirectX::SimpleMath::Vector3::UnitY;
     DirectX::SimpleMath::Vector3        lightDirection1 = -DirectX::SimpleMath::Vector3::UnitY;
     DirectX::SimpleMath::Vector3        lightDirection2 = -DirectX::SimpleMath::Vector3::UnitY;
-    float                               lightDirectionsOffsetAngle = Utility::ToRadians(20.0f);
-    float                               lightDirectionRotation = Utility::ToRadians(0.0f);
+    float                               lightDirectionsOffsetAngle = Utility::ToRadians(30.0f);
+    float                               lightDirectionRotation = Utility::ToRadians(20.0f);
     float                               maxShadowCastRange = 60.0f;
 
     int                                 par;
@@ -56,6 +56,7 @@ struct Environ
     std::string                         windXStr;
     std::string                         windYStr;
     std::string                         windZStr;
+
 };
 
 enum class FixtureType
@@ -142,6 +143,8 @@ public:
     float GetLauchHeight() const { return m_launchHeight; };
     DirectX::SimpleMath::Vector3 GetLightDirectionPrime() const { return m_currentEnviron.lightDirectionPrime; };
     float GetMaxShadowCastRange() const { return m_currentEnviron.maxShadowCastRange; };
+    void GetLightDirectionalVectors(DirectX::SimpleMath::Vector3& aLightVec0, DirectX::SimpleMath::Vector3& aLightVec1, DirectX::SimpleMath::Vector3& aLightVec2) const;
+
     int GetNumerOfEnvirons() const { return m_environsAvailable; };
     int GetNumberOfEnvironSelectDisplayVariables() const { return m_environSelectDisplayDataPoints; };
     int GetPar() const { return m_currentEnviron.par; };
@@ -197,7 +200,8 @@ private:
     void SetLauchHeight(float aLaunchHeight);
 
     void ScaleTerrain(HeightMap& aMap);
-    
+    void UpdateDirectionalLightingVectors(Environ& aEnviron);
+
     Environ                             m_currentEnviron;
     std::vector<Environ>                m_environs;
     const int                           m_environsAvailable = 3;

@@ -46,7 +46,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
@@ -678,14 +678,14 @@ void Game::DrawDebugDataUI()
     m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos, baseColor, 0.f, altitudeLineOrigin);
     textLinePos.y += 30;
 
-    
+    /*
     // Draw FPS  
     std::string textLine = "FPS  " + std::to_string(m_timer.GetFramesPerSecond());
     DirectX::SimpleMath::Vector2 textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
     textLinePos.x = textLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), textLine.c_str(), textLinePos, Colors::White, 0.f, textLineOrigin);
     textLinePos.y += 30;
-    /*
+    
     // Draw Timer  
     textLine = "Timer = " + std::to_string(m_timer.GetTotalSeconds());
     textLineOrigin = m_bitwiseFont->MeasureString(textLine.c_str()) / 2.f;
@@ -3783,7 +3783,8 @@ void Game::Render()
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
     {
         DrawGamePlayStart();
-        m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
+        //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
+        m_vehicle->DrawModel2(m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), m_effect, m_inputLayout);
         DrawSky();
     }
    
