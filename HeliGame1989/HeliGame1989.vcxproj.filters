@@ -144,6 +144,15 @@
     <Image Include="Art\Textures\textureUV.png">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Art\Textures\titleTexture.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\SpecularMaps\titleSpecular.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Art\NormalMaps\titleNorm.png">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="settings.manifest">

@@ -43,9 +43,9 @@ struct Environ
     DirectX::SimpleMath::Vector3        lightDirection0 = -DirectX::SimpleMath::Vector3::UnitY;
     DirectX::SimpleMath::Vector3        lightDirection1 = -DirectX::SimpleMath::Vector3::UnitY;
     DirectX::SimpleMath::Vector3        lightDirection2 = -DirectX::SimpleMath::Vector3::UnitY;
-    float                               lightDirectionsOffsetAngle = Utility::ToRadians(30.0f);
-    float                               lightDirectionRotation = Utility::ToRadians(20.0f);
-    float                               maxShadowCastRange = 60.0f;
+    float                               lightDirectionsOffsetAngle = Utility::ToRadians(45.0f);
+    float                               lightDirectionRotation = Utility::ToRadians(90.0f);
+    float                               maxShadowCastRange = 80.0f;
 
     int                                 par;
     float                               scale;

@@ -1466,6 +1466,9 @@ void Environment::UpdateDirectionalLightingVectors(Environ& aEnviron)
     const float offsetAngle = aEnviron.lightDirectionsOffsetAngle;
     const float rotationAngle = aEnviron.lightDirectionsOffsetAngle;
     Utility::GetDispersedLightDirectionsRotation(lightVectorPrime, offsetAngle, rotationAngle, lightVector0, lightVector1, lightVector2);
+    lightVector0.Normalize();
+    lightVector1.Normalize();
+    lightVector2.Normalize();
     aEnviron.lightDirection0 = lightVector0;
     aEnviron.lightDirection1 = lightVector1;
     aEnviron.lightDirection2 = lightVector2;

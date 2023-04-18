@@ -212,6 +212,7 @@
     <Image Include="Art\NormalMaps\normBMW2.png" />
     <Image Include="Art\NormalMaps\normJI.png" />
     <Image Include="Art\NormalMaps\TestOP.png" />
+    <Image Include="Art\NormalMaps\titleNorm.png" />
     <Image Include="Art\SpecularMaps\SpecJI.png" />
     <Image Include="Art\SpecularMaps\specularBMW.png" />
     <Image Include="Art\SpecularMaps\specularJI.png" />
@@ -219,6 +220,7 @@
     <Image Include="Art\SpecularMaps\specularTeaser.png" />
     <Image Include="Art\SpecularMaps\specularTeaser1.png" />
     <Image Include="Art\SpecularMaps\specularUV.png" />
+    <Image Include="Art\SpecularMaps\titleSpecular.png" />
     <Image Include="Art\Textures\blankTexture.jpg" />
     <Image Include="Art\Textures\Chacter0SpriteSheet.png" />
     <Image Include="Art\Textures\Chacter1SpriteSheet.png" />
@@ -235,6 +237,7 @@
     <Image Include="Art\Textures\PacSprite.png" />
     <Image Include="Art\Textures\TestOP.png" />
     <Image Include="Art\Textures\textureUV.png" />
+    <Image Include="Art\Textures\titleTexture.png" />
     <Image Include="directx.ico" />
   </ItemGroup>
   <ItemGroup>

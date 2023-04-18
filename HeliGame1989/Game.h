@@ -146,9 +146,11 @@ private:
     std::shared_ptr<DirectX::NormalMapEffect>       m_effect;
     std::shared_ptr<DirectX::BasicEffect>           m_effect2;
     std::shared_ptr<DirectX::BasicEffect>           m_effect3;
+    std::shared_ptr<DirectX::NormalMapEffect>           m_effect4;
     std::unique_ptr<DirectX::PrimitiveBatch<VertexType>> m_batch;
     std::unique_ptr<DirectX::PrimitiveBatch<VertexType2>> m_batch2;
     std::unique_ptr<DirectX::PrimitiveBatch<VertexType3>> m_batch3;
+    std::unique_ptr<DirectX::PrimitiveBatch<VertexType>> m_batch4;
 
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_textureSky;
 
@@ -171,6 +173,11 @@ private:
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalMapAutoGame;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_specularAutoGame;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_textureAutoGame;
+
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalMapTitle;
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_specularTitle;
+    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_textureTitle;
+
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalMapTeaser;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_specularTeaser;
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_textureTeaser;
@@ -178,12 +185,16 @@ private:
     Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout;
     Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout2;
     Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout3;
+    Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout4;
 
     std::shared_ptr<DirectX::IEffect>               m_lightEffect;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    m_skyShape;
     float                                           m_skyRotation = 0.0f;
     std::unique_ptr<DirectX::GeometricPrimitive>    m_testShape;
+    std::unique_ptr<DirectX::GeometricPrimitive>    m_testShape2;
+    std::unique_ptr<DirectX::GeometricPrimitive>    m_titleShape;
+    std::unique_ptr<DirectX::GeometricPrimitive>    m_moonShape;
 
     DirectX::SimpleMath::Matrix                     m_world;
     DirectX::SimpleMath::Matrix                     m_view;
@@ -358,17 +369,20 @@ private:
     const float                         m_logoDisplayGap = 0.8f;
     const float                         m_startDelay = 5.2f;
     */
+    
     const float                         m_fadeDuration = 1.0f;
     const float                         m_logoDisplayDuration = 4.7f;
     const float                         m_logoDisplayGap = 0.1f;
     const float                         m_startDelay = 4.5f;
-
+    
+    
     /*
-    const float                         m_fadeDuration = 0.2f;
-    const float                         m_logoDisplayDuration = 0.5f;
+    const float                         m_fadeDuration = 1.2f;
+    const float                         m_logoDisplayDuration = 17.5f;
     const float                         m_logoDisplayGap = 0.2f;
-    const float                         m_startDelay = 0.2f;
+    const float                         m_startDelay = 1.2f;
     */
+
     const float                         m_fogGap1 = 0.0;
     const float                         m_fogGap2 = 10.0;
 
@@ -423,4 +437,6 @@ private:
 
     float m_testTimer1 = 0.0f;
     float m_testTimer2 = 0.0f;
+
+    bool m_debugToggle = false;
 };

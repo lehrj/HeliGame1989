@@ -512,6 +512,22 @@ void Vehicle::DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::
     m_heliModel.engineHousingSideShape->Draw(m_heliModel.shadowHouseingRightMat, aView, aProj, m_heliModel.shadowColor);
     m_heliModel.tailBoomNewShape->Draw(m_heliModel.shadowBoomBottomMat, aView, aProj, m_heliModel.shadowColor);
     m_heliModel.tailBoomNewShape->Draw(m_heliModel.shadowBoomTopMat, aView, aProj, m_heliModel.shadowColor);
+
+    m_heliModel.tailBoomNewShape->Draw(m_heliModel.shadowBoomTopMat, aView, aProj, m_heliModel.shadowColor);
+
+    //////////
+    m_heliModel.swashplateHubShape->Draw(m_heliModel.swashplateHubMatrix, aView, aProj, m_heliModel.shadowColor);
+    m_heliModel.swashplateFrameShape->Draw(m_heliModel.swashplateFrameMatrix, aView, aProj, m_heliModel.bodyColor);
+
+    m_heliModel.pitchArmShape->Draw(m_heliModel.pitchArmMatrix1, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.pitchArmShape->Draw(m_heliModel.pitchArmMatrix2, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.pitchArmCouplingShape->Draw(m_heliModel.pitchArmCouplingMatrix1, aView, aProj, m_heliModel.axelColor);
+    m_heliModel.pitchArmCouplingShape->Draw(m_heliModel.pitchArmCouplingMatrix2, aView, aProj, m_heliModel.axelColor);
+
+    m_heliModel.pitchLinkShape->Draw(m_heliModel.pitchLinkMatrix1, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.pitchLinkShape->Draw(m_heliModel.pitchLinkMatrix2, aView, aProj, m_heliModel.landingGearArmColor);
+    m_heliModel.pitchJointShape->Draw(m_heliModel.pitchJointMatrix1, aView, aProj, m_heliModel.axelColor);
+    m_heliModel.pitchJointShape->Draw(m_heliModel.pitchJointMatrix2, aView, aProj, m_heliModel.axelColor);
 }
 
 void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout)
@@ -522,13 +538,13 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
     DirectX::SimpleMath::Vector3 mainLightDirection0;
     DirectX::SimpleMath::Vector3 mainLightDirection1;
     DirectX::SimpleMath::Vector3 mainLightDirection2;
-    mainLightDirection0 = DirectX::SimpleMath::Vector3(-1.0f, 0.0f, 0.0f);
+    mainLightDirection0 = DirectX::SimpleMath::Vector3(-1.0f, -1.0f, 1.0f);
     mainLightDirection0.Normalize();
-    mainLightDirection1 = DirectX::SimpleMath::Vector3(-1.0f, -1.0f, 0.0f);
+    mainLightDirection1 = DirectX::SimpleMath::Vector3(1.0f, -1.0f, 0.0f);
     mainLightDirection1.Normalize();
-    mainLightDirection2 = DirectX::SimpleMath::Vector3(-1.0f, 1.0f, 0.0f);
+    mainLightDirection2 = DirectX::SimpleMath::Vector3(-1.0f, -1.0f, -1.0f);
     mainLightDirection2.Normalize();
-    //m_environment->GetLightDirectionalVectors(mainLightDirection0, mainLightDirection1, mainLightDirection2);
+    m_environment->GetLightDirectionalVectors(mainLightDirection0, mainLightDirection1, mainLightDirection2);
     aEffect->SetLightDirection(0, mainLightDirection0);
     aEffect->SetLightDirection(1, mainLightDirection1);
     aEffect->SetLightDirection(2, mainLightDirection2);
@@ -540,20 +556,16 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
 
     aEffect->SetColorAndAlpha(m_heliModel.landingGearArmColor);
     aEffect->SetWorld(m_heliModel.pitchArmMatrix1);
-    //aEffect->SetColorAndAlpha(DirectX::Colors::Red);
     m_heliModel.pitchArmShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.pitchArmMatrix2);
-    //aEffect->SetColorAndAlpha(DirectX::Colors::Blue);
     m_heliModel.pitchArmShape->Draw(aEffect.get(), aInputLayout.Get());
 
-    
     aEffect->SetWorld(m_heliModel.pitchArmCouplingMatrix1);
     aEffect->SetColorAndAlpha(m_heliModel.axelColor);
     m_heliModel.pitchArmCouplingShape->Draw(aEffect.get(), aInputLayout.Get());
     
     aEffect->SetWorld(m_heliModel.pitchArmCouplingMatrix2);
-    //aEffect->SetColorAndAlpha(DirectX::Colors::Red);
     m_heliModel.pitchArmCouplingShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.pitchLinkMatrix1);
@@ -561,7 +573,6 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
     m_heliModel.pitchLinkShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.pitchLinkMatrix2);
-    //aEffect->SetColorAndAlpha(DirectX::Colors::Yellow);
     m_heliModel.pitchLinkShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.pitchJointMatrix1);
@@ -569,7 +580,6 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
     m_heliModel.pitchJointShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.pitchJointMatrix2);
-    //aEffect->SetColorAndAlpha(DirectX::Colors::Purple);
     m_heliModel.pitchJointShape->Draw(aEffect.get(), aInputLayout.Get());
 
     
@@ -1218,6 +1228,8 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
     m_heliModel.swashplateHubShape->Draw(aEffect.get(), aInputLayout.Get());
     //aEffect->SetColorAndAlpha(DirectX::Colors::Yellow);
     //m_heliModel.swashplateFrameShape->Draw(aEffect.get(), aInputLayout.Get());
+
+    aEffect->EnableDefaultLighting();
 }
 
 void Vehicle::InitializeEngine(Engine& aEngine)
