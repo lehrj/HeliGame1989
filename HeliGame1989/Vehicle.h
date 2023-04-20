@@ -14,7 +14,7 @@ struct ControlInput
     const float collectiveInputMax = 1.0f;
     const float collectiveInputMin = 0.0f;
     const float collectiveInputRate = 0.5f;
-    const float collectiveInputRateGamePad = 0.5f;
+    const float collectiveInputRateGamePad = 0.2f;
 
     DirectX::SimpleMath::Vector3 cyclicStick;
     const float cyclicDecayRate = 0.3f;
@@ -40,11 +40,11 @@ struct ControlInput
     float       yawPedalInput;
     //const float yawPedalDecayRate = 0.2f;
     const float yawPedalDecayRate = 0.8f;
-    const float yawPedalDecayRateGamePad = 0.8f;
+    const float yawPedalDecayRateGamePad = 0.5f;
     const float yawPedalInputMax = 1.0f;
     const float yawPedalInputMin = -1.0f;
     const float yawPedalInputRate = 0.15f;
-    const float yawPedalInputRateGamePad = 0.2f;
+    const float yawPedalInputRateGamePad = 0.1f;
 };
 
 struct Engine
@@ -150,9 +150,6 @@ struct HeliData
     const float tailRotorForceMagMax = 2000.0f; // vehicle mass value should work here
     DirectX::SimpleMath::Vector3 mainRotorPos;
     DirectX::SimpleMath::Vector3 localMainRotorPos;
-    //float       mainRotorRPM;
-    //const float mainRotorRPMmin = 0.0f;
-    //const float mainRotorRPMmax = 690.0f;
     DirectX::SimpleMath::Vector3 tailRotorPos;
     DirectX::SimpleMath::Vector3 localTailRotorPos;
     DirectX::SimpleMath::Vector3 centerOfMass;
@@ -170,7 +167,7 @@ struct HeliData
     float   airResistance;
     float   airDensity;
     float   altitude;
-    const float   dragCoefficient = 0.31f;
+    const float   dragCoefficient = 0.28f;
     const DirectX::SimpleMath::Vector3 gravity = DirectX::SimpleMath::Vector3(0.0f, -9.80665f, 0.0f);
     DirectX::SimpleMath::Plane groundPlane;
     const float   mainRotorMaxRPM = 500.0f;
@@ -1010,8 +1007,8 @@ private:
     const float m_inertiaModelY = 2.0f;
     const float m_inertiaModelZ = 4.0f;
     
-    const float m_inertiaMass = 2000.0f;
-    const float m_inertiaMass2 = 250.0f;
+    const float m_inertiaMass = 1900.0f;
+    const float m_inertiaMass2 = 100.0f;
     const float m_inertiaModelX2 = 3.0f;
     const float m_inertiaModelY2 = 0.8f;
     const float m_inertiaModelZ2 = 0.6f;    
@@ -1019,8 +1016,9 @@ private:
 
     const float m_testMass = 2000.0f;
     //const float m_angDragCoefficient = 0.8f;
-    const float m_angDragCoefficient = 0.4f;
-    const float m_angDragCoefficient2 = 0.2f;
+    //const float m_angDragCoefficient = 0.4f;
+    const float m_angDragCoefficient = 0.6f;
+    const float m_angDragCoefficient2 = 0.1f;
     const float m_angDragLength = 8.0f;
     const float m_angDragWidth = 4.0f;
     const float m_angDragHeight = 2.0f;

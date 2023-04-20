@@ -616,10 +616,10 @@ void Vehicle::DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX:
 
     aEffect->SetWorld(m_heliModel.wingJetForwardHousingLeftBellyMatrix);
     aEffect->SetColorAndAlpha(m_heliModel.undersideColor);
-    m_heliModel.wingJetForwardHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+    //m_heliModel.wingJetForwardHousingShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.wingJetForwardHousingLeftBellyMatrix);
-    m_heliModel.wingJetForwardHousingShape->Draw(aEffect.get(), aInputLayout.Get());
+    //m_heliModel.wingJetForwardHousingShape->Draw(aEffect.get(), aInputLayout.Get());
 
     aEffect->SetWorld(m_heliModel.tailWingLeadingEdgeBellyMatrix);
     m_heliModel.tailWingEdgeShape->Draw(aEffect.get(), aInputLayout.Get());
@@ -1298,9 +1298,11 @@ void Vehicle::InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aCont
     const float zFightOffset = 0.0007f;
 
     //const float bellyVertOffset = 0.017f;
+    //const float bellyVertOffset = 0.017f;
     const float bellyVertOffset = 0.017f;
     const DirectX::SimpleMath::Vector3 bellyScale(0.85f, 0.85f, 0.85f);
-    const DirectX::SimpleMath::Vector3 bellyWingScale(1.0f, 1.0f, 0.95f);
+    //const DirectX::SimpleMath::Vector3 bellyWingScale(1.0f, 1.0f, 0.95f);
+    const DirectX::SimpleMath::Vector3 bellyWingScale(1.0f, 1.0f, 1.02f);
     const DirectX::SimpleMath::Vector3 bellyTranslation(0.0f, -bellyVertOffset, 0.0f);
 
     // set model shapes and local positions   
@@ -4823,7 +4825,7 @@ DirectX::SimpleMath::Vector3 Vehicle::HorizontalStabilizerVec(const HeliData& aH
     m_debugData->PushDebugLine(m_heli.tailRotorPos, windVecWorld, 7.0f, 1.0f, DirectX::Colors::Red);
 
     windVec += dragVec;
-   
+
     DirectX::SimpleMath::Vector3 dragVecWorld = dragVec;
     dragVecWorld = DirectX::SimpleMath::Vector3::Transform(dragVecWorld, m_heli.alignment);
     m_debugData->PushDebugLine(m_heli.tailRotorPos, dragVecWorld, 10.0f, 1.0f, DirectX::Colors::White);
@@ -4840,8 +4842,10 @@ DirectX::SimpleMath::Vector3 Vehicle::HorizontalStabilizerVec(const HeliData& aH
     //windTorque = DirectX::SimpleMath::Vector3::Zero;
     //return windVec;
     windTorque *= -0.4f;
-    m_debugData->DebugPushUILineDecimalNumber("windTorque.Length() y", windTorque.Length(), "");
-    windTorque *= 0.6f;
+    //m_debugData->DebugPushUILineDecimalNumber("windTorque.Length() y", windTorque.Length(), "");
+    //windTorque *= 0.6f;
+    windTorque *= 0.5f;
+    //windTorque = DirectX::SimpleMath::Vector3::Zero;
     return windTorque;
 }
 
@@ -4871,21 +4875,22 @@ DirectX::SimpleMath::Vector3 Vehicle::WindVaningVec(const HeliData& aHeliData, c
     DirectX::SimpleMath::Vector3 airVelocityNormWorldXZ = airVelocityNormXZ;
     airVelocityNormWorldXZ = DirectX::SimpleMath::Vector3::Transform(airVelocityNormWorldXZ, aHeliData.alignment);
     
-    m_debugData->DebugPushUILineDecimalNumber("dragResistance  = ", dragResistance, "");
-    m_debugData->DebugPushUILineDecimalNumber("dragResistance2 = ", dragResistance2, "");
+    //m_debugData->DebugPushUILineDecimalNumber("dragResistance  = ", dragResistance, "");
+    //m_debugData->DebugPushUILineDecimalNumber("dragResistance2 = ", dragResistance2, "");
     /*
     m_debugData->PushDebugLine(m_heli.q.position, airVelocityNormWorldXZ, 25.0f, 0.0f, DirectX::Colors::White);
     m_debugData->PushDebugLine(m_heli.q.position, airVelocityNormXZ, 25.0f, 0.0f, DirectX::Colors::Red);
     m_debugData->PushDebugLine(m_heli.q.position, aHeliData.q.velocity, 25.0f, 0.0f, DirectX::Colors::Blue);
     */
     //float windVaning = -ratio * dragResistance * 0.0000005f;
-    float windVaning = (-ratio * dragResistance) / 2000.0f;
+    float windVaning = (-ratio * dragResistance) / m_heli.mass;
     //return windVaning;
     //return DirectX::SimpleMath::Vector3::UnitZ;
     DirectX::SimpleMath::Vector3 windVec = (airVelocityNormXZ * dragResistance) * 0.01f;
     windVec = DirectX::SimpleMath::Vector3::Transform(windVec, aHeliData.alignment);
     //m_debugData->PushDebugLine(m_heli.q.position, windVec, 25.0f, 0.0f, DirectX::Colors::White);
-    m_debugData->DebugPushUILineDecimalNumber("windVec.Length()", windVec.Length(), "");
+    //m_debugData->DebugPushUILineDecimalNumber("windVec.Length()", windVec.Length(), "");
+    //windVec = DirectX::SimpleMath::Vector3::Zero;
     return windVec;
 }
 

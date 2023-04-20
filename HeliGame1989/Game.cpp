@@ -46,7 +46,7 @@ Game::Game() noexcept :
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
     //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
-    //m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
+    m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
     //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
     //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
@@ -681,7 +681,7 @@ void Game::DrawDebugDataUI()
     textLinePos.y += 30;
 
     float altitude = m_vehicle->GetAltitude();
-    std::string altitudeLine = "Altitude: " + std::to_string(static_cast<int>(altitude)) + "m ";
+    std::string altitudeLine = "Altitude: " + std::to_string(static_cast<int>(altitude)) + " m";
     DirectX::SimpleMath::Vector2 altitudeLineOrigin = m_bitwiseFont->MeasureString(altitudeLine.c_str()) / 2.f;
     textLinePos.x = altitudeLineOrigin.x + 20;
     m_bitwiseFont->DrawString(m_spriteBatch.get(), altitudeLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset2, yOffset2), shadowColor2, 0.f, altitudeLineOrigin);
@@ -1159,7 +1159,7 @@ void Game::DrawIntroScene()
     //const float fadeOutEnd4 = startDelay + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + logoDisplayGap + logoDisplayDuration + m_startScreenTimerMod;
 
     //float fadeOutStart3 = 0.0;
-    float fadeOutEnd3 = fadeOutStart3 + 3.0f;
+    float fadeOutEnd3 = fadeOutStart3 + 2.0f;
 
     //float fadeInStart4 = fadeOutEnd3 + 0.3f;
     float fadeInStart4 = fadeOutEnd3 + 0.05f;
