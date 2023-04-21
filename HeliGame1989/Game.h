@@ -88,7 +88,6 @@ private:
     void DrawWorldCube();
     void DrawWorldCubeTextured();
 
-    void InitializeDebugWorldGrid();
     bool InitializeTerrainArray();
     bool InitializeTerrainArray2();
 
@@ -201,11 +200,11 @@ private:
     DirectX::SimpleMath::Matrix                     m_proj;
     Microsoft::WRL::ComPtr<ID3D11RasterizerState>   m_raster; // WLJ anti-aliasing
 
-    // WLJ added for drawing projectile and swing  
+    // added for drawing projectile and swing  
     int                                             m_swingPathStep = 0;
     int                                             m_projectilePathStep = 0;
 
-    // WLJ add for mouse and keybord interface
+    // mouse and keybord interface
     std::unique_ptr<DirectX::Keyboard>              m_keyboard;
     std::unique_ptr<DirectX::Mouse>                 m_mouse;
     DirectX::Keyboard::KeyboardStateTracker         m_kbStateTracker;
@@ -218,7 +217,6 @@ private:
     const float                                     m_gamePadInputRateCollective = 0.02f;
     const float                                     m_gamePadInputRateThrottle = 0.4f;
 
-    // WLJ added for displaying text
     std::unique_ptr<DirectX::SpriteFont>            m_font;
     std::unique_ptr<DirectX::SpriteFont>            m_titleFont;
     std::unique_ptr<DirectX::SpriteFont>            m_bitwiseFont;
@@ -356,32 +354,11 @@ private:
     double                              m_testTimer = 0.0;
     double                              m_testTimerOffset = 0.0;
 
-    // start scene control variables
-    /*
-    const float                         m_fadeDuration = 4.0f;
-    const float                         m_logoDisplayDuration = 9.5f;
-    const float                         m_logoDisplayGap = 1.0f;
-    const float                         m_startDelay = 5.2f;
-    */
-    /*
-    const float                         m_fadeDuration = 4.0f;
-    const float                         m_logoDisplayDuration = 11.5f;
-    const float                         m_logoDisplayGap = 0.8f;
-    const float                         m_startDelay = 5.2f;
-    */
-    
+    // start scene control variables 
     const float                         m_fadeDuration = 1.0f;
     const float                         m_logoDisplayDuration = 5.1f;
     const float                         m_logoDisplayGap = 0.1f;
     const float                         m_startDelay = 5.5f;
-    
-    
-    /*
-    const float                         m_fadeDuration = 1.2f;
-    const float                         m_logoDisplayDuration = 17.5f;
-    const float                         m_logoDisplayGap = 0.2f;
-    const float                         m_startDelay = 1.2f;
-    */
 
     const float                         m_fogGap1 = 0.0;
     const float                         m_fogGap2 = 10.0;
@@ -403,17 +380,9 @@ private:
     DirectX::SimpleMath::Vector3        m_teaserCamPos = DirectX::SimpleMath::Vector3(m_teaserScreenDistance - 1.0f, 0.0, 0.0);
     DirectX::SimpleMath::Vector3        m_teaserCamTarg = DirectX::SimpleMath::Vector3(m_teaserScreenDistance, 0.0, 0.0);
     
-    /*
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos1 = DirectX::SimpleMath::Vector3(8.0f, 1.0, 0.0);
-    DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg1 = DirectX::SimpleMath::Vector3(0.0, -4.5, 0.0);
-    DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos2 = DirectX::SimpleMath::Vector3(12.0f, 1.0, 0.0);
-    DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg2 = DirectX::SimpleMath::Vector3(0.0, 3.5, 0.0);
-    */
-    DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos1 = DirectX::SimpleMath::Vector3(8.0f, 1.0, 0.0);
-    //DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg1 = DirectX::SimpleMath::Vector3(0.0, -3.8, 0.0);
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg1 = DirectX::SimpleMath::Vector3(0.0, -3.8, 0.0);
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamPos2 = DirectX::SimpleMath::Vector3(18.0f, 3.5, 0.0);
-    //DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg2 = DirectX::SimpleMath::Vector3(0.0, 4.4, 0.0);
     DirectX::SimpleMath::Vector3        m_gamePlayStartCamTarg2 = DirectX::SimpleMath::Vector3(0.0, 5.0f, 0.0);
     float                               m_gamePlayStartOffSetTimer = 0.0f;
 
@@ -421,7 +390,6 @@ private:
 
     float                               m_terrainColorDimmer = 0.0;
 
-    //const double                         m_debugStartTime = -5.0;
     const double                         m_debugStartTime = 0.0;
     const float                         m_startScreenTimerMod = 0.0f;
     const float                         m_startScreenTimerMod2 = 0.0f;

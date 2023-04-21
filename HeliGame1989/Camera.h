@@ -133,7 +133,7 @@ private:
     float                           m_pitch;
     float                           m_homeYaw;
     float                           m_yaw;
-    //float                           m_frustumAngle;
+
     int                             m_clientWidth;
     int                             m_clientHeight;
 
@@ -178,13 +178,9 @@ private:
 
     bool                            m_isFpYaxisInverted = true; // toggle of turning on/off inverting the firstperson camera y axis control, set to true because I am weirdo that likes an inverted y axis
 
-    //const float m_springConstantSet = 100.0f;
     const float m_springConstantSet = 80.0f;
     DirectX::SimpleMath::Vector3 m_followCamDirection = DirectX::SimpleMath::Vector3::UnitX;
-    //DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-27.0, 3.5f, 0.0f);
     DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-30.0, 3.5f, 0.0f);
-    //DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-8.0, 5.5f, 0.0f);
-    //DirectX::SimpleMath::Vector3 m_followCamPos = DirectX::SimpleMath::Vector3(-17.0, 3.5f, 0.0f);
     DirectX::SimpleMath::Vector3 m_followCamTarget = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_followCamUp = DirectX::SimpleMath::Vector3::UnitY;
     DirectX::SimpleMath::Vector3 m_followCamPosOffset = DirectX::SimpleMath::Vector3(-1.0, 1.0, 0.0);

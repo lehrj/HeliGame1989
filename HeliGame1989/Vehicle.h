@@ -23,8 +23,6 @@ struct ControlInput
     bool        cyclicInputPitchIsPressed;
     float       cyclicInputRoll;
     bool        cyclicInputRollIsPressed;
-    //const float cyclicInputMax = Utility::ToRadians(20.0f);
-    //const float cyclicInputMin = -Utility::ToRadians(20.0f);
     const float cyclicInputMax = Utility::ToRadians(20.0f);
     const float cyclicInputMin = -Utility::ToRadians(20.0f);
     const float cyclicInputRate = 0.1f;
@@ -38,7 +36,6 @@ struct ControlInput
 
     bool        yawPedalIsPressed;
     float       yawPedalInput;
-    //const float yawPedalDecayRate = 0.2f;
     const float yawPedalDecayRate = 0.8f;
     const float yawPedalDecayRateGamePad = 0.5f;
     const float yawPedalInputMax = 1.0f;
@@ -314,7 +311,6 @@ struct HeliModel
     DirectX::SimpleMath::Matrix noseCowlMatrix;
     DirectX::SimpleMath::Matrix localNoseCowlMatrix;
 
-
     std::unique_ptr<DirectX::GeometricPrimitive>    toothShape;
     std::unique_ptr<DirectX::GeometricPrimitive>    toothShape2;
     DirectX::SimpleMath::Matrix toothMatrix1;
@@ -574,7 +570,6 @@ struct HeliModel
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorBladeStripe1Shape;
     DirectX::SimpleMath::Matrix mainRotorBladeStripe1Matrix1;
     DirectX::SimpleMath::Matrix mainRotorBladeStripe1Matrix2;
-    //DirectX::SimpleMath::Matrix mainRotorBladeTranslationStripe1Matrix1;
     DirectX::SimpleMath::Matrix localMainRotorBladeStripe1Matrix1;
 
     std::unique_ptr<DirectX::GeometricPrimitive>    mainRotorArmStripe1Shape;
@@ -845,7 +840,6 @@ public:
 
     void DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj);
     void DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
-    //void DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
 
     float GetAccel() const { return m_heli.testAccel; };
     DirectX::SimpleMath::Vector3 GetAccelVec() const { return m_heli.testAccelVec; };
@@ -862,13 +856,10 @@ public:
     double GetTime() { return m_heli.time; };
     DirectX::SimpleMath::Vector3 GetVehicleUp() const { return m_heli.up; };
     DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.cameraOrientation; };
-    //DirectX::SimpleMath::Matrix GetVehicleOrientation() const { return m_heli.cameraOrientationPrevious; };
-
+ 
     DirectX::SimpleMath::Vector3 GetVelocity() const { return m_heli.q.velocity; };
   
     void InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext);
-    //void InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
-    //void InitializeVehicle(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
 
     // helicopter functions
     void InputCollective(const float aCollectiveInput);
@@ -910,8 +901,6 @@ private:
     void InitializeEngine(Engine& aEngine);
     void InitializeFlightControls(ControlInput& aInput);
     void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData);
-    //void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
-    //void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData, std::shared_ptr<DirectX::BasicEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
     void InitializeRotorBlades(HeliData& aHeliData);
 
     void InputDecay(const double aTimeDelta);
@@ -997,11 +986,6 @@ private:
     DirectX::SimpleMath::Vector3 m_testPos = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_testPos2 = DirectX::SimpleMath::Vector3::Zero;
     DirectX::SimpleMath::Vector3 m_testPos3 = DirectX::SimpleMath::Vector3::Zero;
-    /*
-    const float m_inertiaModelX = 5.0f;
-    const float m_inertiaModelY = 2.0f;
-    const float m_inertiaModelZ = 2.0f;
-    */
     
     const float m_inertiaModelX = 5.0f;
     const float m_inertiaModelY = 2.0f;
@@ -1015,8 +999,6 @@ private:
     const DirectX::SimpleMath::Vector3 m_tailInertiaOffset = DirectX::SimpleMath::Vector3(-5.0f, 0.0f, 0.0f);
 
     const float m_testMass = 2000.0f;
-    //const float m_angDragCoefficient = 0.8f;
-    //const float m_angDragCoefficient = 0.4f;
     const float m_angDragCoefficient = 0.6f;
     const float m_angDragCoefficient2 = 0.1f;
     const float m_angDragLength = 8.0f;

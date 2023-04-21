@@ -45,14 +45,9 @@ Game::Game() noexcept :
     }
 
     m_currentGameState = GameState::GAMESTATE_GAMEPLAY;
-    //m_currentGameState = GameState::GAMESTATE_GAMEPLAYSTART;
     m_currentGameState = GameState::GAMESTATE_INTROSCREEN;
-    //m_currentGameState = GameState::GAMESTATE_STARTSCREEN;
+
     m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_TEST01);
-    //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_STARTSCREEN);
-    //m_lighting->SetLightingNormColorTextureVertex(Lighting::LightingState::LIGHTINGSTATE_TEST01);
-    //m_lighting->SetLightingNormColorVertex2(Lighting::LightingState::LIGHTINGSTATE_TEST01);
-    //m_lighting->SetLightingColorVertex3(Lighting::LightingState::LIGHTINGSTATE_TEST01);
 
     m_currentUiState = UiState::UISTATE_SWING;
     InitializeWorldGrid();
@@ -71,30 +66,6 @@ Game::~Game()
     delete m_environment;
     delete m_lighting;
     delete m_vehicle;
-
-    /*
-    delete[] m_terrainVertexArray;
-    m_terrainVertexArray = 0;
-    delete[] m_terrainVertexArrayBase;
-    m_terrainVertexArrayBase = 0;
-
-    delete[] m_terrainVertexArray2;
-    m_terrainVertexArray2 = 0;
-    delete[] m_terrainVertexArrayBase2;
-    m_terrainVertexArrayBase2 = 0;
-    */
-
-    /*
-    delete[] m_terrainVertexArrayGamePlay;
-    m_terrainVertexArrayGamePlay = 0;
-    delete[] m_terrainVertexArrayBaseGamePlay;
-    m_terrainVertexArrayBaseGamePlay = 0;
-
-    delete[] m_terrainVertexArrayStartScreen;
-    m_terrainVertexArrayStartScreen = 0;
-    delete[] m_terrainVertexArrayBaseStartScreen;
-    m_terrainVertexArrayBaseStartScreen = 0;
-    */
 
     delete[] m_terrainGamePlay.terrainVertexArray;
     m_terrainGamePlay.terrainVertexArray = 0;
@@ -625,19 +596,14 @@ void Game::DrawDebugDataUI()
     const float yOffset1 = 2.0f;
     const float xOffset2 = 3.0f;
     const float yOffset2 = 3.0f;
-    XMVECTORF32 testGray = { { { 0.3f, 0.3f, 0.3f, 1.000000000f } } };
+
     const XMVECTORF32 baseColor = Colors::White;
-    const XMVECTORF32 shadowColor1 = testGray;
+    const XMVECTORF32 shadowColor1 = { { { 0.3f, 0.3f, 0.3f, 1.000000000f } } };
     const XMVECTORF32 shadowColor2 = Colors::Black;
     float rpm = m_vehicle->GetRPM() * 1.0f;
     std::string rpmLine = "Rotor RPM: " + std::to_string(static_cast<int>(rpm)) + " ";
     DirectX::SimpleMath::Vector2 rpmLineOrigin = m_bitwiseFont->MeasureString(rpmLine.c_str()) / 2.f;
     textLinePos.x = rpmLineOrigin.x + 20;
-    //DirectX::SimpleMath::Vector2 lineOrigin2 = rpmLineOrigin;
-    //DirectX::SimpleMath::Vector2 textLinePos2 = textLinePos;
-    //textLinePos2.x += xOffset;
-    //textLinePos2.y += yOffset;
-    //m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos2, Colors::Black, 0.f, lineOrigin2, 1.01f);
     m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset2, yOffset2), shadowColor2, 0.f, rpmLineOrigin);
     m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos + DirectX::SimpleMath::Vector2(xOffset1, yOffset1), shadowColor1, 0.f, rpmLineOrigin);
     m_bitwiseFont->DrawString(m_spriteBatch.get(), rpmLine.c_str(), textLinePos, baseColor, 0.f, rpmLineOrigin);
@@ -1676,9 +1642,7 @@ void Game::DrawLoadScreen()
     VertexPositionNormalColor vertBottomRight(bottomRight, vertexNormal, vertexColor);
     VertexPositionNormalColor vertBottomLeft(bottomLeft, vertexNormal, vertexColor);
 
-
     //m_batch2->DrawQuad(vertTopLeft, vertTopRight, vertBottomRight, vertBottomLeft);
-
 }
 
 void Game::DrawLogoScreen()
@@ -1755,16 +1719,6 @@ void Game::DrawMenuMain()
     std::string menuObj2String = "Environment Select";
     DirectX::SimpleMath::Vector2 menuObj2Pos(menuTitlePosX, lineDrawY);
     DirectX::SimpleMath::Vector2 menuObj2Origin = m_font->MeasureString(menuObj2String.c_str()) / 2.f;
-
-    // Demo
-    ////////////////////////////
-    /*
-    lineDrawY += menuObj0Pos.y;
-    std::string menuObjHydraString = "Hole 12 Golden Bell";
-    DirectX::SimpleMath::Vector2 menuObjHydraPos(menuTitlePosX, lineDrawY);
-    DirectX::SimpleMath::Vector2 menuObjHydraOrigin = m_font->MeasureString(menuObjHydraString.c_str()) / 2.f;
-    */
-    ///////////////////////////
 
     lineDrawY += menuObj0Pos.y;
     std::string menuObj3String = "Quit";
@@ -2266,7 +2220,6 @@ void Game::DrawStartScreen()
 
     m_batch->End();
     m_batch->Begin();
-
 }
 
 void Game::DrawTeaserScreen()
@@ -2752,13 +2705,6 @@ void Game::Initialize(HWND window, int width, int height)
     {
         isInitSuccessTrue = false;
     }
-    /*
-    result = InitializeTerrainArray2();
-    if (!result)
-    {
-        isInitSuccessTrue = false;
-    }
-    */
     m_terrainStartScreen.environType = EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN;
     result = InitializeTerrainArrayStartScreen(m_terrainStartScreen);
     if (!result)
@@ -3218,8 +3164,6 @@ bool Game::InitializeTerrainArrayStartScreen(Terrain& aTerrain)
         DirectX::XMFLOAT4 testColor2 = testColor;
         testColor2.y -= 0.15f;
 
-
-
         aTerrain.terrainVertexArray[i].color = lineColor;
         aTerrain.terrainVertexArrayBase[i].position = vertexPC[i].position;
 
@@ -3662,24 +3606,6 @@ void Game::SetFogVals3(const DirectX::SimpleMath::Vector3 aTargetPos, const floa
 
 void Game::SetTerrainGridDimmer(const float aDimmerVal)
 {
-    /*
-    for (int i = 0; i < m_terrainVertexCount; ++i)
-    {
-        DirectX::SimpleMath::Vector4 dimmerColor(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);// = DirectX::Colors::LawnGreen;
-        //DirectX::SimpleMath::Vector4 dimmerColor = m_terrainVertexArray[i].color;
-        dimmerColor *= aDimmerVal;
-        m_terrainVertexArray[i].color = dimmerColor;
-    }
-    */
-    /*
-    for (int i = 0; i < m_terrainStartScreen.terrainVertexCount; ++i)
-    {
-        DirectX::SimpleMath::Vector4 dimmerColor(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);// = DirectX::Colors::LawnGreen;
-        //DirectX::SimpleMath::Vector4 dimmerColor = m_terrainVertexArray[i].color;
-        dimmerColor *= aDimmerVal;
-        m_terrainStartScreen.terrainVertexArray[i].color = dimmerColor;
-    }
-    */
     DirectX::SimpleMath::Vector4 dimmerColor(0.486274540f, 0.988235354f, 0.000000000f, 1.000000000f);// = DirectX::Colors::LawnGreen;
     dimmerColor *= aDimmerVal;
     m_startScreenGridDimmerColor = dimmerColor;
@@ -3728,7 +3654,6 @@ void Game::TestDraw()
         //m_effect->SetSpecularTexture(m_specularTest.Get());
     }
 
-
     DrawLogoScreen();
 }
 
@@ -3758,113 +3683,23 @@ void Game::Render()
     //world start
     //m_d3dContext->RSSetState(m_raster.Get()); // WLJ anti-aliasing  RenderTesting
     m_d3dContext->RSSetState(m_states->CullNone());
-    /*
-    void const* shaderByteCode;
-    size_t byteCodeLength;
-    m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
-    DX::ThrowIfFailed(m_d3dDevice->CreateInputLayout(VertexType::InputElements, VertexType::InputElementCount, shaderByteCode, byteCodeLength, m_inputLayout.ReleaseAndGetAddressOf()));
-    */
+
     m_batch = std::make_unique<PrimitiveBatch<VertexType>>(m_d3dContext.Get());
     m_effect->SetWorld(m_world);
     //world end
 
-    /*
-    m_effect->SetFogEnabled(true);
-    m_effect->SetFogStart(cos(m_timer.GetTotalSeconds()) + 0.0);
-    m_effect->SetFogEnd(cos(m_timer.GetTotalSeconds()) + 1.0);
-    */
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //auto sampler = m_states->LinearClamp();
-    //m_d3dContext->PSSetSamplers(0, 1, &sampler);
-
     m_d3dContext->IASetInputLayout(m_inputLayout.Get());
     m_effect->Apply(m_d3dContext.Get());
     m_batch->Begin();
-    /*
-    m_effect->EnableDefaultLighting();
-    //m_effect->SetTexture(m_textureJI.Get());
-    //m_effect->SetNormalTexture(m_normalMapJI.Get());
-    //m_effect->SetSpecularTexture(m_specularJI.Get());
-    m_effect->SetView(m_camera->GetViewMatrix());
-    m_effect->SetProjection(m_camera->GetProjectionMatrix());
 
-
-    //DirectX::XMVECTORF32 DomeColor = DirectX::XMVECTORF32(0.1f, 0.1f, 0.1f, 1.0f);
-    DirectX::SimpleMath::Vector4 DomeColor(0.0f, 0.0f, 0.15f, 1.0f);
-    m_shape->Draw(DirectX::SimpleMath::Matrix::Identity, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DomeColor);
-    //m_shape->Draw(m_effect.get(), m_inputLayout.Get());
-    //m_shape->Draw(DirectX::SimpleMath::Matrix::Identity, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DirectX::Colors::White, m_effect.get());
-    */
-
-    /*
-    * m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
-    m_heliModel.noseConeShape->Draw(m_heliModel.noseConeBellyMatrix, aView, aProj, m_heliModel.undersideColor);
-
-    auto ilights = dynamic_cast<DirectX::IEffectLights*>(m_effect.get());
-    if (ilights)
-    {
-        double aTimer = m_timer.GetTotalSeconds();
-        const float timeStamp = static_cast<float>(aTimer);
-        ilights->EnableDefaultLighting();
-        ilights->SetLightEnabled(0, false);
-        ilights->SetLightEnabled(1, false);
-        ilights->SetLightEnabled(2, false);
-        auto time = static_cast<float>(aTimer);
-        float yaw = time * 1.1f;
-        float roll = time * 1.1f;
-        roll = cosf(-timeStamp * 1.2f);
-        auto quat0 = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(-yaw, 0.0, 0.0);
-        auto quat1 = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(yaw, 0.0, 0.0);
-        auto quat2 = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0, 0.0, roll);
-        auto light0 = XMVector3Rotate(DirectX::SimpleMath::Vector3::UnitX, quat0);
-        auto light1 = XMVector3Rotate(DirectX::SimpleMath::Vector3::UnitX, quat1);
-        auto light2 = XMVector3Rotate(DirectX::SimpleMath::Vector3::UnitX, quat2);
-
-        float roll2 = time * 3.1f;
-        auto quat = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0, roll2, 0.0);
-        DirectX::SimpleMath::Vector3 axis = -DirectX::SimpleMath::Vector3::UnitZ;
-        DirectX::SimpleMath::Vector3 light = XMVector3Rotate(axis, quat);
-        light.x += 1.0;
-
-        light.Normalize();
-        light0 = light;
-
-        light0 = -DirectX::SimpleMath::Vector3::UnitZ;
-        light1 = -DirectX::SimpleMath::Vector3::UnitZ;
-        light2 = -DirectX::SimpleMath::Vector3::UnitZ;
-
-
-        ilights->SetLightDirection(0, light0);
-        ilights->SetLightDirection(1, light1);
-        ilights->SetLightDirection(2, light2);
-        m_lightPos0 = light0;
-        m_lightPos1 = light1;
-        m_lightPos2 = light2;
-
-        ilights->SetAmbientLightColor(DirectX::Colors::White);
-
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //m_lighting->UpdateLighting(m_effect, m_timer.GetTotalSeconds());
-    */
-    //DrawStartScreen();
 
     if (m_currentGameState == GameState::GAMESTATE_INTROSCREEN || m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
         DrawIntroScene();
     }
-    //DrawStartScreen();
-    //DrawDebugLines();
-    //DrawStartScreen();
+
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
-        //DrawStartScreen();
-
-        float maxTime1 = m_testTimer1;
-        float maxTime2 = m_testTimer2;
         //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
         m_effect->EnableDefaultLighting();
         m_effect->SetTexture(m_texture.Get());
@@ -3890,45 +3725,10 @@ void Game::Render()
         m_effect->SetLightDirection(0, mainLightDirection0);
         m_effect->SetLightDirection(1, mainLightDirection1);
         m_effect->SetLightDirection(2, mainLightDirection2);
-        /*
-        auto lights = dynamic_cast<DirectX::IEffectLights*>(m_effect.get());
-        if (lights)
-        {
-            lights->SetLightEnabled(0, true);
-            lights->SetLightEnabled(1, true);
-            lights->SetLightEnabled(2, true);
-            lights->SetAmbientLightColor(DirectX::Colors::Red);
-            lights->SetLightDiffuseColor(0, DirectX::Colors::Green);
-            lights->SetLightDiffuseColor(1, DirectX::Colors::Blue);
-            lights->SetLightDiffuseColor(2, DirectX::Colors::White);
-            lights->SetLightSpecularColor(0, DirectX::Colors::Yellow);
-            lights->SetLightSpecularColor(1, DirectX::Colors::Black);
-            lights->SetLightSpecularColor(2, DirectX::Colors::Black);
-        }
-        */
-        //m_effect->EnableDefaultLighting();
         m_effect->Apply(m_d3dContext.Get());
-        //m_effect->EnableDefaultLighting();
-        DirectX::SimpleMath::Vector3 pos = m_vehicle->GetPos();
-        DirectX::SimpleMath::Matrix align = m_vehicle->GetVehicleOrientation();
-        //m_testShape->Draw(align, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DirectX::Colors::Red, m_texture.Get());
-
-        //m_effect->EnableDefaultLighting();
-
-        //m_effect->SetWorld(align);
-        //m_effect->SetColorAndAlpha(DirectX::Colors::White);
-        //m_testShape->Draw(m_effect.get(), m_inputLayout.Get());
-
-
-        /*
-        m_skyRotation += static_cast<float>(m_timer.GetElapsedSeconds()) * 0.19f;
-        DirectX::SimpleMath::Matrix rotMat = DirectX::SimpleMath::Matrix::CreateRotationX(Utility::ToRadians(-m_skyRotation));
-        rotMat *= DirectX::SimpleMath::Matrix::CreateRotationZ(Utility::ToRadians(30.0f));
-        rotMat *= DirectX::SimpleMath::Matrix::CreateRotationY(Utility::ToRadians(30.0f));
-        m_skyShape->Draw(rotMat, m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), DirectX::SimpleMath::Vector4(1.0, 1.0, 1.0, 2.0f), m_textureSky.Get());
-        */
+ 
         DrawSky();
-        //DrawStartScreen();
+
         if (m_isInDebugMode == true)
         {
             //DrawCameraFocus();
@@ -3946,17 +3746,6 @@ void Game::Render()
         //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj);
         m_vehicle->DrawModel2(m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), m_effect, m_inputLayout);
         DrawSky();
-        /*
-        m_effect->EnableDefaultLighting();
-        m_effect->SetTexture(m_textureJI.Get());
-        m_effect->SetNormalTexture(m_normalMapJI.Get());
-        m_effect->SetSpecularTexture(m_specularJI.Get());
-        m_effect->Apply(m_d3dContext.Get());
-        DirectX::SimpleMath::Matrix testMat = DirectX::SimpleMath::Matrix::Identity;
-        m_effect->SetWorld(testMat);
-        m_effect->SetColorAndAlpha(DirectX::Colors::Yellow);
-        m_testShape->Draw(m_effect.get(), m_inputLayout.Get());
-        */
     }
 
     m_batch->End();
@@ -3969,21 +3758,11 @@ void Game::Render()
     const int maxIndices = maxVertices * 3;
     m_batch2 = std::make_unique<PrimitiveBatch<VertexType2>>(m_d3dContext.Get(), maxIndices, maxVertices);
 
-
-    //m_effect2->SetWorld(m_world);
-    //m_effect2->EnableDefaultLighting();
     m_effect2->Apply(m_d3dContext.Get());
 
-    //m_d3dContext->PSSetSamplers(0, 1, &sampler);
     m_d3dContext->IASetInputLayout(m_inputLayout2.Get());
 
     m_batch2->Begin();
-    //DrawLightBar();
-    //DrawCameraFocus();
-    //DrawLightFocus1();
-    //DrawLightFocus2();
-    //DrawLightFocus3();
-    //DrawWorld(); 
 
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAYSTART)
     {
@@ -3992,21 +3771,11 @@ void Game::Render()
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
         DrawTerrainNew(m_terrainGamePlay);
-        //DrawTerrainNew(m_terrainStartScreen);
     }
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
-        //DrawTerrain2();
         DrawTerrainNew(m_terrainStartScreen);
     }
-    if (m_currentGameState == GameState::GAMESTATE_TEASERSCREEN)
-    {
-        //DrawLightBar();
-    }
-
-    //DrawLoadScreen();
-
-    //m_effect2->EnableDefaultLighting();
 
     auto ilights2 = dynamic_cast<DirectX::IEffectLights*>(m_effect2.get());
     if (ilights2)
@@ -4035,7 +3804,6 @@ void Game::Render()
         ilights2->EnableDefaultLighting();
     }
 
-    //m_vehicle->DrawModel(m_camera->GetViewMatrix(), m_proj, m_effect2, m_inputLayout);
     m_effect2->Apply(m_d3dContext.Get());
 
     m_batch2->End();
@@ -4051,21 +3819,15 @@ void Game::Render()
 
     m_batch3->Begin();
 
-    //DrawTerrainNormals();
-    //DrawDebugNormalLines(m_vehicle->GetModelTestPos(), DirectX::Colors::Blue);
     DrawDebugLinesVector();
     DrawDebugLinesVectorNew();
-    //DrawGridForStartScreen();
     if (m_currentGameState == GameState::GAMESTATE_STARTSCREEN)
     {
         DrawGridForStartScreen();
-        //DrawTerrain();
     }
     m_batch3->End();
 
     m_spriteBatch->Begin();
-    //DrawDebugValue();
-
 
     if (m_currentGameState == GameState::GAMESTATE_INTROSCREEN)
     {
@@ -4091,14 +3853,12 @@ void Game::Render()
     if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
     {
         DrawDebugDataUI();
-        //DrawDebugVehicleData();
-        //DrawUI();
     }
     if (m_currentGameState == GameState::GAMESTATE_TEASERSCREEN)
     {
         //DrawTeaserScreen();
     }
-    //DrawDebugDataUI();
+
     m_spriteBatch->End();
 
     Present();
@@ -4106,7 +3866,6 @@ void Game::Render()
 
 void Game::ResetGamePlay()
 {
-    //pAuto->ZeroUIandRenderData();
     m_swingPathStep = 0;
     m_projectilePathStep = 0;
 }
@@ -4174,15 +3933,7 @@ void Game::Update(DX::StepTimer const& aTimer)
             m_retryAudio = true;
         }
     }
-    /*
-    if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
-    {
-        m_effect->SetTexture(m_textureJI.Get());
-        m_effect->SetNormalTexture(m_normalMapJI.Get());
-        m_effect->SetSpecularTexture(m_specularJI.Get());
-    }
-    */
-    //m_lighting->SetLighting(Lighting::LightingState::LIGHTINGSTATE_BMW);
+
     m_debugData->DebugClearUI();
     UpdateInput(aTimer);
     m_vehicle->UpdateVehicle(aTimer.GetElapsedSeconds());
@@ -4191,11 +3942,6 @@ void Game::Update(DX::StepTimer const& aTimer)
 
     m_lighting->UpdateLighting(m_effect, aTimer.GetTotalSeconds());
 
-    /*
-    m_lighting->UpdateLightingNormColorTextureVertex(m_effect, aTimer.GetTotalSeconds());
-    m_lighting->UpdateLightingNormColorVertex2(m_effect2, aTimer.GetTotalSeconds());
-    m_lighting->UpdateLightingColorVertex3(m_effect3, aTimer.GetTotalSeconds());
-    */
     m_proj = m_camera->GetProjectionMatrix();
     m_effect->SetProjection(m_proj);
     m_effect2->SetProjection(m_proj);
@@ -4205,8 +3951,6 @@ void Game::Update(DX::StepTimer const& aTimer)
     m_effect->SetView(viewMatrix);
     m_effect2->SetView(viewMatrix);
     m_effect3->SetView(viewMatrix);
-
-
 }
 
 void Game::UpdateInput(DX::StepTimer const& aTimer)
@@ -4676,7 +4420,6 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
     {
         if (m_currentGameState == GameState::GAMESTATE_GAMEPLAY)
         {
-            //m_camera->SetSpinCameraStart();
             m_vehicle->ToggleLandingGearState();
         }
     }
@@ -4745,21 +4488,14 @@ void Game::UpdateInput(DX::StepTimer const& aTimer)
             // Pitch
             if (pad.thumbSticks.leftY > m_gamePadInputDeadZone || pad.thumbSticks.leftY < -m_gamePadInputDeadZone)
             {
-                //m_vehicle->InputCyclicRoll(static_cast<float>(aTimer.GetElapsedSeconds()));
                 const float inputMod = m_gamePadInputRatePitch;
                 m_vehicle->InputCyclicPitchGamePad(-pad.thumbSticks.leftY * inputMod, static_cast<float>(aTimer.GetElapsedSeconds()));
-                //m_vehicle->InputCyclicPitchGamePad(-pad.thumbSticks.leftY * static_cast<float>(aTimer.GetElapsedSeconds()));
-                //m_debugData->DebugPushUILineDecimalNumber("pad.thumbSticks.leftX  ", pad.thumbSticks.leftX * inputMod, "");
             }
             // Roll
             if (pad.thumbSticks.leftX > m_gamePadInputDeadZone || pad.thumbSticks.leftX < -m_gamePadInputDeadZone)
             {
-                //m_vehicle->InputCyclicRoll(static_cast<float>(aTimer.GetElapsedSeconds()));
                 const float inputMod = m_gamePadInputRateRoll;
-                //m_vehicle->InputCyclicRollGamePad(pad.thumbSticks.leftX * inputMod);
                 m_vehicle->InputCyclicRollGamePad(pad.thumbSticks.leftX * inputMod, static_cast<float>(aTimer.GetElapsedSeconds()));
-                //m_vehicle->InputCyclicRollGamePad(-pad.thumbSticks.leftX * static_cast<float>(aTimer.GetElapsedSeconds()));
-                //m_debugData->DebugPushUILineDecimalNumber("pad.thumbSticks.leftX  ", pad.thumbSticks.leftX * inputMod, "");
             }
             // Yaw
             if (pad.IsLeftTriggerPressed() == true)
