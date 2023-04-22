@@ -39,7 +39,7 @@ void FireControl::DrawProjectile(const DirectX::SimpleMath::Matrix aView, const 
 void FireControl::FireProjectile(AmmoType aAmmoType, const DirectX::SimpleMath::Vector3 aLaunchPos, const DirectX::SimpleMath::Vector3 aLaunchDirection, const DirectX::SimpleMath::Vector3 aLauncherVelocity)
 {
     ProjectileData firedProjectile;
-    firedProjectile.projectileAmmoType = AmmoType::AMMOTYPE_BALL01;
+    firedProjectile.projectileAmmoType = aAmmoType;
     firedProjectile.q.position = aLaunchPos;
     firedProjectile.q.velocity = (m_ballAmmo.launchVelocity * aLaunchDirection) + aLauncherVelocity;
     firedProjectile.time = 0.0f;
@@ -97,7 +97,7 @@ void FireControl::RightHandSide(struct ProjectileData* aProjectile, ProjectileMo
     DirectX::SimpleMath::Vector3 gravForce = DirectX::SimpleMath::Vector3(0.0f, -9.8f, 0.0f);
     velocityUpdate += gravForce;
 
-    float mass = 0.5f;
+    float mass = aProjectile->mass;
 
     aDQ->velocity = static_cast<float>(aTimeDelta) * (velocityUpdate / mass);
     aDQ->position = static_cast<float>(aTimeDelta) * newQ.velocity;
@@ -122,7 +122,7 @@ void FireControl::RungeKutta4(struct ProjectileData* aProjectile, double aTimeDe
     RightHandSide(aProjectile, &q, &dq1, aTimeDelta, 0.5, &dq2);
     RightHandSide(aProjectile, &q, &dq2, aTimeDelta, 0.5, &dq3);
     RightHandSide(aProjectile, &q, &dq3, aTimeDelta, 1.0, &dq4);
-    aProjectile->time = aProjectile->time + aTimeDelta;
+    aProjectile->time = aProjectile->time + static_cast<float>(aTimeDelta);
 
     DirectX::SimpleMath::Vector3 posUpdate = (dq1.position + 2.0 * dq2.position + 2.0 * dq3.position + dq4.position) / numEqns;
     DirectX::SimpleMath::Vector3 velocityUpdate = (dq1.velocity + 2.0 * dq2.velocity + 2.0 * dq3.velocity + dq4.velocity) / numEqns;

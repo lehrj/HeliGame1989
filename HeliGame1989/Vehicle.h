@@ -834,12 +834,9 @@ class Vehicle
 public: 
     void DebugToggle();
     void DebugToggle2();
-    std::vector<std::pair<std::string, float>> DebugGetUI() { return m_debugUI; };
-    std::vector<std::string> DebugGetUIVector() { return m_debugUIVector; };
-    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> DebugGetTestLines() const { return m_debugLinesVec; };
 
-    void DrawModel(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj);
-    void DrawModel2(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj, std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
+    void DrawModelEffectsOff(const DirectX::SimpleMath::Matrix aView, const DirectX::SimpleMath::Matrix aProj);
+    void DrawModelEffectsOn(std::shared_ptr<DirectX::NormalMapEffect> aEffect, Microsoft::WRL::ComPtr<ID3D11InputLayout> aInputLayout);
 
     float GetAccel() const { return m_heli.testAccel; };
     DirectX::SimpleMath::Vector3 GetAccelVec() const { return m_heli.testAccelVec; };
@@ -849,7 +846,6 @@ public:
     DirectX::SimpleMath::Vector3 GetFollowPos() const;
     DirectX::SimpleMath::Vector3 GetForward() const { return m_heli.forward; };
     DirectX::SimpleMath::Vector3 GetPos() const { return m_heli.q.position; };
-    //DirectX::SimpleMath::Vector3 GetPos() const { return m_prevPos; };
     float GetRPM() const { return m_heli.mainRotor.rpm; };
     float GetGroundSpeed() { return m_heli.speed; };
     float GetThrottle() { return m_heli.controlInput.throttleInput; };
@@ -887,7 +883,9 @@ public:
 private:
     float CalculateLiftCoefficient(const float aAngle);
     DirectX::SimpleMath::Vector3 CalculateDragAngularLocal(const DirectX::SimpleMath::Vector3 aAngVelocity);
-    DirectX::SimpleMath::Vector3 CalculateStabilityTorqueLocal(const HeliData& aHeliData, const float aTimeStep);
+    DirectX::SimpleMath::Vector3 CalculateStabilityTorqueLocal(const HeliData& aHeliData);
+
+    /*
     void DebugClearUI() { 
         m_debugUI.clear();
         m_debugUIVector.clear();
@@ -898,6 +896,7 @@ private:
     void DebugPushTestLine(DirectX::SimpleMath::Vector3 aLineBase, DirectX::SimpleMath::Vector3 aLineEnd, float aLength, float aYOffset, DirectX::SimpleMath::Vector4 aColor);
     void DebugPushTestLineBetweenPoints(DirectX::SimpleMath::Vector3 aPoint1, DirectX::SimpleMath::Vector3 aPoint2, DirectX::SimpleMath::Vector4 aColor);
     void DebugPushTestLinePositionIndicator(const DirectX::SimpleMath::Vector3 aPoint, const float aLineLength, const float aOffset, const DirectX::SimpleMath::Vector4 aColor);
+    */
     void InitializeEngine(Engine& aEngine);
     void InitializeFlightControls(ControlInput& aInput);
     void InitializeModel(Microsoft::WRL::ComPtr<ID3D11DeviceContext1> aContext, HeliData& aHeliData);
@@ -913,13 +912,11 @@ private:
     void RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ, double aTimeDelta, float aQScale, Motion* aDQ);
     void RungeKutta4(struct HeliData* aHeli, double aTimeDelta);
     
-    void UpdateAlignmentTorqueTest(const float aTimeDelta);
+    void UpdateAlignmentFromTorque(const float aTimeDelta);
 
     void UpdateBladeLiftForce(const float aTimeStep);
 
-    Utility::Torque UpdateBodyTorqueTest(const float aTimeStep);
-    Utility::Torque UpdateBodyTorqueTestRunge(Utility::Torque aPendulumTorque, const float aTimeStep);
-    Utility::Torque UpdateBodyTorqueTestRungeOld(Utility::Torque aPendulumTorque, const float aTimeStep);
+    Utility::Torque UpdateBodyTorqueRunge(Utility::Torque aPendulumTorque);
     void UpdateAlignmentCamera();
     void UpdateCentrifugalForce(const float aTimeStep);
     void UpdateCyclicStick(ControlInput& aInput);
@@ -927,24 +924,21 @@ private:
     void UpdateLandingGear(struct LandingGear& aLandingGear, const double aTimeDelta);
     void UpdateModel();
     void UpdatePendulumMotion(Utility::Torque& aTorque, DirectX::SimpleMath::Vector3& aVelocity, const float aTimeStep);
-    void UpdatePendulumMotion2(const float aTimeStep);
     void UpdatePhysicsPoints(struct HeliData& aHeli);
     void UpdateResistance();
-    void UpdateRotorForce();
     DirectX::SimpleMath::Vector3 UpdateRotorForceRunge();
 
     void UpdateRotorData(HeliData& aHeliData, const double aTimer);
-    void UpdateRotorPitch(HeliData& aHeliData, const double aTimer);
+    void UpdateRotorPitch(HeliData& aHeliData);
     void UpdateRotorSpin(HeliData& aHeliData, const double aTimer);
 
     void UpdateTerrainData();
     void UpdateTerrainNorm();
 
-    float WindVaningVal(const HeliData& aHeliData, const float aTimeStep);
-    DirectX::SimpleMath::Vector3 WindVaningVec(const HeliData& aHeliData, const float aTimeStep);
-    DirectX::SimpleMath::Vector3 WindVaningVec2(const HeliData& aHeliData, const float aTimeStep);
+    float WindVaningVal(const HeliData& aHeliData);
+    DirectX::SimpleMath::Vector3 WindVaningVec(const HeliData& aHeliData);
 
-    DirectX::SimpleMath::Vector3 HorizontalStabilizerVec(const HeliData& aHeliData, const float aTimeStep);
+    DirectX::SimpleMath::Vector3 HorizontalStabilizerVec(const HeliData& aHeliData);
 
     Environment const*              m_environment;
     std::shared_ptr<DebugData>      m_debugData;
@@ -960,9 +954,9 @@ private:
     float                           m_moveLeftRight = 0.0;
     float                           m_moveUpDown = 0.0;
 
-    std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> m_debugLinesVec;
-    std::vector<std::pair<std::string, float>> m_debugUI;
-    std::vector<std::string> m_debugUIVector;
+    //std::vector<std::tuple<DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector3, DirectX::SimpleMath::Vector4>> m_debugLinesVec;
+    //std::vector<std::pair<std::string, float>> m_debugUI;
+    //std::vector<std::string> m_debugUIVector;
 
     float m_rotorTimerTest = 0.0f;
     float m_rotorTimerTest2 = 0.0f;

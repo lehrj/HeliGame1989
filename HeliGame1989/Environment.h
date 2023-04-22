@@ -170,7 +170,7 @@ public:
     float GetWindZ() const { return m_currentEnviron.wind.z; };
     std::string GetWindZString(const int aEnvironmentIndex) const { return m_environs[aEnvironmentIndex].windZStr; };    
 
-    bool InitializeTerrain(HeightMap& aMap, EnvironmentType aEnviron);
+    bool InitializeTerrain(HeightMap& aMap);
 
     void SortFixtureBucketByDistance();
     void UpdateEnvironment(const int aIndex);
@@ -192,10 +192,7 @@ private:
     void LoadFixtureBucket();
     void LoadFixtureBucket12th();
 
-    //bool LoadHeightMap(std::vector<DirectX::VertexPositionNormal>& aMap, EnvironmentType aEnviron);
-    bool LoadHeightMap(HeightMap& aMap, EnvironmentType aEnviron);
-
- 
+    bool LoadHeightMap(HeightMap& aMap);
     void SetLandingHeight(float aLandingHeight);
     void SetLauchHeight(float aLaunchHeight);
 
@@ -212,7 +209,6 @@ private:
     std::vector<DirectX::VertexPositionColor> m_flagVertex;
     std::vector<DirectX::VertexPositionColor> m_holeVertex;
     const int                           m_holeResolution = 30;          // number of vertices used to draw hole circle
-    //const float                        m_holeRadius = 0.10795;              // Radius of the hole, future updates could include addition of "big cup" or "tiny cup" hole sizes
     const float                        m_holeRadius = .50795;
 
     float                              m_landingHeight = 0.0;     // in meters
@@ -241,7 +237,6 @@ private:
     std::vector<DirectX::VertexPositionNormal> m_terrainModel;
 
     // scaling variables for different types of heightmaps
-    //const float                         m_heightScale = 0.007f;
     const float                         m_heightScale = 1.009f;
     const float                        m_heightScaleStartScreen = 0.007f;
 
@@ -249,7 +244,6 @@ private:
     const float                        m_mapScaleStartScreen = 0.2f;
     const float                        m_mapXtransformStartScreen = -2.101f;
     const float                        m_mapYtransformStartScreen = -0.01f;
-    //const float                        m_mapZtransformStartScreen = -0.02f;
     const float                        m_mapZtransformStartScreen = -1.6f;
     
     const float                        m_elevationScaleGamePlay = 0.007f;

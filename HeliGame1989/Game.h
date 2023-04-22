@@ -63,7 +63,6 @@ private:
     void DrawDebugDataUI();
     void DrawDebugLines(const DirectX::SimpleMath::Vector3 aPos, const DirectX::XMVECTORF32 aColor);
     void DrawDebugNormalLines(const DirectX::SimpleMath::Vector3 aPos, const DirectX::XMVECTORF32 aColor);
-    void DrawDebugLinesVector();
     void DrawGridForStartScreen();
     void DrawGamePlayStart();
     void DrawIntroScene();
@@ -106,8 +105,6 @@ private:
     void SetTerrainGridDimmer(const float aDimmerVal);
     void TerrainDimmer();
 
-    void DrawDebugValue();
-    void DrawDebugVehicleData();
     void TestDraw();
 
     void Update(DX::StepTimer const& aTimer);
@@ -358,7 +355,7 @@ private:
     const float                         m_fadeDuration = 1.0f;
     const float                         m_logoDisplayDuration = 5.1f;
     const float                         m_logoDisplayGap = 0.1f;
-    const float                         m_startDelay = 5.5f;
+    const float                         m_startDelay = 1.5f;
 
     const float                         m_fogGap1 = 0.0;
     const float                         m_fogGap2 = 10.0;

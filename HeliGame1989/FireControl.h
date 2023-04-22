@@ -45,6 +45,7 @@ struct ProjectileData
 {
     AmmoType projectileAmmoType;
     //AmmoData& const ammo;
+    float mass = 1.0f;
     ProjectileMotion q;
     float time;
 };

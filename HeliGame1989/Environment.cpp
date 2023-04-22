@@ -10,14 +10,14 @@
 Environment::Environment()
 {
     InitializeHeightMapData();
-    bool result = InitializeTerrain(m_heightMapGamePlayData, EnvironmentType::ENVIRONMENTTYPE_GAMEPLAY);
+    bool result = InitializeTerrain(m_heightMapGamePlayData);
     if (result == false)
     {
         int testBreak = 0;
         testBreak++;
         // ToDo: add error handling
     }
-    result = InitializeTerrain(m_heightMapStartScreenData, EnvironmentType::ENIVRONMENTTYPE_STARTSCREEN);
+    result = InitializeTerrain(m_heightMapStartScreenData);
     if (result == false)
     {
         int testBreak = 0;
@@ -676,9 +676,9 @@ float Environment::GetWindDirection() const
     return direction;
 }
 
-bool Environment::InitializeTerrain(HeightMap& aMap, EnvironmentType aEnviron)
+bool Environment::InitializeTerrain(HeightMap& aMap)
 {
-    bool result = LoadHeightMap(aMap, aEnviron);
+    bool result = LoadHeightMap(aMap);
     if (!result)
     {
         return false;
@@ -1238,7 +1238,7 @@ void Environment::LoadFixtureBucket12th()
     m_fixtureBucket.push_back(fixt);
 }
 
-bool Environment::LoadHeightMap(HeightMap& aMap, EnvironmentType aEnviron)
+bool Environment::LoadHeightMap(HeightMap& aMap)
 {
     FILE* filePtr;
     const char* filename;
