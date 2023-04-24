@@ -558,34 +558,6 @@ std::vector<DirectX::VertexPositionNormalColor> Environment::GetTerrainPositionN
         }
     }
     return vertPosNormColor;
-    /*
-    vertPosNormColor.resize(m_heightMapGamePlayData.terrainModel.size());
-    DirectX::XMFLOAT4 terrainColor(1.0, 1.0, 1.0, 1.0); // ToDo: for testing, implement color control
-
-    for (unsigned int i = 0; i < vertPosNormColor.size(); ++i)
-    {
-        vertPosNormColor[i].position = m_heightMapGamePlayData.terrainModel[i].position;
-        vertPosNormColor[i].color = terrainColor;
-        vertPosNormColor[i].normal = m_heightMapGamePlayData.terrainModel[i].normal;
-    }
-    return vertPosNormColor;
-    */
-    
-    /*
-    std::vector<DirectX::VertexPositionNormalColor> vertPosNormColor;
-    vertPosNormColor.clear();
-    vertPosNormColor.resize(m_terrainModel.size());
-    DirectX::XMFLOAT4 terrainColor(1.0, 1.0, 1.0, 1.0); // ToDo: for testing, implement color control
-
-    for (unsigned int i = 0; i < vertPosNormColor.size(); ++i)
-    {
-        vertPosNormColor[i].position = m_terrainModel[i].position;
-        vertPosNormColor[i].color = terrainColor;
-        vertPosNormColor[i].normal = m_terrainModel[i].normal;
-    }
-
-    return vertPosNormColor;
-    */
 }
 
 bool Environment::GetVehicleUpdateData(DirectX::SimpleMath::Vector3 aPos, DirectX::SimpleMath::Vector3& aNorm, float& aHeight, DirectX::SimpleMath::Plane& aPlane) const
