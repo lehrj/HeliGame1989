@@ -3932,6 +3932,23 @@ void Vehicle::RightHandSide(struct HeliData* aHeli, Motion* aQ, Motion* aDeltaQ,
     updatedAngularVelocity = testAngVel;
     //updatedAngularVelocity = vAngularVelocity;
 
+    
+    ///////////////////////////////////////////////////////////////////
+    //DirectX::SimpleMath::Vector3 torqueAccum = m_testTorqueLocal;
+    DirectX::SimpleMath::Vector3 torqueAccum = bodyTorqueUpdateLocal.axis * bodyTorqueUpdateLocal.magnitude;
+    //torqueAccum = DirectX::SimpleMath::Vector3::UnitX * m_testTorque;
+    torqueAccum += newQ.angularVelocity;
+    //torqueAccum = DirectX::SimpleMath::Vector3::Transform(torqueAccum, aHeli->inverseInertiaMatrixTest);
+    torqueAccum = DirectX::SimpleMath::Vector3::Transform(torqueAccum, aHeli->inverseInertiaMatrix);
+
+    //torqueAccum += newQ.angularVelocity;
+    torqueAccum += (m_heli.angularDrag);
+    //torqueAccum *= 0.8f;
+
+    //aDQ->angularVelocity = static_cast<float>(aTimeDelta) * torqueAccum;
+    //aDQ->angularMomentum = static_cast<float>(aTimeDelta) * DirectX::SimpleMath::Vector3::Zero;
+    //////////////////////////////////////////////////////////////////
+
     aDQ->angularVelocity = static_cast<float>(aTimeDelta) * updatedAngularVelocity;
     aDQ->angularMomentum = static_cast<float>(aTimeDelta) * torqueForce;
     //////////////////
