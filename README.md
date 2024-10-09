@@ -1,5 +1,5 @@
 # HeliGame1989
-A retro themed physics-based helicopter game prototype in development
+A retro themed helicopter game prototype in development
 
 
 <p align="center">
